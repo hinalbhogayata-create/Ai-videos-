@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Tulsi Vivah Flyer</title>
+<style>
+  @font-face { font-family: 'TiroSanskrit'; src: url('fonts/TiroSanskrit.ttf'); }
+  @font-face { font-family: 'TiroHindi'; src: url('fonts/TiroHindi.ttf'); }
+  @font-face { font-family: 'GreatVibes'; src: url('fonts/GreatVibes.ttf'); }
+  @font-face { font-family: 'Cinzel'; src: url('fonts/Cinzel-500.ttf'); font-weight: 500; }
+  @font-face { font-family: 'Cinzel'; src: url('fonts/Cinzel-700.ttf'); font-weight: 700; }
+  @font-face { font-family: 'Cormorant'; src: url('fonts/Cormorant.ttf'); }
+  @font-face { font-family: 'Cormorant'; src: url('fonts/Cormorant-Italic.ttf'); font-style: italic; }
+  @font-face { font-family: 'Rozha'; src: url('fonts/RozhaOne.ttf'); }
+
+  /* ====== EDIT THESE COLOURS TO RE-THEME ====== */
+  :root {
+    --green-dark: #0d3b25;
+    --green: #14532d;
+    --maroon: #7a1020;
+    --gold-1: #8a5a12;
+    --gold-2: #f6d77a;
+    --ivory: #fff8ea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1350px; background: #222; }
+
+  .flyer {
+    position: relative; width: 1080px; height: 1350px; overflow: hidden;
+    background:
+      radial-gradient(ellipse at 50% 38%, #fffdf6 0%, #fff4dc 38%, #f6e2b8 70%, #e9cd93 100%);
+  }
+  .layer { position: absolute; inset: 0; }
+
+  .text { position: absolute; left: 0; right: 0; text-align: center; }
+
+  .shri { top: 124px; font-family: 'TiroSanskrit'; font-size: 26px; color: var(--maroon); letter-spacing: 2px; }
+
+  .title {
+    top: 160px; font-family: 'GreatVibes'; font-size: 140px; line-height: 1.15;
+    background: linear-gradient(180deg, #6b3f06 0%, #b07a1f 28%, #f4d27a 48%, #c08a2a 62%, #7a4a0c 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 1px rgba(90,50,0,.35));
+  }
+
+  .greet {
+    top: 328px; font-family: 'Rozha'; font-size: 40px; color: var(--maroon);
+    text-shadow: 0 1px 0 #fff6d8;
+  }
+  .sub {
+    top: 384px; font-family: 'Cinzel'; font-weight: 500; font-size: 17px; letter-spacing: 6px; color: var(--green);
+  }
+
+  /* shloka card */
+  .card {
+    position: absolute; left: 90px; right: 90px; top: 880px; height: 360px;
+    background: linear-gradient(180deg, rgba(255,251,240,.96), rgba(255,244,220,.96));
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(80,40,0,.22), inset 0 0 0 2px #c9993a, inset 0 0 0 8px #fff8ea, inset 0 0 0 9px #d9b25a;
+    text-align: center; padding: 34px 50px 20px;
+  }
+  .card .label { font-family: 'Cinzel'; font-weight: 700; font-size: 15px; letter-spacing: 6px; color: #a2741e; }
+  .card .label .dev { font-family: 'TiroSanskrit'; font-weight: 400; font-size: 19px; letter-spacing: 0; color: var(--maroon); }
+  .card .shloka {
+    margin-top: 10px; font-family: 'TiroSanskrit'; font-size: 37px; line-height: 1.5; color: var(--maroon);
+  }
+  .card .divider { margin: 6px auto 8px; display: block; }
+  .card .hindi { font-family: 'TiroHindi'; font-size: 20.5px; line-height: 1.55; color: #3b2a14; }
+  .card .eng {
+    margin-top: 8px; font-family: 'Cormorant'; font-style: italic; font-size: 22px; line-height: 1.35; color: var(--green);
+  }
+
+  .footer {
+    top: 1262px; font-family: 'TiroHindi'; font-size: 22px; color: var(--ivory);
+  }
+  .footer b { font-family: 'Cinzel'; font-weight: 700; font-size: 20px; letter-spacing: 3px; color: var(--gold-2); }
+</style>
+</head>
+<body>
+<div class="flyer" id="flyer">
+
+  <!-- Background decoration: frame, mandala, toran, lamps -->
+  <svg class="layer" id="bg" width="1080" height="1350" viewBox="0 0 1080 1350">
+    <defs>
+      <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#8a5a12"/><stop offset=".3" stop-color="#f6d77a"/>
+        <stop offset=".55" stop-color="#b8862b"/><stop offset=".8" stop-color="#fff0b3"/>
+        <stop offset="1" stop-color="#9c6b1c"/>
+      </linearGradient>
+      <linearGradient id="goldV" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff0b3"/><stop offset=".45" stop-color="#d4a33c"/><stop offset="1" stop-color="#7a4f0e"/>
+      </linearGradient>
+      <radialGradient id="flame" cx=".5" cy=".7" r=".6">
+        <stop offset="0" stop-color="#fffbe0"/><stop offset=".4" stop-color="#ffd54f"/>
+        <stop offset=".8" stop-color="#ff8f00"/><stop offset="1" stop-color="#e65100" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="glow" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#ffd970" stop-opacity=".75"/><stop offset="1" stop-color="#ffd970" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="greenBand" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#174f31"/><stop offset="1" stop-color="#0b301e"/>
+      </linearGradient>
+    </defs>
+    <g id="mandala" opacity=".16"></g>
+    <!-- green frame -->
+    <path fill="url(#greenBand)" fill-rule="evenodd"
+      d="M0 0H1080V1350H0Z M34 34H1046V1236 Q540 1290 34 1236Z"/>
+    <path fill="none" stroke="url(#gold)" stroke-width="4" d="M34 34H1046V1236 Q540 1290 34 1236Z"/>
+    <path fill="none" stroke="url(#gold)" stroke-width="1.5" d="M46 46H1034V1226 Q540 1278 46 1226Z"/>
+    <rect x="10" y="10" width="1060" height="1330" fill="none" stroke="url(#gold)" stroke-width="2"/>
+    <g id="lamps"></g>
+    <g id="toran"></g>
+    <g id="cornerDots"></g>
+  </svg>
+
+  <div class="text shri">॥ श्री हरि ॥</div>
+  <div class="text title">Tulsi Vivah</div>
+  <div class="text greet">तुलसी विवाह की हार्दिक शुभकामनाएँ</div>
+  <div class="text sub">✦ SHUBH TULSI VIVAH ✦</div>
+
+  <!-- Central illustration -->
+  <svg id="art" style="position:absolute; left:190px; top:418px;" width="700" height="460" viewBox="0 0 700 460">
+    <defs>
+      <linearGradient id="marble" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fffaf0"/><stop offset=".5" stop-color="#f3e6cc"/><stop offset="1" stop-color="#e6d2a8"/>
+      </linearGradient>
+      <linearGradient id="gold2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff0b3"/><stop offset=".4" stop-color="#e0b04a"/><stop offset="1" stop-color="#8a5a12"/>
+      </linearGradient>
+      <linearGradient id="chunri" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#c2185b"/><stop offset=".6" stop-color="#9c0f2f"/><stop offset="1" stop-color="#6d0a1f"/>
+      </linearGradient>
+      <linearGradient id="leafG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#1b5e20"/><stop offset=".5" stop-color="#4caf50"/><stop offset="1" stop-color="#2e7d32"/>
+      </linearGradient>
+      <radialGradient id="flame2" cx=".5" cy=".7" r=".6">
+        <stop offset="0" stop-color="#fffbe0"/><stop offset=".4" stop-color="#ffd54f"/>
+        <stop offset=".8" stop-color="#ff8f00"/><stop offset="1" stop-color="#e65100" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="glow2" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#ffcf55" stop-opacity=".8"/><stop offset="1" stop-color="#ffcf55" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="halo" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#fff6c8" stop-opacity=".95"/><stop offset=".6" stop-color="#ffe9a8" stop-opacity=".35"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="350" cy="200" rx="300" ry="210" fill="url(#halo)"/>
+    <g id="plant"></g>
+    <g id="pot"></g>
+    <g id="feather"></g>
+    <g id="diyas"></g>
+    <g id="petals"></g>
+  </svg>
+
+  <div class="card">
+    <div class="label">✦ <span class="dev">तुलसी स्तुति</span> · SACRED SHLOKA ✦</div>
+    <div class="shloka">नमस्तुलसि कल्याणि नमो विष्णुप्रिये शुभे ।<br>नमो मोक्षप्रदे देवि नमः सम्पत्प्रदायिनि ॥</div>
+    <svg class="divider" width="300" height="22" viewBox="0 0 300 22">
+      <path d="M10 11H120M180 11H290" stroke="#c9993a" stroke-width="1.5"/>
+      <circle cx="10" cy="11" r="2.5" fill="#c9993a"/><circle cx="290" cy="11" r="2.5" fill="#c9993a"/>
+      <g transform="translate(150 15)" fill="#c9993a">
+        <path d="M0 0 C-6 -6 -6 -14 0 -18 C6 -14 6 -6 0 0Z"/>
+        <path d="M0 0 C-10 -2 -16 -8 -18 -14 C-10 -13 -4 -8 0 0Z"/>
+        <path d="M0 0 C10 -2 16 -8 18 -14 C10 -13 4 -8 0 0Z"/>
+        <path d="M-26 2 H26" stroke="#c9993a" stroke-width="1.5"/>
+      </g>
+    </svg>
+    <div class="hindi">अर्थ — हे कल्याणकारी तुलसी माता, आपको नमस्कार है। हे भगवान विष्णु की प्रिय, शुभ देवी, आपको नमस्कार है। मोक्ष देने वाली तथा सुख-सम्पत्ति प्रदान करने वाली देवी, आपको बारम्बार नमन है।</div>
+    <div class="eng">“Salutations to you, O auspicious Tulsi, beloved of Lord Vishnu. Salutations to the Goddess who grants liberation and bestows prosperity.”</div>
+  </div>
+
+  <!-- EDIT: put your name / family / organisation here -->
+  <div class="text footer">शुभेच्छु &nbsp;·&nbsp; <b>YOUR NAME &amp; FAMILY</b></div>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function rng(seed) { return function() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(108);
+
+/* ---------- Mandala watermark ---------- */
+(function () {
+  const g = document.getElementById('mandala');
+  const cx = 540, cy = 650;
+  g.setAttribute('transform', `translate(${cx} ${cy})`);
+  const rings = [[60, 12, 34], [110, 16, 46], [175, 24, 58], [250, 32, 70], [330, 40, 78]];
+  rings.forEach(([r, n, len], i) => {
+    el('circle', { r: r, fill: 'none', stroke: '#a8771c', 'stroke-width': 1.4 }, g);
+    for (let k = 0; k < n; k++) {
+      const a = k * 360 / n + (i % 2 ? 180 / n : 0);
+      const w = len * 0.38;
+      el('path', {
+        d: `M0 ${-r} C${-w} ${-r - len * .45} ${-w * .4} ${-r - len * .9} 0 ${-r - len} C${w * .4} ${-r - len * .9} ${w} ${-r - len * .45} 0 ${-r}Z`,
+        fill: 'none', stroke: '#a8771c', 'stroke-width': 1.3, transform: `rotate(${a})`
+      }, g);
+      el('circle', { cx: 0, cy: -r - len - 6, r: 2.4, fill: '#a8771c', transform: `rotate(${a})` }, g);
+    }
+  });
+})();
+
+/* ---------- Diya (oil lamp) ---------- */
+function diya(parent, x, y, s, flameId, glowId) {
+  const g = el('g', { transform: `translate(${x} ${y}) scale(${s})` }, parent);
+  el('ellipse', { cx: 0, cy: -30, rx: 46, ry: 46, fill: `url(#${glowId})` }, g);
+  el('path', { d: 'M-34 -6 Q-30 18 0 20 Q30 18 34 -6 Q22 -2 12 -4 L0 -10 L-12 -4 Q-22 -2 -34 -6Z', fill: 'url(#gold2)', stroke: '#7a4f0e', 'stroke-width': 1 }, g);
+  el('path', { d: 'M-34 -6 Q0 4 34 -6', fill: 'none', stroke: '#fff0b3', 'stroke-width': 1.5 }, g);
+  el('path', { d: 'M-12 20 L-16 30 H16 L12 20Z', fill: 'url(#gold2)', stroke: '#7a4f0e', 'stroke-width': 1 }, g);
+  el('path', { d: 'M0 -8 C-9 -18 -6 -32 0 -44 C6 -32 9 -18 0 -8Z', fill: `url(#${flameId})` }, g);
+  el('path', { d: 'M0 -10 C-3 -15 -2 -22 0 -27 C2 -22 3 -15 0 -10Z', fill: '#fffde7' }, g);
+  return g;
+}
+
+/* ---------- Hanging lamps ---------- */
+(function () {
+  const g = document.getElementById('lamps');
+  [[118, 250], [962, 250], [230, 175], [850, 175]].forEach(([x, len], i) => {
+    el('line', { x1: x, y1: 36, x2: x, y2: len - 26, stroke: '#b8862b', 'stroke-width': 2.2, 'stroke-dasharray': '6 3' }, g);
+    const lg = el('g', {}, g);
+    el('path', { d: `M${x - 26} ${len - 26} H${x + 26} L${x + 18} ${len - 10} H${x - 18}Z`, fill: 'url(#goldV)' }, lg);
+    diya(lg, x, len + 4, i < 2 ? 0.75 : 0.6, 'flame', 'glow');
+    el('circle', { cx: x, cy: len + 26, r: 4, fill: 'url(#goldV)' }, lg);
+  });
+})();
+
+/* ---------- Marigold toran ---------- */
+(function () {
+  const g = document.getElementById('toran');
+  const anchors = [40, 240, 440, 640, 840, 1040];
+  const y0 = 40;
+  for (let i = 0; i < anchors.length - 1; i++) {
+    const x0 = anchors[i], x1 = anchors[i + 1];
+    const sag = 62;
+    const steps = 18;
+    for (let k = 0; k <= steps; k++) {
+      const t = k / steps;
+      const x = x0 + (x1 - x0) * t, y = y0 + sag * 4 * t * (1 - t);
+      const col = k % 2 ? '#ffb300' : '#f57c00';
+      el('circle', { cx: x, cy: y, r: 9.5, fill: col, stroke: '#c75100', 'stroke-width': 1 }, g);
+      el('circle', { cx: x, cy: y, r: 5, fill: 'none', stroke: '#ffe082', 'stroke-width': 1.2, 'stroke-dasharray': '2 2' }, g);
+    }
+  }
+  // mango leaves + rosettes at anchors
+  anchors.forEach((x) => {
+    [-28, 0, 28].forEach(a => {
+      el('path', { d: 'M0 0 C-9 18 -7 40 0 54 C7 40 9 18 0 0Z', fill: '#2e7d32', stroke: '#1b5e20', 'stroke-width': 1,
+        transform: `translate(${x} ${y0 + 8}) rotate(${a})` }, g);
+      el('path', { d: 'M0 2 L0 50', stroke: '#81c784', 'stroke-width': 1, transform: `translate(${x} ${y0 + 8}) rotate(${a})` }, g);
+    });
+    el('circle', { cx: x, cy: y0, r: 16, fill: '#c62828', stroke: '#8e0000', 'stroke-width': 1.5 }, g);
+    el('circle', { cx: x, cy: y0, r: 10, fill: '#ffca28' }, g);
+    el('circle', { cx: x, cy: y0, r: 4, fill: '#c62828' }, g);
+  });
+})();
+
+/* ---------- Tulsi plant ---------- */
+(function () {
+  const g = document.getElementById('plant');
+  const stems = el('g', {}, g);
+  const leaves = el('g', {}, g);
+  const flowers = el('g', {}, g);
+  const greens = ['#1b5e20', '#2e7d32', '#388e3c', '#43a047', '#256d2a'];
+
+  function leaf(x, y, ang, L) {
+    const W = L * 0.42;
+    const c = greens[Math.floor(R() * greens.length)];
+    const lg = el('g', { transform: `translate(${x} ${y}) rotate(${ang})` }, leaves);
+    el('path', { d: `M0 0 C${W} ${-L * .25} ${W * .9} ${-L * .8} 0 ${-L} C${-W * .9} ${-L * .8} ${-W} ${-L * .25} 0 0Z`, fill: c, stroke: '#14421a', 'stroke-width': .6 }, lg);
+    el('path', { d: `M0 0 Q${W * .1} ${-L * .5} 0 ${-L * .92}`, fill: 'none', stroke: '#a5d6a7', 'stroke-width': .9, opacity: .8 }, lg);
+    el('path', { d: `M0 0 C${W * .6} ${-L * .3} ${W * .5} ${-L * .7} 0 ${-L * .95}`, fill: 'none', stroke: '#ffffff', 'stroke-width': 1.2, opacity: .18 }, lg);
+  }
+  function manjari(x, y, ang, L) {
+    const rad = (ang - 90) * Math.PI / 180;
+    el('path', { d: `M${x} ${y} L${x + Math.cos(rad) * L} ${y + Math.sin(rad) * L}`, stroke: '#5d3b5e', 'stroke-width': 1.6 }, stems);
+    const n = 9;
+    for (let i = 0; i < n; i++) {
+      const t = i / n, px = x + Math.cos(rad) * L * t, py = y + Math.sin(rad) * L * t;
+      const s = 5.2 * (1 - t * .65);
+      [-1, 1].forEach(sd => {
+        const ox = Math.cos(rad + Math.PI / 2) * s * sd, oy = Math.sin(rad + Math.PI / 2) * s * sd;
+        el('ellipse', { cx: px + ox, cy: py + oy, rx: s * .75, ry: s * .5, fill: i % 2 ? '#8e3b8e' : '#a64ca6',
+          transform: `rotate(${ang} ${px + ox} ${py + oy})` }, flowers);
+      });
+    }
+    el('circle', { cx: x + Math.cos(rad) * L, cy: y + Math.sin(rad) * L, r: 2.2, fill: '#c27bc2' }, flowers);
+  }
+  function branch(x, y, ang, len, depth, width) {
+    const rad = (ang - 90) * Math.PI / 180;
+    const bend = (R() - .5) * 18;
+    const x2 = x + Math.cos(rad) * len, y2 = y + Math.sin(rad) * len;
+    const mx = (x + x2) / 2 + Math.cos(rad + Math.PI / 2) * bend, my = (y + y2) / 2 + Math.sin(rad + Math.PI / 2) * bend;
+    el('path', { d: `M${x} ${y} Q${mx} ${my} ${x2} ${y2}`, fill: 'none', stroke: '#4e3420', 'stroke-width': width, 'stroke-linecap': 'round' }, stems);
+    // opposite leaf pairs along the branch
+    const pairs = Math.max(2, Math.round(len / 26));
+    for (let i = 1; i <= pairs; i++) {
+      const t = i / (pairs + .6);
+      const px = (1 - t) * (1 - t) * x + 2 * (1 - t) * t * mx + t * t * x2;
+      const py = (1 - t) * (1 - t) * y + 2 * (1 - t) * t * my + t * t * y2;
+      const L = 20 + R() * 12 + (depth > 1 ? 6 : 0);
+      leaf(px, py, ang - 55 - R() * 25, L);
+      leaf(px, py, ang + 55 + R() * 25, L);
+    }
+    if (depth > 0) {
+      const kids = depth >= 2 ? 3 : 2;
+      for (let k = 0; k < kids; k++) {
+        const spread = kids === 3 ? [-34, 0, 34][k] : [-28, 28][k];
+        branch(x2, y2, ang + spread + (R() - .5) * 14, len * (.62 + R() * .12), depth - 1, width * .66);
+      }
+    } else {
+      leaf(x2, y2, ang - 35, 18); leaf(x2, y2, ang + 35, 18);
+      manjari(x2, y2, ang + (R() - .5) * 10, 38 + R() * 16);
+    }
+  }
+  const baseX = 350, baseY = 262;
+  branch(baseX, baseY, -4, 92, 2, 7);
+  branch(baseX - 6, baseY, -42, 78, 2, 5.5);
+  branch(baseX + 6, baseY, 40, 80, 2, 5.5);
+  branch(baseX - 4, baseY, -70, 62, 1, 4);
+  branch(baseX + 4, baseY, 68, 62, 1, 4);
+})();
+
+/* ---------- Tulsi Vrindavan (pot) ---------- */
+(function () {
+  const g = document.getElementById('pot');
+  const cx = 350;
+  // soil
+  el('ellipse', { cx, cy: 266, rx: 92, ry: 12, fill: '#5d4037' }, g);
+  // rim
+  el('path', { d: `M${cx - 118} 262 H${cx + 118} L${cx + 110} 290 H${cx - 110}Z`, fill: 'url(#gold2)', stroke: '#7a4f0e', 'stroke-width': 1.2 }, g);
+  for (let i = 0; i < 15; i++) el('circle', { cx: cx - 98 + i * 14, cy: 276, r: 3, fill: '#fff3c4', stroke: '#9a6a17', 'stroke-width': .8 }, g);
+  // body
+  el('path', { d: `M${cx - 104} 290 H${cx + 104} L${cx + 118} 404 H${cx - 118}Z`, fill: 'url(#marble)', stroke: '#b8862b', 'stroke-width': 2 }, g);
+  // marble veins
+  el('path', { d: `M${cx - 90} 310 q30 20 10 50 t30 40 M${cx + 60} 300 q-20 30 10 60`, fill: 'none', stroke: '#d9c4a0', 'stroke-width': 1 }, g);
+  // front arch panel
+  el('path', { d: `M${cx - 52} 392 V336 Q${cx - 52} 304 ${cx} 302 Q${cx + 52} 304 ${cx + 52} 336 V392Z`, fill: '#7a1020', stroke: 'url(#gold2)', 'stroke-width': 4 }, g);
+  // gold lotus inside panel
+  const lt = el('g', { transform: `translate(${cx} 372)`, fill: 'url(#gold2)' }, g);
+  el('path', { d: 'M0 0 C-10 -12 -10 -30 0 -40 C10 -30 10 -12 0 0Z' }, lt);
+  el('path', { d: 'M0 0 C-16 -4 -26 -18 -28 -30 C-14 -26 -6 -16 0 0Z' }, lt);
+  el('path', { d: 'M0 0 C16 -4 26 -18 28 -30 C14 -26 6 -16 0 0Z' }, lt);
+  el('path', { d: 'M0 2 C-20 4 -34 -2 -40 -12 C-24 -12 -12 -8 0 2Z' }, lt);
+  el('path', { d: 'M0 2 C20 4 34 -2 40 -12 C24 -12 12 -8 0 2Z' }, lt);
+  el('text', { x: 0, y: -46, 'text-anchor': 'middle', 'font-family': 'TiroSanskrit', 'font-size': 22, fill: '#ffe08a' }, lt).textContent = 'ॐ';
+  // base plinth
+  el('path', { d: `M${cx - 132} 404 H${cx + 132} L${cx + 140} 432 H${cx - 140}Z`, fill: 'url(#gold2)', stroke: '#7a4f0e', 'stroke-width': 1.2 }, g);
+  for (let i = 0; i < 18; i++) el('path', { d: `M${cx - 124 + i * 14.6} 428 l7 -16 l7 16`, fill: 'none', stroke: '#7a4f0e', 'stroke-width': 1 }, g);
+  el('rect', { x: cx - 150, y: 432, width: 300, height: 14, rx: 3, fill: '#e8d3a6', stroke: '#b8862b', 'stroke-width': 1.5 }, g);
+
+  // red chunri draped over left side
+  el('path', { d: `M${cx - 30} 262 C${cx - 90} 262 ${cx - 128} 270 ${cx - 140} 300 C${cx - 150} 340 ${cx - 150} 380 ${cx - 165} 432 L${cx - 120} 440 C${cx - 112} 380 ${cx - 105} 330 ${cx - 70} 296 C${cx - 55} 282 ${cx - 40} 274 ${cx - 30} 262Z`,
+    fill: 'url(#chunri)', stroke: '#5a0818', 'stroke-width': 1 }, g);
+  el('path', { d: `M${cx - 140} 300 C${cx - 150} 340 ${cx - 150} 380 ${cx - 165} 432 L${cx - 120} 440`, fill: 'none', stroke: '#f6c85f', 'stroke-width': 4, 'stroke-dasharray': '1 6', 'stroke-linecap': 'round' }, g);
+  for (let i = 0; i < 14; i++) el('circle', { cx: cx - 120 + (R() * 50 - 25) - i * 1.2, cy: 300 + i * 9, r: 2, fill: '#ffd54f' }, g);
+
+  // flower garland across the pot
+  for (let k = 0; k <= 22; k++) {
+    const t = k / 22, x = cx - 106 + 212 * t, y = 296 + 58 * 4 * t * (1 - t);
+    el('circle', { cx: x, cy: y, r: 6.5, fill: k % 3 === 0 ? '#ff6f00' : '#fffdf5', stroke: k % 3 === 0 ? '#c43e00' : '#e0d6c0', 'stroke-width': 1 }, g);
+  }
+  el('circle', { cx: cx, cy: 356, r: 9, fill: '#d81b60', stroke: '#8e0038' }, g);
+  el('path', { d: `M${cx} 364 l-6 22 l6 -4 l6 4z`, fill: '#ff8f00' }, g);
+})();
+
+/* ---------- Peacock feather + flute (symbol of Shri Krishna / Shaligram) ---------- */
+(function () {
+  const g = document.getElementById('feather');
+  const f = el('g', { transform: 'translate(560 440) rotate(14)' }, g);
+  // flute
+  const fl = el('g', { transform: 'rotate(-50) translate(-10 -10)' }, g);
+  fl.setAttribute('transform', 'translate(490 442) rotate(-62)');
+  el('rect', { x: 0, y: -7, width: 260, height: 14, rx: 7, fill: '#c98f2c', stroke: '#6b4410', 'stroke-width': 1.2 }, fl);
+  el('rect', { x: 0, y: -7, width: 260, height: 5, rx: 3, fill: '#f6d77a', opacity: .6 }, fl);
+  [40, 70, 100, 130, 160, 190].forEach(x => el('ellipse', { cx: x, cy: 0, rx: 3.5, ry: 3, fill: '#3e2a0a' }, fl));
+  [14, 230, 246].forEach(x => el('rect', { x: x, y: -8, width: 6, height: 16, fill: '#7a1020' }, fl));
+  el('path', { d: 'M250 0 q14 10 6 30 q-4 10 4 16', fill: 'none', stroke: '#7a1020', 'stroke-width': 2 }, fl);
+  el('circle', { cx: 260, cy: 48, r: 4, fill: '#ffca28' }, fl);
+  // feather
+  el('path', { d: 'M-2 -40 C-30 -90 -38 -170 -26 -230 C-16 -270 20 -270 30 -230 C42 -170 34 -90 6 -40Z', fill: '#6aa84f', opacity: .55 }, f);
+  for (let i = 0; i < 70; i++) {
+    const y = -44 - i * 3.2, sd = i % 2 ? 1 : -1;
+    const w = Math.sin(Math.min(1, (i + 4) / 66) * Math.PI) * 34 + 6;
+    el('path', { d: `M2 ${y} q${sd * w * .5} -4 ${sd * w} -14`, fill: 'none', stroke: ['#2e7d32', '#7cb342', '#c9a227', '#1e88a8'][i % 4], 'stroke-width': 1, opacity: .85 }, f);
+  }
+  el('path', { d: 'M0 0 C-2 -80 0 -170 2 -250', fill: 'none', stroke: '#e8d9a0', 'stroke-width': 2.4 }, f);
+  el('ellipse', { cx: 2, cy: -232, rx: 30, ry: 40, fill: '#2e7d32' }, f);
+  el('ellipse', { cx: 2, cy: -230, rx: 23, ry: 31, fill: '#c9a227' }, f);
+  el('ellipse', { cx: 2, cy: -228, rx: 17, ry: 23, fill: '#0f8b8d' }, f);
+  el('ellipse', { cx: 2, cy: -224, rx: 11, ry: 15, fill: '#0d47a1' }, f);
+  el('ellipse', { cx: 2, cy: -221, rx: 5.5, ry: 8, fill: '#0a1a3a' }, f);
+  el('ellipse', { cx: -3, cy: -236, rx: 4, ry: 6, fill: '#fff', opacity: .35 }, f);
+})();
+
+/* ---------- Diyas on the floor + petals ---------- */
+(function () {
+  const g = document.getElementById('diyas');
+  diya(g, 110, 418, 1.0, 'flame2', 'glow2');
+  diya(g, 600, 422, 0.9, 'flame2', 'glow2');
+  diya(g, 40, 434, 0.7, 'flame2', 'glow2');
+  diya(g, 666, 438, 0.65, 'flame2', 'glow2');
+  const p = document.getElementById('petals');
+  const cols = ['#e91e63', '#c2185b', '#ff7043', '#ffb300', '#ad1457'];
+  for (let i = 0; i < 40; i++) {
+    const x = 20 + R() * 660, y = 446 + R() * 12;
+    if (x > 190 && x < 510) continue;
+    el('ellipse', { cx: x, cy: y, rx: 5 + R() * 4, ry: 2.5 + R() * 2, fill: cols[i % cols.length], transform: `rotate(${R() * 180} ${x} ${y})`, opacity: .9 }, p);
+  }
+})();
+
+/* ---------- small gold dots on frame ---------- */
+(function () {
+  const g = document.getElementById('cornerDots');
+  for (let y = 120; y < 1200; y += 36) {
+    el('circle', { cx: 22, cy: y, r: 2.5, fill: '#e6c260' }, g);
+    el('circle', { cx: 1058, cy: y, r: 2.5, fill: '#e6c260' }, g);
+  }
+})();
+</script>
+</body>
+</html>
