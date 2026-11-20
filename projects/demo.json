@@ -1,0 +1,24 @@
+{
+  "name": "demo",
+  "format": "16:9",
+  "fps": 30,
+  "duration": 42,
+  "music": {"mode": "auto", "mood": "epic"},
+  "footage": "Row videos",
+  "grade": "teal_orange",
+  "letterbox": true,
+  "background": {"palette": "teal_amber"},
+  "titles": [
+    {"text": "Every great story", "sub": "begins with a single moment", "style": "trailer", "at": 1.2, "until": "bar2-0.2"},
+    {"text": "દરેક સપનાની એક શરૂઆત હોય છે", "style": "trailer", "at": "bar2+0.3", "until": "build-0.2"},
+    {"text": "Dream Bigger", "sub": "મોટું વિચારો", "style": "reveal", "at": "build", "until": "bar6-0.1"},
+    {"text": "Create Bolder", "sub": "નવું બનાવો", "style": "reveal", "at": "bar6", "until": "bar8-0.1"},
+    {"text": "Inspire Millions", "style": "reveal", "at": "bar8", "until": "climax-0.4"},
+    {"text": "RISE", "style": "impact", "at": "climax", "until": "bar11-0.05"},
+    {"text": "ઉડાન ભરો", "style": "impact", "at": "bar11", "until": "bar12-0.05"},
+    {"text": "SHINE", "style": "impact", "at": "bar12", "until": "bar13-0.05"},
+    {"text": "BELIEVE", "style": "impact", "at": "bar13", "until": "end-0.05"},
+    {"text": "AI VIDEOS", "sub": "Coming soon  ·  ટૂંક સમયમાં", "style": "endcard", "at": "end", "until": "end+5"}
+  ],
+  "output": "output/demo.mp4"
+}

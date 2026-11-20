@@ -1,0 +1,3 @@
+All fonts in this folder are from Google Fonts (via Fontsource) and are licensed
+under the SIL Open Font License 1.1 — free for commercial use in videos.
+https://openfontlicense.org
