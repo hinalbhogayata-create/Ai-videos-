@@ -1,0 +1,4 @@
+# Large raw footage - keep in Google Drive, not in git
+*.mov
+*.MOV
+*.VOB
