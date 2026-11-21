@@ -4,3 +4,4 @@
 *.VOB
 *.mp4
 *.wav
+build/text_overlay.mov
