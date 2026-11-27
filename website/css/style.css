@@ -543,3 +543,100 @@ html { scroll-padding-top: 88px; }
 .film-grid > .film { display: flex; flex-direction: column; }
 .film-grid > .film video { flex: 1; min-height: 0; height: 100%; object-fit: cover; }
 .film { background: var(--maroon-d); }
+
+/* =====================================================================
+   v7 — Destination-wedding design
+   ===================================================================== */
+/* Hero with jharokha video */
+.hero2 { position: relative; overflow: hidden; color: #fff; padding: 4.5rem 0 7rem;
+  background: radial-gradient(ellipse at 78% 45%, rgba(232,115,26,.35), transparent 50%), radial-gradient(circle at 0% 100%, rgba(212,164,55,.18), transparent 40%), linear-gradient(155deg, #2a050c, var(--maroon-d) 40%, var(--maroon) 80%); }
+.hero2::before { content: ""; position: absolute; inset: 0; background: url(../images/photos/wedding-mandap.jpg) center/cover; opacity: .09; filter: blur(2px); }
+.h2-mandala { position: absolute; width: 760px; right: -120px; top: 50%; margin-top: -380px; opacity: .14; pointer-events: none; }
+.h2-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.15fr 1fr; gap: 3rem; align-items: center; }
+.hero-badge.left { margin: 0 0 1rem; width: 112px; height: 112px; }
+.h2-kicker { font-family: var(--f-caps); letter-spacing: .18em; font-size: .85rem; color: var(--gold-l); text-transform: uppercase; margin: .6rem 0 .6rem; }
+.h2-kicker span { font-family: var(--f-hi-display); letter-spacing: 0; font-size: 1.1rem; text-transform: none; }
+.h2-title { font-family: var(--f-serif); font-weight: 700; font-size: clamp(2.6rem, 5.4vw, 4.6rem); line-height: 1.02; color: #fff; }
+.h2-title span { display: block; }
+.h2-title em { display: block; font-style: italic; font-weight: 500; font-size: .72em; margin-top: .3rem;
+  background: linear-gradient(180deg, #fff3b0, var(--gold-l) 45%, var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html[lang="hi"] .h2-title em { font-style: normal; }
+.h2-sub { margin: 1.3rem 0 2rem; max-width: 560px; color: #f3e3d0; font-weight: 300; font-size: 1.06rem; }
+.hero-cta.left { justify-content: flex-start; }
+.h2-acharyas { margin-top: 1.8rem; font-family: var(--f-serif); font-size: 1.15rem; color: #f3d9a8; }
+.h2-art { position: relative; display: grid; place-items: center; min-height: 560px; }
+.jharokha { position: relative; width: min(340px, 80%); aspect-ratio: 9/14; border-radius: 999px 999px 18px 18px; overflow: hidden; border: 5px solid var(--gold);
+  box-shadow: 0 0 0 10px rgba(212,164,55,.18), 0 0 0 11px rgba(212,164,55,.55), 0 30px 70px rgba(0,0,0,.55), 0 0 80px rgba(245,158,11,.25); background: #000; }
+.jharokha video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.jharokha::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 40px rgba(0,0,0,.45); pointer-events: none; }
+.h2-float { position: absolute; width: 190px; aspect-ratio: 4/3; border-radius: 12px; overflow: hidden; border: 3px solid #fff; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+.h2-float img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.h2-float.f1 { left: -10px; bottom: 50px; transform: rotate(-6deg); }
+.h2-float.f2 { right: -10px; top: 60px; transform: rotate(5deg); }
+.h2-stamp { position: absolute; right: 10px; bottom: 30px; width: 108px; height: 108px; border-radius: 50%; display: grid; place-content: center; text-align: center;
+  background: radial-gradient(circle at 35% 35%, var(--gold-l), var(--gold) 60%, #a8781f); color: var(--maroon-d); box-shadow: 0 0 0 4px var(--maroon-d), 0 0 0 6px var(--gold), 0 10px 25px rgba(0,0,0,.4); font-family: var(--f-serif); line-height: 1; transform: rotate(-10deg); }
+.h2-stamp b { font-family: var(--f-caps); font-size: 1.6rem; }
+.h2-stamp span { font-size: .85rem; font-weight: 700; margin-top: .2rem; }
+
+/* Destination regions */
+.regions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+.region { position: relative; background: #fff; border-radius: 16px; padding: 1.6rem 1.4rem 1.4rem 5rem; box-shadow: var(--shadow); border: 1px solid #f0dcbc; overflow: hidden; transition: transform .3s; }
+.region:hover { transform: translateY(-5px); }
+.region::after { content: ""; position: absolute; right: -40px; bottom: -40px; width: 120px; height: 120px; background: url(../images/mandala.svg) center/contain no-repeat; opacity: .1; }
+.r-ico { position: absolute; left: 1.2rem; top: 1.4rem; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem; background: var(--sand); border: 2px solid var(--gold); }
+.region h3 { font-size: 1.4rem; color: var(--maroon); }
+.region p { font-size: .88rem; color: var(--muted); }
+.dest-split { display: grid; grid-template-columns: 1fr 1.15fr; gap: 3.5rem; align-items: center; margin-top: 5rem; }
+.dest-photo { border-radius: 999px 999px 18px 18px; overflow: hidden; border: 4px solid var(--gold); box-shadow: 0 0 0 10px var(--cream), 0 0 0 11px rgba(212,164,55,.6), var(--shadow); aspect-ratio: 4/5; }
+.dest-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 55% 50%; display: block; }
+.dest-h { font-size: clamp(1.8rem, 3vw, 2.4rem); color: var(--maroon); margin-bottom: 1rem; }
+.dest-list { list-style: none; margin-bottom: 1.8rem; }
+.dest-list li { position: relative; padding: .55rem 0 .55rem 2rem; border-bottom: 1px dashed #eadbc7; color: var(--muted); font-size: .95rem; }
+.dest-list li::before { content: "✿"; position: absolute; left: 0; top: .5rem; color: var(--saffron); font-size: 1.1rem; }
+.dest-list b { color: var(--maroon); font-weight: 600; }
+
+/* Planning journey */
+.journey { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; position: relative; }
+.journey::before { content: ""; position: absolute; left: 10%; right: 10%; top: 30px; border-top: 2px dashed var(--gold); }
+.journey li { position: relative; text-align: center; padding: 0 .4rem; }
+.journey span { position: relative; display: inline-grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, var(--gold-l), var(--saffron)); color: var(--maroon-d); font-family: var(--f-hi); font-size: 1.6rem; box-shadow: 0 0 0 6px var(--sand), 0 0 0 7px var(--gold); margin-bottom: 1rem; }
+.journey h4 { font-size: 1.3rem; color: var(--maroon); margin-bottom: .3rem; }
+.journey p { font-size: .86rem; color: var(--muted); }
+
+/* Two acharyas */
+.acharya-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+.ac-card { background: #fff; border-radius: 20px; padding: 2.5rem 2rem 2rem; box-shadow: var(--shadow); text-align: center; border-top: 5px solid var(--gold); }
+.ac-card .acharya-photo { width: min(300px, 85%); margin: 0 auto 2.2rem; }
+.ac-card .acharya-seal { width: 110px; height: 110px; right: -30px; bottom: -20px; }
+.ac-card h3 { font-size: 1.8rem; color: var(--maroon); }
+.ac-card .hi { color: var(--saffron-d); }
+.ac-role { font-family: var(--f-caps); font-size: .78rem; letter-spacing: .12em; color: var(--gold); text-transform: uppercase; margin: .5rem 0 1rem; }
+.ac-card > p:not(.hi):not(.ac-role) { color: var(--muted); font-size: .94rem; }
+.ac-card .ticks { display: inline-block; text-align: left; margin: 1.2rem 0 1.5rem; }
+
+@media (max-width: 1180px) { .nav-links { gap: .9rem; font-size: .98rem; } }
+@media (max-width: 980px) {
+  .h2-grid, .dest-split, .acharya-cards { grid-template-columns: 1fr; }
+  .h2-text { text-align: center; }
+  .hero-badge.left { margin: 0 auto 1rem; }
+  .h2-sub { margin-left: auto; margin-right: auto; }
+  .hero-cta.left { justify-content: center; }
+  .h2-art { min-height: 480px; }
+  .regions { grid-template-columns: 1fr 1fr; }
+  .journey { grid-template-columns: 1fr 1fr; row-gap: 2rem; }
+  .journey::before { display: none; }
+  .dest-photo { max-width: 420px; margin: 0 auto; }
+}
+@media (max-width: 560px) {
+  .hero2 { padding-top: 3rem; }
+  .h2-art { min-height: 420px; }
+  .jharokha { width: 230px; }
+  .h2-float { width: 130px; }
+  .h2-float.f1 { left: 0; bottom: 30px; }
+  .h2-float.f2 { right: 0; top: 30px; }
+  .h2-stamp { width: 84px; height: 84px; right: 4px; bottom: 6px; }
+  .h2-stamp b { font-size: 1.2rem; }
+  .regions { grid-template-columns: 1fr; }
+  .journey { grid-template-columns: 1fr; }
+}
+.photo-seal { object-fit: cover; object-position: 35% 40%; }
