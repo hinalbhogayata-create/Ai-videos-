@@ -1,5 +1,5 @@
 // ---- Configure your WhatsApp number here (country code, no +) ----
-const WHATSAPP_NUMBER = '910000000000';
+const WHATSAPP_NUMBER = '447741922710';
 
 document.getElementById('year').textContent = new Date().getFullYear();
 

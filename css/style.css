@@ -188,3 +188,9 @@ details p { margin-top: .7rem; color: var(--muted); font-size: .93rem; }
   .section { padding: 4rem 0; }
   .hero::before { font-size: 22rem; }
 }
+
+.acharya-line { color: #f3d9a8; font-size: 1rem; margin: -.4rem 0 1rem; letter-spacing: .03em; }
+.contact .acharya { font-size: 1.15rem; color: var(--maroon); }
+.contact a { word-break: break-all; }
+.footer a:hover { color: var(--gold); }
+@media (max-width: 520px) { .logo { font-size: 1.15rem; } }
