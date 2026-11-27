@@ -67,5 +67,25 @@ document.getElementById('bookForm').addEventListener('submit', e => {
 const io = new IntersectionObserver(entries => {
   entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('show'); io.unobserve(en.target); } });
 }, { threshold: 0.12 });
-document.querySelectorAll('.section-head, .card, .wf, .vow, .pkg, .step, blockquote, .sanskara-grid div, .pillars div, .meaning-word, .arch-frame, details')
+document.querySelectorAll('.section-head, .card, .wf, .vow, .pkg, .step, blockquote, .sanskara-grid div, .pillars div, .meaning-word, .arch-frame, details, .svc, .g-item, .wed-banner-text')
   .forEach(el => { el.classList.add('reveal'); io.observe(el); });
+
+// Service photo cards jump to the matching filter in the ritual list
+document.querySelectorAll('.svc[data-go]').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelector(`.chip[data-filter="${card.dataset.go}"]`)?.click();
+  });
+});
+
+// Gallery lightbox
+const lb = document.getElementById('lightbox');
+document.querySelectorAll('.g-item img').forEach(img => {
+  img.addEventListener('click', () => {
+    lb.querySelector('img').src = img.src;
+    lb.querySelector('img').alt = img.alt;
+    lb.querySelector('p').textContent = img.alt;
+    lb.classList.add('open');
+  });
+});
+lb.addEventListener('click', () => lb.classList.remove('open'));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
