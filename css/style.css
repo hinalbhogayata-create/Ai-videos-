@@ -669,3 +669,18 @@ html[lang="hi"] .h2-title em { font-style: normal; }
 .g-logo { width: 22px; height: 22px; flex-shrink: 0; }
 .btn-google.small { padding: .55rem 1.1rem; font-size: .9rem; margin-top: .6rem; }
 .review-cta { padding-top: 7rem; }
+
+/* Social links */
+.socials { display: flex; gap: .7rem; justify-content: center; }
+.socials a { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; color: #fff; transition: transform .2s; }
+.socials a:hover { transform: translateY(-3px); }
+.socials svg { width: 22px; height: 22px; }
+.s-ig { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+.s-fb { background: #1877f2; }
+.s-yt { background: #ff0000; }
+.foot-soc { margin: .6rem 0 .2rem; }
+.hero-soc .socials { justify-content: flex-start; margin-top: 1.4rem; }
+@media (max-width: 980px) { .hero-soc .socials { justify-content: center; } }
+.btn-yt { background: #ff0000; margin-left: .4rem; }
+.btn-ig { background: linear-gradient(90deg, #d6249f, #fd5949 60%, #fdbd4a); margin-right: .6rem; }
+@media (max-width: 560px) { .btn-yt { margin: .6rem 0 0; } .btn-ig { margin: 0 0 .8rem; } }
