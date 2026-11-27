@@ -1,6 +1,6 @@
 # नियति · Niyati — Hindu Religious Work Services
 
-Website for Aacharya Varadbhai Bhogayata: Hindu rituals, the 16 Sanskaras and Vedic weddings with English explanation.
+Website for Acharya Shree Hinalbhai Bhogayata and Acharya Varadbhai Bhogayata. Focus: Vedic Hindu destination weddings conducted in English; also pujas, havan and all sanskaras.
 Static site (HTML/CSS/JS, no build step). Open `index.html` in a browser.
 
 ## Photos (फ़ोटो)

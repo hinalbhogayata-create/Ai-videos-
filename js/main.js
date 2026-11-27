@@ -59,7 +59,7 @@ document.getElementById('bookForm').addEventListener('submit', e => {
     `🙏 Namaste! I would like to book a ceremony.\n\n` +
     `Name: ${d.name}\nPhone: ${d.phone}\nCeremony: ${d.ceremony}\n` +
     `Date: ${d.date || 'Not decided'}\nLanguage: ${d.language}\n` +
-    `City/Venue: ${d.city || '-'}\nMessage: ${d.message || '-'}`;
+    `Destination/Venue: ${d.city || "-"}\nGuests: ${d.guests || "-"}\nMessage: ${d.message || '-'}`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 });
 
