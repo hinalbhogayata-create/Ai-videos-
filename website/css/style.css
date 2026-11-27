@@ -515,3 +515,4 @@ html { scroll-padding-top: 88px; }
 .gallery { grid-auto-rows: 270px; }
 @media (max-width: 980px) { .gallery { grid-auto-rows: 220px; } }
 @media (max-width: 560px) { .gallery { grid-auto-rows: 160px; } .acharya-seal { width: 100px; height: 100px; right: -10px; bottom: -20px; } }
+.meaning-photo { width: 100%; aspect-ratio: 4/3; object-fit: cover; object-position: 40% 35%; border-radius: 12px; margin: .4rem 0 1rem; border: 2px solid var(--gold); }
