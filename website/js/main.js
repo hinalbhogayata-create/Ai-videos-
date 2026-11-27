@@ -89,3 +89,12 @@ document.querySelectorAll('.g-item img').forEach(img => {
 });
 lb.addEventListener('click', () => lb.classList.remove('open'));
 document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
+
+// Gallery: show all
+const moreBtn = document.getElementById('moreBtn');
+moreBtn?.addEventListener('click', () => {
+  const g = document.getElementById('galleryGrid');
+  const open = g.classList.toggle('collapsed');
+  moreBtn.textContent = open ? 'View all photos' : 'Show fewer photos';
+  if (open) g.scrollIntoView({ behavior: 'smooth' });
+});
