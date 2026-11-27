@@ -831,3 +831,12 @@ body.loaded .h2-art { opacity: 1; transform: none; }
   .ph-div { width: 220px !important; }
   .h2-float.f1, .h2-float.f2 { animation: none; }
 }
+
+/* v9 — new circular logo (has its own ring): no extra frame */
+.logo-badge, .hero-badge, .hero-badge.left, .foot-badge, .review-badge, .acharya-seal:not(.photo-seal) {
+  background: none !important; box-shadow: none !important; border-radius: 0 !important;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.28)); object-fit: contain;
+}
+.hero-badge, .hero-badge.left { width: 130px; height: 130px; }
+.foot-badge { width: 130px; height: 130px; }
+.review-badge { width: 96px; height: 96px; margin-top: -5.6rem; }
