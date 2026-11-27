@@ -640,3 +640,8 @@ html[lang="hi"] .h2-title em { font-style: normal; }
   .journey { grid-template-columns: 1fr; }
 }
 .photo-seal { object-fit: cover; object-position: 35% 40%; }
+.ac-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin: 1.2rem 0 .2rem; }
+.ac-strip img { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 25%; border-radius: 10px; border: 2px solid var(--gold); }
+.gallery { grid-auto-flow: dense; }
+.gallery.collapsed .g-item:nth-child(n+13) { display: none; }
+.more-wrap { text-align: center; margin-top: 2rem; }
