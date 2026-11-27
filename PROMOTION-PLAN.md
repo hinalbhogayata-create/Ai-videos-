@@ -9,7 +9,7 @@
 ## Step 0 — Go live (10 minutes, do today)
 
 1. **Turn on GitHub Pages:** GitHub → repo `Ai-videos-` → **Settings → Pages** → *Source: Deploy from a branch* → Branch **`gh-pages`**, folder **`/ (root)`** → **Save**.
-   Within 1–2 minutes the site is live at **https://hinalbhogayata-create.github.io/Ai-videos-/**
+   Within 1–2 minutes the site is live at **https://www.niyatiweddings.co.uk/** (domain bought: niyatiweddings.co.uk)
 2. **Buy your own domain (strongly recommended, ~£10/year).** A name like `niyatiweddings.co.uk`, `niyati.org.uk` or `niyatipriest.com` looks professional and ranks better than a github.io address.
    - Buy it at Namecheap, Cloudflare or GoDaddy.
    - GitHub → Settings → Pages → *Custom domain* → enter it and tick **Enforce HTTPS**.
