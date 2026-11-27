@@ -67,5 +67,5 @@ document.getElementById('bookForm').addEventListener('submit', e => {
 const io = new IntersectionObserver(entries => {
   entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('show'); io.unobserve(en.target); } });
 }, { threshold: 0.12 });
-document.querySelectorAll('.section-head, .card, .wf, .vow, .pkg, .step, blockquote, .sanskara-grid div')
+document.querySelectorAll('.section-head, .card, .wf, .vow, .pkg, .step, blockquote, .sanskara-grid div, .pillars div, .meaning-word, .arch-frame, details')
   .forEach(el => { el.classList.add('reveal'); io.observe(el); });
