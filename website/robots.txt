@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://hinalbhogayata-create.github.io/Ai-videos-/sitemap.xml
