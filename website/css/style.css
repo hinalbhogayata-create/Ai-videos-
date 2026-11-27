@@ -645,3 +645,14 @@ html[lang="hi"] .h2-title em { font-style: normal; }
 .gallery { grid-auto-flow: dense; }
 .gallery.collapsed .g-item:nth-child(n+13) { display: none; }
 .more-wrap { text-align: center; margin-top: 2rem; }
+.puja-films { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+.puja-films .film video { aspect-ratio: 16/9; height: auto; object-fit: cover; }
+.puja-setups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.4rem; }
+.puja-setups figure { border-radius: 12px; overflow: hidden; border: 2px solid var(--gold); background: var(--maroon-d); }
+.puja-setups img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+.puja-setups figcaption { padding: .5rem .8rem; color: var(--gold-l); font-family: var(--f-serif); font-size: 1.05rem; }
+@media (max-width: 980px) { .puja-films { grid-template-columns: 1fr; } .puja-setups { grid-template-columns: 1fr 1fr; } }
+.puja-grid .puja-setups { grid-template-columns: 1fr 1fr; margin-top: 0; align-content: stretch; }
+.puja-grid .puja-setups figure { display: flex; flex-direction: column; }
+.puja-grid .puja-setups img { flex: 1; aspect-ratio: auto; min-height: 0; height: 100%; }
+@media (max-width: 980px) { .puja-grid .puja-setups { grid-column: span 2; } .puja-grid .puja-setups img { aspect-ratio: 4/3; } }
