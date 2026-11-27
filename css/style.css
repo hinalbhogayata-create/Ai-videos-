@@ -491,3 +491,18 @@ html { scroll-padding-top: 88px; }
 #rituals .dur { align-self: start; margin-top: .6rem; }
 @media (max-width: 560px) { #rituals .cards { grid-template-columns: 1fr; } }
 #rituals .dur { justify-self: start; }
+
+/* v4 — round badge logo */
+.logo-badge { width: 64px; height: 64px; border-radius: 50%; box-shadow: 0 0 0 2px var(--gold), 0 4px 12px rgba(107,16,32,.2); background: #fff; flex-shrink: 0; }
+.foot-badge { width: 120px; height: 120px; box-shadow: 0 0 0 3px var(--gold), 0 0 0 8px rgba(212,164,55,.2); }
+.foot-logo { flex-direction: column; text-align: center; gap: .8rem; }
+.foot-logo .logo-text { align-items: center; }
+.hero-badge { width: 150px; height: 150px; border-radius: 50%; display: block; margin: 0 auto .8rem; box-shadow: 0 0 0 4px var(--gold), 0 0 0 10px rgba(212,164,55,.25), 0 12px 30px rgba(0,0,0,.4); background: #fff; }
+.acharya-badge { justify-self: center; width: min(400px, 100%); aspect-ratio: 1; border-radius: 50%; padding: 10px; background: conic-gradient(from 0deg, var(--gold), var(--gold-l), var(--gold), #a8781f, var(--gold)); box-shadow: 0 20px 50px rgba(107,16,32,.25); position: relative; }
+.acharya-badge::before { content: ""; position: absolute; inset: -26px; border-radius: 50%; border: 1px dashed var(--gold); }
+.acharya-badge img { width: 100%; height: 100%; border-radius: 50%; display: block; background: #fff; }
+@media (max-width: 560px) {
+  .logo-badge { width: 50px; height: 50px; }
+  .foot-badge { width: 100px; height: 100px; }
+  .hero-badge { width: 110px; height: 110px; }
+}
