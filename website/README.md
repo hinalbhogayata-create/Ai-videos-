@@ -1,6 +1,6 @@
 # नियति · Niyati — Hindu Religious Work Services
 
-Live at https://www.niyatiweddings.co.uk/ (custom domain via the CNAME file).
+Live at https://hinalbhogayata-create.github.io/Ai-videos-/ . To use the domain niyatiweddings.co.uk once bought: add a CNAME file containing www.niyatiweddings.co.uk and change the URLs in index.html, sitemap.xml and robots.txt.
 
 Website for Acharya Shree Hinalbhai Bhogayata and Acharya Varadbhai Bhogayata. Focus: Vedic Hindu destination weddings conducted in English; also pujas, havan and all sanskaras.
 Static site (HTML/CSS/JS, no build step). Open `index.html` in a browser.
