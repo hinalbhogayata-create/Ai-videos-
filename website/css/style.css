@@ -406,7 +406,7 @@ html { scroll-padding-top: 88px; }
 
 /* Wedding banner */
 .wed-banner { position: relative; min-height: 460px; display: flex; align-items: center; overflow: hidden; background: var(--maroon-d); }
-.wed-banner-img { position: absolute; inset: 0; background: url(../images/photos/mandap.jpg) right center/cover no-repeat; }
+.wed-banner-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; }
 .wed-banner::before { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(63,8,18,.96) 0%, rgba(107,16,32,.88) 38%, rgba(107,16,32,.2) 70%, transparent); }
 .wed-banner-inner { position: relative; z-index: 2; }
 .wed-banner-text { max-width: 560px; text-align: center; color: #fff; padding: 4rem 0; }
@@ -516,3 +516,30 @@ html { scroll-padding-top: 88px; }
 @media (max-width: 980px) { .gallery { grid-auto-rows: 220px; } }
 @media (max-width: 560px) { .gallery { grid-auto-rows: 160px; } .acharya-seal { width: 100px; height: 100px; right: -10px; bottom: -20px; } }
 .meaning-photo { width: 100%; aspect-ratio: 4/3; object-fit: cover; object-position: 40% 35%; border-radius: 12px; margin: .4rem 0 1rem; border: 2px solid var(--gold); }
+
+/* v6 — films & Rath Yatra */
+.films { background: linear-gradient(170deg, var(--maroon-d), #2a050c); color: #fff; }
+.films .section-head h2 { color: var(--gold-l); }
+.films .section-head p { color: #f3e3d0; }
+.film-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.4rem; }
+.film { border-radius: 14px; overflow: hidden; border: 2px solid var(--gold); background: #000; position: relative; box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+.film video, .film img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+.film figcaption { padding: .7rem 1rem; font-family: var(--f-serif); font-size: 1.15rem; color: var(--gold-l); background: var(--maroon-d); }
+.rath-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 3.5rem; align-items: center; }
+.rath-photos { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 210px; gap: 1rem; }
+.rath-photos .r-main { grid-column: span 2; grid-row: span 1; }
+.rath-photos .r-main { height: 300px; }
+.rath-photos { grid-template-rows: 300px 210px; }
+@media (max-width: 980px) { .rath-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .film-grid { grid-template-columns: 1fr; } .rath-photos { grid-template-rows: 200px 150px; } .rath-photos .r-main { height: 200px; } }
+.film-grid { grid-template-columns: 1fr 1fr 1.7fr; align-items: stretch; }
+.film video { aspect-ratio: 9/16; max-height: 640px; background: #000; object-fit: contain; }
+.film-photos { display: grid; gap: 1.4rem; grid-template-rows: 1fr 1fr; }
+.film-photos .film { display: flex; flex-direction: column; }
+.film-photos .film img { flex: 1; aspect-ratio: auto; min-height: 0; height: 100%; }
+.wed-banner-img { object-position: 50% 30%; }
+@media (max-width: 980px) { .film-grid { grid-template-columns: 1fr 1fr; } .film-photos { grid-column: span 2; grid-template-columns: 1fr 1fr; grid-template-rows: auto; } .film-photos .film img { aspect-ratio: 16/10; } }
+@media (max-width: 560px) { .film-grid { grid-template-columns: 1fr 1fr; gap: .7rem; } .film-photos { grid-template-columns: 1fr; } .film figcaption { font-size: .95rem; } }
+.film-grid > .film { display: flex; flex-direction: column; }
+.film-grid > .film video { flex: 1; min-height: 0; height: 100%; object-fit: cover; }
+.film { background: var(--maroon-d); }

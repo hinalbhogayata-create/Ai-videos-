@@ -48,6 +48,7 @@
       <a href="#services" data-en="Services" data-hi="सेवाएँ">Services</a>
       <a href="#wedding" data-en="Vedic Wedding" data-hi="वैदिक विवाह">Vedic Wedding</a>
       <a href="#gallery" data-en="Gallery" data-hi="झलकियाँ">Gallery</a>
+      <a href="#films" data-en="Videos" data-hi="वीडियो">Videos</a>
       <a href="#book" data-en="Contact Us" data-hi="संपर्क">Contact Us</a>
       <a href="#book" class="btn btn-maroon btn-sm"><svg class="ico"><use href="#i-cal"/></svg> <span data-en="Book a Service" data-hi="सेवा बुक करें">Book a Service</span></a>
     </nav>
@@ -112,7 +113,7 @@
 
 <!-- ===== Wedding banner ===== -->
 <section class="wed-banner">
-  <div class="wed-banner-img" role="img" aria-label="Decorated wedding mandap with sacred fire"></div>
+  <video class="wed-banner-img" autoplay muted loop playsinline preload="metadata" poster="images/photos/wedding-blessing.jpg" aria-label="Wedding mandap conducted by Niyati"><source src="videos/mandap-loop.mp4" type="video/mp4" /></video>
   <div class="container wed-banner-inner">
     <div class="wed-banner-text">
       <p class="eyebrow light">हमारी विशेषता · Our Speciality</p>
@@ -203,7 +204,7 @@
           <div class="wf"><span>🤝</span><h4>Inter-cultural</h4><p>Gentle guidance for every couple.</p></div>
         </div>
       </div>
-      <div class="wed-photo"><img src="images/photos/wedding-couple.jpg" alt="Bride and groom at the sacred fire under a marigold mandap" /></div>
+      <div class="wed-photo"><img src="images/photos/wedding-mandap.jpg" alt="A Niyati wedding under a canopy of red flowers" /></div>
     </div>
 
     <h3 class="sub-title">Steps of the Ceremony <span class="hi">· विवाह के चरण</span></h3>
@@ -271,6 +272,26 @@
   </div>
 </section>
 
+<!-- ===== Wedding films ===== -->
+<section class="section films" id="films">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow light">विवाह की झलक</p>
+      <h2 data-en="From Our Weddings" data-hi="हमारे विवाह समारोहों से">From Our Weddings</h2>
+      <img src="images/divider.svg" class="divider" alt="" />
+      <p data-en="Real ceremonies conducted by Niyati — Sanskrit mantras with English explanation for every guest." data-hi="नियति द्वारा संपन्न असली विवाह — संस्कृत मंत्र, हर अतिथि के लिए अंग्रेज़ी व्याख्या के साथ।">Real ceremonies conducted by Niyati — Sanskrit mantras with English explanation for every guest.</p>
+    </div>
+    <div class="film-grid">
+      <figure class="film"><video controls playsinline preload="none" poster="videos/wedding-1.jpg"><source src="videos/wedding-1.mp4" type="video/mp4" /></video><figcaption>Var Agaman — arrival at the mandap</figcaption></figure>
+      <figure class="film"><video controls playsinline preload="none" poster="videos/wedding-2.jpg"><source src="videos/wedding-2.mp4" type="video/mp4" /></video><figcaption>Ceremony at the mandap</figcaption></figure>
+      <div class="film-photos">
+      <figure class="film photo"><img src="images/photos/wedding-vows.jpg" alt="Explaining the vows to the couple in English" loading="lazy" /><figcaption>Explaining every step in English</figcaption></figure>
+      <figure class="film photo"><img src="images/photos/wedding-blessing.jpg" alt="Parents blessing the couple" loading="lazy" /><figcaption>Ashirvad — blessings of the elders</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===== 16 Sanskaras ===== -->
 <section class="section" id="sanskaras">
   <div class="container">
@@ -322,6 +343,29 @@
         <li>Muhurat, kundli milan and samagri guidance</li>
       </ul>
       <a href="#book" class="btn">Speak with Aacharya ji</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Rath Yatra ===== -->
+<section class="section rath" id="community">
+  <div class="container rath-grid">
+    <div class="rath-text">
+      <p class="eyebrow">सामुदायिक उत्सव · Community Festivals</p>
+      <h2 class="h2" data-en="Jagannath Rath Yatra" data-hi="जगन्नाथ रथ यात्रा">Jagannath Rath Yatra</h2>
+      <img src="images/divider.svg" class="divider left" alt="" />
+      <p class="lead" data-en="Beyond family ceremonies, Niyati serves the wider community — leading the aarti and rituals of public festivals like the Jagannath Rath Yatra on the streets of the UK, bringing hundreds of devotees together." data-hi="पारिवारिक अनुष्ठानों के साथ-साथ नियति पूरे समाज की सेवा करता है — UK की सड़कों पर जगन्नाथ रथ यात्रा जैसे सार्वजनिक उत्सवों में आरती और अनुष्ठान का संचालन, जहाँ सैकड़ों भक्त एक साथ जुड़ते हैं।">Beyond family ceremonies, Niyati serves the wider community — leading the aarti and rituals of public festivals like the Jagannath Rath Yatra on the streets of the UK, bringing hundreds of devotees together.</p>
+      <ul class="ticks">
+        <li>Rath Yatra, Janmashtami, Navratri &amp; Diwali</li>
+        <li>Temple and community events</li>
+        <li>Aarti, havan and kirtan for large gatherings</li>
+      </ul>
+      <a href="#book" class="btn">Invite us to your event</a>
+    </div>
+    <div class="rath-photos">
+      <figure class="g-item r-main"><img src="images/photos/rathyatra-2.jpg" alt="Aarti on the Jagannath Rath before hundreds of devotees" loading="lazy" /><figcaption>Aarti on the Rath</figcaption></figure>
+      <figure class="g-item"><img src="images/photos/rathyatra-1.jpg" alt="Jai Jagannath — celebrating on the Rath" loading="lazy" style="object-position:60% 30%" /><figcaption>Jai Jagannath!</figcaption></figure>
+      <figure class="g-item"><img src="images/photos/rathyatra-3.jpg" alt="Devotees gathered around the Rath" loading="lazy" style="object-position:50% 40%" /><figcaption>Rath Yatra procession</figcaption></figure>
     </div>
   </div>
 </section>
