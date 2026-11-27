@@ -656,3 +656,16 @@ html[lang="hi"] .h2-title em { font-style: normal; }
 .puja-grid .puja-setups figure { display: flex; flex-direction: column; }
 .puja-grid .puja-setups img { flex: 1; aspect-ratio: auto; min-height: 0; height: 100%; }
 @media (max-width: 980px) { .puja-grid .puja-setups { grid-column: span 2; } .puja-grid .puja-setups img { aspect-ratio: 4/3; } }
+
+/* Google review CTA */
+.review-cta { background: linear-gradient(160deg, var(--sand), #fff3e0); }
+.review-box { text-align: center; background: #fff; border-radius: 24px; padding: 3rem 2rem 2.6rem; box-shadow: var(--shadow); border-top: 5px solid var(--gold); position: relative; }
+.review-badge { width: 84px; height: 84px; border-radius: 50%; margin: -5.2rem auto .8rem; display: block; box-shadow: 0 0 0 4px var(--gold), 0 8px 20px rgba(0,0,0,.2); background: #fff; }
+.review-box h2 { font-size: clamp(1.9rem, 4vw, 2.6rem); color: var(--maroon); margin: .2rem 0 .3rem; }
+.review-box > p:not(.eyebrow):not(.stars) { color: var(--muted); max-width: 520px; margin: 0 auto 1.6rem; }
+.stars { color: #fbbc05; font-size: 1.8rem; letter-spacing: .2em; margin-bottom: .6rem; }
+.btn-google { display: inline-flex; align-items: center; gap: .7rem; background: #fff; color: #3c4043; border: 1px solid #dadce0; border-radius: 40px; padding: .85rem 1.6rem; font-weight: 500; font-size: 1.02rem; box-shadow: 0 2px 6px rgba(0,0,0,.12); transition: box-shadow .2s, transform .2s; }
+.btn-google:hover { box-shadow: 0 6px 16px rgba(0,0,0,.18); transform: translateY(-2px); }
+.g-logo { width: 22px; height: 22px; flex-shrink: 0; }
+.btn-google.small { padding: .55rem 1.1rem; font-size: .9rem; margin-top: .6rem; }
+.review-cta { padding-top: 7rem; }
