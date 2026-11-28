@@ -59,11 +59,8 @@
         for (const e of ents) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
       }, { threshold: 0.08 });
     }
-    secs.forEach((s, i) => {
-      s.classList.add("reveal");
-      s.style.transitionDelay = `${Math.min(i, 3) * 80}ms`;
-      if (io) io.observe(s); else s.classList.add("in");
-    });
+    // खंड कभी छिपाए नहीं जाते — केवल हल्का उभार (सामग्री हमेशा दिखती रहे)
+    secs.forEach((s, i) => { s.classList.remove("rise-in"); void s.offsetWidth; s.style.animationDelay = `${Math.min(i, 4) * 70}ms`; s.classList.add("rise-in"); });
     // चार्ट: ग्रह क्रम से प्रकट
     root.querySelectorAll(".chartbox svg").forEach((svg) => {
       svg.classList.add("draw");
