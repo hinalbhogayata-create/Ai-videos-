@@ -87,50 +87,65 @@
   const ownedHouses = (r, p) => r.houses.filter((h) => h.lord === p).map((h) => h.h);
   const HOUSE = () => tt("भाव", "house");
 
-  // ---------------- उत्तर भारतीय चार्ट ----------------
-  function northChart(title, lagnaSign, houseOf, labelOf, highlightAsc) {
-    const W = 400, q = W / 4, h = W / 2;
-    const P = { TL: [0, 0], TR: [W, 0], BR: [W, W], BL: [0, W], T: [h, 0], R: [W, h], B: [h, W], L: [0, h], C: [h, h], a: [q, q], b: [3 * q, q], c: [3 * q, 3 * q], d: [q, 3 * q] };
-    const H = {
-      1: ["T", "b", "C", "a"], 2: ["TL", "T", "a"], 3: ["TL", "a", "L"], 4: ["L", "a", "C", "d"], 5: ["L", "d", "BL"], 6: ["BL", "d", "B"],
-      7: ["B", "d", "C", "c"], 8: ["B", "c", "BR"], 9: ["BR", "c", "R"], 10: ["R", "c", "C", "b"], 11: ["R", "b", "TR"], 12: ["TR", "b", "T"],
-    };
-    const inner = { 1: "C", 4: "C", 7: "C", 10: "C", 2: "a", 3: "a", 5: "d", 6: "d", 8: "c", 9: "c", 11: "b", 12: "b" };
+  // ---------------- उत्तर भारतीय चार्ट (केसरिया, घुमावदार ओगी-रेखाएँ, गणेश व मण्डल) ----------------
+  // निर्देशांक मूल डिज़ाइन-चित्र (1075×850) के अनुसार; चार्ट-आयत (82,114)–(980,752)
+  const FX = 82, FY = 114, FW = 898, FH = 638;
+  const nx = (x) => FX + x * FW, ny = (y) => FY + y * FH;
+  // एक चतुर्थांश (ऊपर-बायाँ) का वक्र: मध्य-ऊपर → विकर्ण-बिन्दु → मध्य-बायाँ, शेष तीन दर्पण-प्रतिबिम्ब
+  const QCURVE = [[0.5, 0], [0.5, 0.09], [0.33, 0.14], [0.25, 0.25], [0.15, 0.33], [0.07, 0.5], [0, 0.5]];
+  function curvePath(fx, fy) {
+    const pt = ([x, y]) => `${nx(fx ? 1 - x : x).toFixed(1)} ${ny(fy ? 1 - y : y).toFixed(1)}`;
+    const c = QCURVE;
+    return `M${pt(c[0])}C${pt(c[1])} ${pt(c[2])} ${pt(c[3])}C${pt(c[4])} ${pt(c[5])} ${pt(c[6])}`;
+  }
+  // भावों के लेबल-केन्द्र, राशि-अंक की जगह और ग्रह-सूची का प्रकार
+  const HOUSE_POS = {
+    1: [0.5, 0.36], 2: [0.25, 0.085], 3: [0.085, 0.27], 4: [0.25, 0.5], 5: [0.085, 0.73], 6: [0.25, 0.915],
+    7: [0.5, 0.73], 8: [0.75, 0.915], 9: [0.915, 0.73], 10: [0.75, 0.5], 11: [0.915, 0.27], 12: [0.75, 0.085],
+  };
+  const SIGN_POS = {
+    1: [0.5, 0.455], 2: [0.25, 0.195], 3: [0.19, 0.25], 4: [0.425, 0.5], 5: [0.19, 0.75], 6: [0.25, 0.805],
+    7: [0.5, 0.56], 8: [0.75, 0.805], 9: [0.81, 0.75], 10: [0.575, 0.5], 11: [0.81, 0.25], 12: [0.75, 0.195],
+  };
+  let chartSeq = 0;
+  function northChart(title, lagnaSign, houseOf, labelOf) {
+    const id = "k" + (++chartSeq);
     const groups = {};
     for (const p of A.PLANETS) { const hh = houseOf(p); (groups[hh] = groups[hh] || []).push(labelOf(p)); }
-    let svg = `<svg viewBox="-6 -6 ${W + 12} ${W + 12}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(title)}">`;
-    svg += `<defs><linearGradient id="kbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf6"/><stop offset="1" stop-color="#fbeed6"/></linearGradient></defs>`;
-    svg += `<rect x="-4" y="-4" width="${W + 8}" height="${W + 8}" rx="6" fill="none" stroke="#c99a3c" stroke-width="1.2"/>`;
-    svg += `<rect x="0" y="0" width="${W}" height="${W}" fill="url(#kbg)" stroke="#7a1f0c" stroke-width="2.5"/>`;
-    svg += `<path d="M0 0L${W} ${W}M${W} 0L0 ${W}M${h} 0L${W} ${h}L${h} ${W}L0 ${h}Z" fill="none" stroke="#7a1f0c" stroke-width="1.6"/>`;
-    if (highlightAsc) svg += `<polygon points="${H[1].map((k) => P[k].join(",")).join(" ")}" fill="#f8d9a6" opacity=".5"/>`;
+    const STROKE = "#e5721f", FILL = "#fdc477";
+    const house1 = `M${nx(0.5)} ${ny(0)}C${nx(0.5)} ${ny(0.09)} ${nx(0.33)} ${ny(0.14)} ${nx(0.25)} ${ny(0.25)}L${nx(0.5)} ${ny(0.5)}L${nx(0.75)} ${ny(0.25)}C${nx(0.67)} ${ny(0.14)} ${nx(0.5)} ${ny(0.09)} ${nx(0.5)} ${ny(0)}Z`;
+    let svg = `<svg class="kchart" viewBox="30 40 1015 775" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(title)}">`;
+    svg += `<defs><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fecb82"/><stop offset="1" stop-color="#fcbf72"/></linearGradient></defs>`;
+    svg += `<image href="img/mandala-tl.png" x="0" y="0" width="420" height="409" opacity=".95"/>`;
+    svg += `<image href="img/mandala-br.png" x="660" y="420" width="412" height="413" opacity=".95"/>`;
+    svg += `<rect x="${FX}" y="${FY}" width="${FW}" height="${FH}" fill="url(#${id}g)"/>`;
+    svg += `<path d="${house1}" fill="#ffd89e" opacity=".55"/>`;
+    svg += `<image href="img/ganesha.png" x="${nx(0.5) - 52}" y="${ny(0.075)}" width="104" height="116" opacity=".72"/>`;
+    svg += `<g fill="none" stroke="${STROKE}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">`;
+    svg += `<path d="M${nx(0)} ${ny(0)}L${nx(1)} ${ny(1)}M${nx(1)} ${ny(0)}L${nx(0)} ${ny(1)}"/>`;
+    svg += [[0, 0], [1, 0], [0, 1], [1, 1]].map(([fx, fy]) => `<path d="${curvePath(fx, fy)}"/>`).join("");
+    svg += `<rect x="${FX}" y="${FY}" width="${FW}" height="${FH}" stroke-width="7"/></g>`;
     for (let k = 1; k <= 12; k++) {
-      const pts = H[k].map((n) => P[n]);
-      const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length, cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
-      const iv = P[inner[k]];
-      const t = KENDRA.includes(k) ? 0.62 : 0.74;
-      const nx = cx + (iv[0] - cx) * t, ny = cy + (iv[1] - cy) * t;
       const sign = (lagnaSign + k - 1) % 12;
-      svg += `<text x="${nx}" y="${ny + 5}" text-anchor="middle" font-size="14" fill="#b5441b" font-weight="700">${sign + 1}</text>`;
-      const tri = !KENDRA.includes(k);
+      const [sx, sy] = SIGN_POS[k];
+      svg += `<text x="${nx(sx)}" y="${ny(sy) + 11}" text-anchor="middle" font-size="31" font-weight="700" fill="#a3260f">${sign + 1}</text>`;
+      const side = [3, 5, 9, 11].includes(k), flat = [2, 6, 8, 12].includes(k);
       let items = groups[k] || [];
-      if (items.length > (tri ? 2 : 4)) items = items.map((o) => ({ ...o, t: o.t.replace(/ \d+°/, "") }));
-      const side = [3, 5, 9, 11].includes(k);
-      const fs = items.length > 3 ? 11.5 : tri ? 12.5 : 13.5;
-      const lh = fs + 2;
-      const cols = tri && !side && items.length > 3 ? 2 : 1;
+      if (items.length > (side ? 1 : flat ? 2 : 4) || (side && items.some((o) => o.t.length > 7))) items = items.map((o) => ({ ...o, t: o.t.replace(/ \d+°/, "") }));
+      const fs = items.length > 4 ? 32 : items.length > 2 ? 36 : 40;
+      const lh = fs + 5;
+      const cols = flat && items.length > 2 ? 2 : (k === 1 || k === 4 || k === 7 || k === 10) && items.length > 4 ? 2 : 1;
       const rows = Math.ceil(items.length / cols);
-      let ox = cx, oy = cy;
-      if (tri) { ox = cx - (iv[0] - cx) * 0.05; oy = cy - (iv[1] - cy) * 0.05; }
-      if (k === 1) oy -= 12; if (k === 7) oy += 12; if (k === 4) ox -= 14; if (k === 10) ox += 14;
+      let [cx, cy] = HOUSE_POS[k];
+      let ox = nx(cx), oy = ny(cy);
+      if (k === 1) oy = ny(0.355) - ((rows - 1) * lh) / 2 + (rows > 2 ? lh * 0.6 : 0);
       items.forEach((txt, i) => {
         const col = i % cols, row = Math.floor(i / cols);
-        const x = ox + (cols === 2 ? (col === 0 ? -20 : 20) : 0);
-        const y = oy - ((rows - 1) * lh) / 2 + row * lh + fs / 3;
-        svg += `<text x="${x}" y="${y}" text-anchor="middle" font-size="${fs}" fill="${txt.color}">${esc(txt.t)}</text>`;
+        const x = ox + (cols === 2 ? (col === 0 ? -68 : 68) : 0);
+        const y = (k === 1 ? oy : oy - ((rows - 1) * lh) / 2) + row * lh + fs / 3;
+        svg += `<text x="${x}" y="${y}" text-anchor="middle" font-size="${fs}" font-weight="600" fill="${txt.color}">${esc(txt.t)}</text>`;
       });
     }
-    if (highlightAsc) svg += `<text x="${h}" y="${q - 52}" text-anchor="middle" font-size="11" fill="#7a1f0c">${tt("लग्न", "Asc")}</text>`;
     svg += `</svg>`;
     return `<div class="chartbox"><h3>${esc(title)}</h3>${svg}</div>`;
   }
@@ -140,7 +155,7 @@
     if (withDeg) t += ` ${Math.floor(x.deg)}°`;
     if (x.retro && p !== "Rahu" && p !== "Ketu") t += tt("(व)", "(R)");
     if (x.combust) t += tt("(अ)", "(C)");
-    const color = x.dignity.key === "exalt" ? "#1e7a3c" : x.dignity.key === "debil" ? "#b3261e" : "#2b1d14";
+    const color = x.dignity.key === "exalt" ? "#1d6b34" : x.dignity.key === "debil" ? "#b3170e" : "#4a1606";
     if (x.dignity.key === "exalt") t += "↑"; else if (x.dignity.key === "debil") t += "↓";
     return { t, color };
   }
@@ -460,8 +475,8 @@
     TB.chart += `<section class="card"><h2>${tt("कुंडली चक्र", "Birth charts")}</h2><div class="charts">
       ${northChart(tt("लग्न कुंडली (D1)", "Lagna chart (D1)"), r.lagnaSign, (p) => P[p].house, (p) => planetLabel(r, p, true), true)}
       ${northChart(tt("चन्द्र कुंडली", "Chandra chart"), r.moonSign, (p) => J.houseFrom(r.moonSign, P[p].sign), (p) => planetLabel(r, p, false), true)}
-      ${northChart(tt("नवांश कुंडली (D9)", "Navamsa chart (D9)"), r.ascNav, (p) => J.houseFrom(r.ascNav, P[p].navamsa), (p) => ({ t: J.GRAHA_SHORT[p] + (P[p].vargottama ? "*" : ""), color: "#2b1d14" }), true)}
-      </div><p class="note">${tt("अंक = राशि (1 मेष … 12 मीन)। (व) वक्री, (अ) अस्त, ↑ उच्च, ↓ नीच, * वर्गोत्तम। ऊपर का मध्य कोष्ठ प्रथम भाव (लग्न) है; भाव वामावर्त (anticlockwise) चलते हैं।", "Numbers = signs (1 Aries … 12 Pisces). (R) retrograde, (C) combust, ↑ exalted, ↓ debilitated, * vargottama. The top centre box is the 1st house (Lagna); houses run anticlockwise.")}</p></section>`;
+      ${northChart(tt("नवांश कुंडली (D9)", "Navamsa chart (D9)"), r.ascNav, (p) => J.houseFrom(r.ascNav, P[p].navamsa), (p) => ({ t: J.GRAHA_SHORT[p] + (P[p].vargottama ? "*" : ""), color: "#4a1606" }), true)}
+      </div><p class="note">${tt("अंक = राशि (1 मेष … 12 मीन)। (व) वक्री, (अ) अस्त, ↑ उच्च, ↓ नीच, * वर्गोत्तम। ऊपर का मध्य कोष्ठ (गणेश जी वाला) प्रथम भाव (लग्न) है; भाव वामावर्त (anticlockwise) चलते हैं।", "Numbers = signs (1 Aries … 12 Pisces). (R) retrograde, (C) combust, ↑ exalted, ↓ debilitated, * vargottama. The top centre box (with Shri Ganesha) is the 1st house (Lagna); houses run anticlockwise.")}</p></section>`;
 
     TB.chart += `<section class="card"><h2>${tt("ग्रह स्पष्ट", "Planetary positions")}</h2><div class="scroll"><table><thead><tr><th>${tt("ग्रह", "Planet")}</th><th>${tt("राशि", "Sign")}</th><th>${tt("अंश", "Degree")}</th><th>${tt("नक्षत्र (चरण)", "Nakshatra (pada)")}</th><th class="hide-sm">${tt("नक्षत्र स्वामी", "Nak. lord")}</th><th>${tt("भाव", "House")}</th><th>${tt("स्थिति", "Dignity")}</th><th>${tt("बल", "Strength")}</th></tr></thead><tbody>
       <tr><td><b>${tt("लग्न", "Lagna")}</b></td><td>${J.RASHI[r.lagnaSign]}</td><td>${J.dms(r.chart.ascendant.deg)}</td><td>${r.ascNk.name} (${r.ascNk.pada})</td><td class="hide-sm">${G[r.ascNk.lord]}</td><td>1</td><td></td><td></td></tr>
