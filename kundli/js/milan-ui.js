@@ -16,58 +16,7 @@
   if (location.hash === "#milan") show("milanView");
 
   // ---------- स्थान ----------
-  const manual = {};
-  function updateTz(pre) {
-    const tzName = $(pre + "tzName").value;
-    if (!tzName || manual[pre]) return;
-    const [y, m, d] = ($(pre + "dob").value || "2000-01-01").split("-").map(Number);
-    const [hh, mm] = ($(pre + "tob").value || "12:00").split(":").map(Number);
-    try { $(pre + "tz").value = A.offsetForLocal(y, m, d, hh, mm, tzName) / 60; } catch (e) { /* */ }
-  }
-  function setPlace(pre, c) {
-    $(pre + "place").value = c.name;
-    $(pre + "lat").value = (+c.lat).toFixed(4);
-    $(pre + "lon").value = (+c.lon).toFixed(4);
-    $(pre + "tzName").value = c.tz || "";
-    manual[pre] = false;
-    updateTz(pre);
-  }
-  for (const pre of ["b_", "g_"]) {
-    const pl = $(pre + "place");
-    const find = (exact) => {
-      const v = pl.value.trim().toLowerCase();
-      if (!v) return;
-      const c = window.CITIES.find((x) => x.name.toLowerCase() === v) || (!exact && window.CITIES.find((x) => x.name.toLowerCase().includes(v)));
-      if (c) setPlace(pre, c);
-    };
-    pl.addEventListener("input", () => find(true));
-    pl.addEventListener("change", () => find(false));
-    ["dob", "tob"].forEach((f) => $(pre + f).addEventListener("change", () => updateTz(pre)));
-    $(pre + "tz").addEventListener("input", () => { manual[pre] = true; });
-  }
-  for (const btn of document.querySelectorAll("[data-search]")) {
-    btn.addEventListener("click", async () => {
-      const pre = btn.dataset.search, box = $(pre + "results");
-      const q = $(pre + "place").value.trim().replace(/\s*\(.*\)\s*/, "");
-      if (!q) { box.innerHTML = `<span class="note">पहले स्थान का नाम लिखें।</span>`; return; }
-      box.innerHTML = `<span class="note">खोज रहे हैं…</span>`;
-      try {
-        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=hi&format=json`);
-        const data = await res.json();
-        if (!data.results || !data.results.length) { box.innerHTML = `<span class="note">कोई परिणाम नहीं मिला।</span>`; return; }
-        box.innerHTML = "";
-        for (const r of data.results) {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.textContent = `${r.name} — ${[r.admin1, r.country].filter(Boolean).join(", ")}`;
-          b.onclick = () => { setPlace(pre, { name: `${r.name}, ${r.admin1 || r.country || ""}`, lat: r.latitude, lon: r.longitude, tz: r.timezone }); box.innerHTML = ""; };
-          box.appendChild(b);
-        }
-      } catch (e) {
-        box.innerHTML = `<span class="note">ऑनलाइन खोज उपलब्ध नहीं। सूची से शहर चुनें या अक्षांश-देशान्तर भरें।</span>`;
-      }
-    });
-  }
+  const places = { b_: window.PlaceSearch.bindPlace("b_"), g_: window.PlaceSearch.bindPlace("g_") };
 
   function read(pre, gender) {
     const [y, m, d] = $(pre + "dob").value.split("-").map(Number);
@@ -84,7 +33,7 @@
   $("mDemo").addEventListener("click", () => {
     const fill = (pre, name, dob, tob, city) => {
       $(pre + "name").value = name; $(pre + "dob").value = dob; $(pre + "tob").value = tob;
-      setPlace(pre, window.CITIES.find((c) => c.name.startsWith(city)));
+      places[pre].setCity(city);
     };
     fill("b_", "उदाहरण वर", "1990-03-21", "14:30", "मुंबई");
     fill("g_", "उदाहरण कन्या", "1992-07-09", "08:10", "जयपुर");
@@ -93,9 +42,11 @@
 
   $("mForm").addEventListener("submit", (e) => {
     e.preventDefault();
+    const okB = places.b_.ensure(), okG = places.g_.ensure();
+    if (!okB || !okG) { const el = $((okB ? "g_" : "b_") + "placeInfo"); el.innerHTML = "⚠️ यह स्थान सूची में नहीं मिला। पास के बड़े शहर का नाम लिखकर सूची से चुनें।"; el.hidden = false; return; }
     const bi = read("b_", "M"), gi = read("g_", "F");
     if ([bi.lat, bi.lon, gi.lat, gi.lon].some(isNaN)) { $("milanReport").hidden = false; $("milanReport").innerHTML = `<section class="card"><p>कृपया दोनों के जन्म स्थान चुनें या अक्षांश/देशान्तर भरें।</p></section>`; return; }
-    render(bi, gi);
+    (window.Anim ? window.Anim.loading : (f) => f())(() => render(bi, gi), "गुण मिलान हो रहा है…");
   });
 
   function render(bi, gi) {
@@ -135,5 +86,6 @@
       window.__renderKundli(b.dataset.open === "b" ? bi : gi);
     });
     rep.scrollIntoView({ behavior: "smooth" });
+    if (window.Anim) window.Anim.afterRender(rep);
   }
 })();

@@ -9,80 +9,22 @@
   const KENDRA = [1, 4, 7, 10], TRIKONA = [1, 5, 9], DUSTHANA = [6, 8, 12];
 
   // ---------------- फ़ॉर्म ----------------
-  const dl = $("cityList");
-  dl.innerHTML = window.CITIES.map((c) => `<option value="${esc(c.name)}">${esc(c.region)}</option>`).join("");
-  let tzManual = false;
-
-  function setPlace(c) {
-    $("place").value = c.name;
-    $("lat").value = (+c.lat).toFixed(4);
-    $("lon").value = (+c.lon).toFixed(4);
-    $("tzName").value = c.tz || "";
-    tzManual = false;
-    updateTz();
-  }
-  function updateTz() {
-    const tzName = $("tzName").value;
-    if (!tzName || tzManual) return;
-    const [y, m, d] = ($("dob").value || "2000-01-01").split("-").map(Number);
-    const [hh, mm] = ($("tob").value || "12:00").split(":").map(Number);
-    try {
-      const off = A.offsetForLocal(y, m, d, hh, mm, tzName);
-      $("tz").value = off / 60;
-      $("tzHint").textContent = `समय-क्षेत्र: ${tzName} → UTC ${off >= 0 ? "+" : "−"}${fmtOffset(Math.abs(off))} (इस तिथि के लिए, DST सहित)। आवश्यकता हो तो बदल सकते हैं।`;
-    } catch (e) { /* अमान्य समय-क्षेत्र */ }
-  }
   const fmtOffset = (min) => `${Math.floor(min / 60)}:${String(min % 60).padStart(2, "0")}`;
-
-  $("place").addEventListener("input", () => {
-    const v = $("place").value.trim();
-    const c = window.CITIES.find((x) => x.name === v);
-    if (c) setPlace(c);
-  });
-  $("place").addEventListener("change", () => {
-    const v = $("place").value.trim().toLowerCase();
-    if (!v) return;
-    const c = window.CITIES.find((x) => x.name.toLowerCase() === v) || window.CITIES.find((x) => x.name.toLowerCase().includes(v));
-    if (c) setPlace(c);
-  });
-  ["dob", "tob"].forEach((id) => $(id).addEventListener("change", updateTz));
-  $("tz").addEventListener("input", () => { tzManual = true; });
-
-  $("searchBtn").addEventListener("click", async () => {
-    const q = $("place").value.trim().replace(/\s*\(.*\)\s*/, "");
-    const box = $("searchResults");
-    if (!q) { box.innerHTML = `<span class="note">पहले स्थान का नाम लिखें।</span>`; return; }
-    box.innerHTML = `<span class="note">खोज रहे हैं…</span>`;
-    try {
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=8&language=hi&format=json`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (!data.results || !data.results.length) { box.innerHTML = `<span class="note">कोई परिणाम नहीं मिला। अंग्रेज़ी में लिखकर देखें, या अक्षांश/देशान्तर स्वयं भरें।</span>`; return; }
-      box.innerHTML = "";
-      for (const r of data.results) {
-        const b = document.createElement("button");
-        b.type = "button";
-        const region = [r.admin2, r.admin1, r.country].filter(Boolean).join(", ");
-        b.textContent = `${r.name} — ${region} (${r.latitude.toFixed(2)}, ${r.longitude.toFixed(2)})`;
-        b.onclick = () => { setPlace({ name: `${r.name}, ${r.admin1 || r.country || ""}`, lat: r.latitude, lon: r.longitude, tz: r.timezone }); box.innerHTML = ""; };
-        box.appendChild(b);
-      }
-    } catch (e) {
-      box.innerHTML = `<span class="note">ऑनलाइन खोज उपलब्ध नहीं (इंटरनेट/अनुमति)। सूची से शहर चुनें या अक्षांश-देशान्तर स्वयं भरें।</span>`;
-    }
-  });
+  const place = window.PlaceSearch.bindPlace("");
+  const formMsg = (t) => { const el = $("placeInfo"); el.innerHTML = t; el.hidden = false; el.classList.add("err"); setTimeout(() => el.classList.remove("err"), 1200); };
 
   $("demoBtn").addEventListener("click", () => {
     $("name").value = "उदाहरण जातक";
     $("gender").value = "M";
     $("dob").value = "1990-03-21";
     $("tob").value = "14:30";
-    setPlace(window.CITIES.find((c) => c.name.startsWith("मुंबई")));
+    place.setCity("मुंबई");
     $("birthForm").requestSubmit();
   });
 
   $("birthForm").addEventListener("submit", (e) => {
     e.preventDefault();
+    if (!place.ensure()) { formMsg("⚠️ यह स्थान सूची में नहीं मिला। पास के बड़े शहर का नाम लिखकर सूची से चुनें, या “अक्षांश · देशान्तर” खोलकर स्वयं भरें।"); return; }
     const [y, m, d] = $("dob").value.split("-").map(Number);
     const [hh, mm] = $("tob").value.split(":").map(Number);
     const data = {
@@ -91,9 +33,9 @@
       lat: parseFloat($("lat").value), lon: parseFloat($("lon").value),
       tzOffsetMin: Math.round(parseFloat($("tz").value) * 60), place: $("place").value.trim(), tzName: $("tzName").value,
     };
-    if ([data.lat, data.lon, data.tzOffsetMin].some(isNaN)) { alert("कृपया स्थान चुनें या अक्षांश/देशान्तर भरें।"); return; }
+    if ([data.lat, data.lon, data.tzOffsetMin].some(isNaN)) { formMsg("⚠️ कृपया जन्म स्थान चुनें।"); return; }
     saveProfile(data);
-    render(data);
+    (window.Anim ? window.Anim.loading : (f) => f())(() => render(data), "कुंडली बन रही है…");
   });
 
   // ---------------- सहेजी गई कुंडलियाँ ----------------
@@ -129,8 +71,7 @@
     $("name").value = d.name; $("gender").value = d.gender || "M";
     $("dob").value = `${d.year}-${String(d.month).padStart(2, "0")}-${String(d.day).padStart(2, "0")}`;
     $("tob").value = `${String(d.hour).padStart(2, "0")}:${String(d.minute).padStart(2, "0")}`;
-    $("place").value = d.place || ""; $("lat").value = d.lat; $("lon").value = d.lon;
-    $("tz").value = d.tzOffsetMin / 60; $("tzName").value = d.tzName || ""; tzManual = true;
+    place.load(d);
   }
   showSaved();
 
@@ -344,12 +285,13 @@
     const birthStr = `${String(input.day).padStart(2, "0")}-${String(input.month).padStart(2, "0")}-${input.year}, ${String(input.hour).padStart(2, "0")}:${String(input.minute).padStart(2, "0")}`;
     const ageNow = (nowJd - r.chart.jd) / J.YEAR_DAYS;
 
+    const areas = lifeAreas(r);
     let html = "";
     // शीर्ष
     html += `<section class="card"><div class="toolbar"><div class="person"><h2>${esc(input.name)}</h2>
       <p>${input.gender === "F" ? "स्त्री" : "पुरुष"} · जन्म: ${birthStr} (UTC ${tz >= 0 ? "+" : "−"}${fmtOffset(Math.abs(tz))}) · ${esc(input.place || "")}</p>
       <p>अक्षांश ${input.lat.toFixed(4)}°, देशान्तर ${input.lon.toFixed(4)}° · लाहिरी अयनांश ${J.dms(r.chart.ayanamsa)} · वर्तमान आयु ~${ageNow > 0 ? Math.floor(ageNow) : 0} वर्ष</p></div>
-      <div class="no-print"><button class="ghost" onclick="window.print()">🖨️ प्रिंट / PDF</button> <button class="ghost" id="editBtn">✏️ बदलें</button></div></div></section>`;
+      <div class="no-print"><button class="ghost jump" id="jumpNiv">🩺 समस्याएँ एवं निवारण</button> <button class="ghost" onclick="window.print()">🖨️ प्रिंट / PDF</button> <button class="ghost" id="editBtn">✏️ बदलें</button></div></div></section>`;
 
     // अवकहड़ा + पंचांग
     html += `<section class="card"><h2>अवकहड़ा चक्र एवं पंचांग</h2><div class="kv">
@@ -386,8 +328,23 @@
 
     // जीवन क्षेत्र
     html += `<section class="card"><h2>जीवन के प्रमुख क्षेत्र — सार</h2><div class="areas">
-      ${lifeAreas(r).map((a) => { const t = tier(a.s); return `<div class="area"><h4>${a.t}<span class="score" style="background:${t.color}">${t.label}</span></h4><p>${a.txt.replace(/\s+/g, " ")}</p></div>`; }).join("")}
+      ${areas.map((a) => { const t = tier(a.s); return `<div class="area"><h4>${a.t}<span class="score" style="background:${t.color}">${t.label}</span></h4><p>${a.txt.replace(/\s+/g, " ")}</p></div>`; }).join("")}
       </div><p class="note">यह सार भावेश की स्थिति, भाव में स्थित ग्रह, गुरु-शनि-मंगल की दृष्टि और कारक ग्रह के बल के पाराशरी सिद्धान्तों पर आधारित है।</p></section>`;
+
+    // समस्याएँ एवं निवारण
+    const probs = window.Nivaran.analyze(r, { nowJd, cur, areas, periodRating, lordQuality, fmtDate });
+    const SEV = { 3: ["प्रमुख", "sev3"], 2: ["मध्यम", "sev2"], 1: ["हल्का", "sev1"] };
+    html += `<section class="card nivaran" id="nivaran"><h2>🩺 समस्याएँ एवं निवारण</h2>
+      <div class="prob-sum">${probs.length ? `इस कुंडली में <b>${probs.length}</b> विषय ध्यान देने योग्य पाए गए — <b style="color:var(--bad)">${probs.filter((x) => x.sev === 3).length} प्रमुख</b>, ${probs.filter((x) => x.sev === 2).length} मध्यम, ${probs.filter((x) => x.sev === 1).length} हल्के। प्रत्येक पर क्लिक करके कारण और उपाय देखें।` : "✅ इस कुंडली में कोई प्रमुख दोष या गम्भीर समस्या नहीं मिली। नीचे दिए सामान्य उपाय जीवन को और शुभ बनाएँगे।"}</div>
+      ${probs.map((pb, i) => `<details class="prob ${SEV[pb.sev][1]}" ${i < 2 ? "open" : ""}><summary><span class="pi">${pb.icon}</span><span class="pt">${pb.title}</span><span class="sev">${SEV[pb.sev][0]}</span></summary>
+        <div class="pbody">
+          <p><b>कारण (ग्रह-योग):</b> ${pb.cause}</p>
+          <p><b>सम्भावित समस्या:</b> ${pb.effect}।</p>
+          ${pb.when && pb.when.length ? `<p><b>⏰ विशेष सावधानी का समय:</b> ${pb.when.join("; ")}</p>` : ""}
+          <div class="rem"><b>✨ निवारण</b><ul>${pb.rem.map(([ic, k, t]) => `<li><span>${ic}</span><div><b>${k}:</b> ${t}</div></li>`).join("")}</ul></div>
+        </div></details>`).join("")}
+      <h3>सामान्य शुभ उपाय (सभी के लिए)</h3><ul class="gen">${window.Nivaran.GENERAL.map(([ic, t]) => `<li><span>${ic}</span>${t}</li>`).join("")}</ul>
+      <p class="note">उपाय श्रद्धा और नियमितता से करें; किसी भी पूजा-अनुष्ठान के लिए योग्य आचार्य का मार्गदर्शन लें। स्वास्थ्य/कानूनी/आर्थिक समस्याओं में विशेषज्ञ की सलाह भी अवश्य लें।</p></section>`;
 
     // वर्तमान दशा
     if (cur) {
@@ -439,15 +396,11 @@
       ${r.dasha.list.filter((md) => md.end > r.chart.jd && (md.start - r.chart.jd) / J.YEAR_DAYS < 120).map((md) => { const isNow = cur && cur.md === md; return `<details class="${isNow ? "now" : ""}" ${isNow ? "open" : ""}><summary><span>${G[md.lord]} महादशा (${J.DASHA_YEARS[md.lord]} वर्ष)</span><span class="note">${fmtDate(Math.max(md.start, r.chart.jd), tz)} – ${fmtDate(md.end, tz)} · आयु ${Math.max(0, Math.floor((md.start - r.chart.jd) / J.YEAR_DAYS))}–${Math.floor((md.end - r.chart.jd) / J.YEAR_DAYS)}</span></summary>
         <table><thead><tr><th>अन्तर्दशा</th><th>आरम्भ</th><th>समाप्ति</th><th>फल</th></tr></thead><tbody>${md.antar.filter((ad) => ad.end > r.chart.jd).map((ad) => { const pr3 = periodRating(r, md.lord, ad.lord); const n = cur && cur.ad === ad; return `<tr class="${n ? "now" : ""}"><td>${G[md.lord]}–${G[ad.lord]}</td><td>${fmtDate(Math.max(ad.start, r.chart.jd), tz)}</td><td>${fmtDate(ad.end, tz)}</td><td><span class="rating r${pr3.r}">${pr3.label}</span></td></tr>`; }).join("")}</tbody></table></details>`; }).join("")}</section>`;
 
-    // उपाय
-    const weak = A.PLANETS.filter((p) => r.strength[p] < 42 || P[p].dignity.key === "debil" || P[p].combust);
-    const curLords = cur ? [cur.md.lord, cur.ad.lord] : [];
-    const remedyFor = [...new Set([...weak, ...curLords.filter((p) => lordQuality(r, p) < 0)])];
-    html += `<section class="card"><h2>उपाय (शान्ति)</h2>
-      <p>निर्बल/पीड़ित ग्रह: <b>${remedyFor.map((p) => G[p]).join(", ") || "कोई विशेष नहीं"}</b>। लग्नेश ${G[r.houses[0].lord]}, पंचमेश ${G[r.houses[4].lord]} और नवमेश ${G[r.houses[8].lord]} आपके लिए शुभ ग्रह हैं — इनका रत्न सामान्यतः अनुकूल रहता है।</p>
-      ${remedyFor.length ? `<div style="overflow-x:auto"><table><thead><tr><th>ग्रह</th><th>मंत्र</th><th>दान</th><th>व्रत / उपासना</th></tr></thead><tbody>${remedyFor.map((p) => `<tr><td><b>${G[p]}</b></td><td>${F.REMEDY[p].mantra}</td><td>${F.REMEDY[p].daan}</td><td>${F.REMEDY[p].vrat}</td></tr>`).join("")}</tbody></table></div>` : ""}
-      <h3>शुभ रत्न (लग्न अनुसार)</h3><p>${[r.houses[0].lord, r.houses[4].lord, r.houses[8].lord].filter((v, i, a) => a.indexOf(v) === i).map((p) => `${G[p]}: ${F.REMEDY[p].ratna}`).join("<br>")}</p>
-      <p class="note">नीच/अस्त ग्रह का रत्न बिना विशेषज्ञ सलाह के न पहनें। मंत्र-जप, दान और सदाचार सबसे सुरक्षित उपाय हैं।</p></section>`;
+    // शुभ रत्न
+    html += `<section class="card"><h2>💎 शुभ रत्न (लग्न अनुसार)</h2>
+      <p>लग्नेश ${G[r.houses[0].lord]}, पंचमेश ${G[r.houses[4].lord]} और नवमेश ${G[r.houses[8].lord]} आपकी कुंडली के कारक/शुभ ग्रह हैं — इनके रत्न सामान्यतः अनुकूल रहते हैं:</p>
+      <p>${[r.houses[0].lord, r.houses[4].lord, r.houses[8].lord].filter((v, i, a) => a.indexOf(v) === i).map((p) => `<b>${G[p]}</b>: ${F.REMEDY[p].ratna}${P[p].dignity.key === "debil" || P[p].combust ? " <span class=\"note\">(यह ग्रह नीच/अस्त है — रत्न से पहले विशेषज्ञ सलाह आवश्यक)</span>" : ""}`).join("<br>")}</p>
+      <p class="note">रत्न शुद्ध, उचित वज़न (रत्ती) में, शुभ मुहूर्त में अभिमंत्रित करके धारण करें।</p></section>`;
 
     html += `<section class="card"><p class="note">ग्रंथ-आधार: बृहत् पाराशर होरा शास्त्र (पराशर), बृहज्जातक (वराहमिहिर), फलदीपिका (मंत्रेश्वर), सारावली (कल्याणवर्मा), जातक पारिजात (वैद्यनाथ दीक्षित)। गणना-विधि: ग्रहों के सायन भोगांश खगोलीय कक्षीय सूत्रों से (सटीकता ~1-3 कला), लाहिरी (चित्रपक्ष) अयनांश, सम्पूर्ण-राशि भाव पद्धति (पाराशरी), मध्यम राहु। फलादेश इन ग्रंथों के सिद्धान्तों का सरल सार है; अन्तिम निर्णय में सम्पूर्ण कुंडली का समग्र विचार आवश्यक है।</p></section>`;
 
@@ -457,6 +410,9 @@
     $("formCard").hidden = true;
     $("editBtn").onclick = () => { $("formCard").hidden = false; $("formCard").scrollIntoView({ behavior: "smooth" }); };
     rep.scrollIntoView({ behavior: "smooth" });
+    const jb = $("jumpNiv");
+    if (jb) jb.onclick = () => $("nivaran").scrollIntoView({ behavior: "smooth" });
+    if (window.Anim) window.Anim.afterRender(rep);
   }
   window.__renderKundli = render;
 })();
