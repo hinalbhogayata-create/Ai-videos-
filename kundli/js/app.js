@@ -359,6 +359,69 @@
     return `<div class="dprog"><div class="dp-h"><b>${label}: ${G[lord]}</b><span>${fmtDate(start, tz)} – ${fmtDate(end, tz)}</span></div>
       <div class="dp-bar"><i style="width:${pct.toFixed(1)}%"></i></div><div class="dp-f"><span>${pct.toFixed(0)}% ${tt("बीता", "elapsed")}</span><span>${tt("शेष", "Remaining")}: ${ymd(end - nowJd)}</span></div></div>`;
   }
+  // ---------------- घड़ी-शैली गोल डायल (दशा, साढ़ेसाती, दोष) ----------------
+  const PCOL = { Sun: "#e8891c", Moon: "#5f8fb4", Mars: "#d23a22", Mercury: "#2e9447", Jupiter: "#d9a400", Venus: "#c2559a", Saturn: "#3d4fc4", Rahu: "#5e5e5e", Ketu: "#8d6e63" };
+  function dial({ pct, color, title, big, small, foot, segs, hand = true }) {
+    const R = 54, C = 2 * Math.PI * R, p = Math.max(0, Math.min(1, pct));
+    let ticks = "";
+    for (let i = 0; i < 12; i++) { const a = (i * 30 - 90) * Math.PI / 180, r1 = i % 3 ? 66 : 63; ticks += `<line x1="${(70 + r1 * Math.cos(a)).toFixed(1)}" y1="${(70 + r1 * Math.sin(a)).toFixed(1)}" x2="${(70 + 69 * Math.cos(a)).toFixed(1)}" y2="${(70 + 69 * Math.sin(a)).toFixed(1)}" stroke="#b08a50" stroke-width="${i % 3 ? 1 : 2}"/>`; }
+    const seg = segs ? segs.map(([a, b, c]) => `<circle cx="70" cy="70" r="${R}" fill="none" stroke="${c}" stroke-opacity=".28" stroke-width="12" stroke-dasharray="${(C * (b - a)).toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-C * a).toFixed(1)}" transform="rotate(-90 70 70)"/>`).join("") : "";
+    const ang = p * 360 - 90, hx = 70 + R * Math.cos(ang * Math.PI / 180), hy = 70 + R * Math.sin(ang * Math.PI / 180);
+    return `<div class="dial"><div class="dial-t">${title}</div><svg viewBox="0 0 140 140" class="dial-svg" role="img" aria-label="${esc(String(title).replace(/<[^>]+>/g, ""))}: ${Math.round(p * 100)}%">
+      <circle cx="70" cy="70" r="69" fill="#fffdf6" stroke="#e3c48a"/>${ticks}
+      <circle cx="70" cy="70" r="${R}" fill="none" stroke="#f1e4cc" stroke-width="12"/>${seg}
+      <circle class="dial-arc" cx="70" cy="70" r="${R}" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(C * p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 70 70)" style="--c:${C.toFixed(1)}"/>
+      ${hand && p > 0 && p < 1 ? `<g class="dial-hand" style="--a:${(p * 360).toFixed(1)}deg"><circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="8" fill="#fff" stroke="${color}" stroke-width="3"/><circle cx="${hx.toFixed(1)}" cy="${hy.toFixed(1)}" r="3" fill="${color}"/></g>` : ""}
+      <text x="70" y="${small ? 66 : 74}" text-anchor="middle" class="dial-big">${big}</text>${small ? `<text x="70" y="84" text-anchor="middle" class="dial-small">${small}</text>` : ""}
+    </svg>${foot ? `<div class="dial-f">${foot}</div>` : ""}</div>`;
+  }
+  function remainShort(days) {
+    const y = Math.floor(days / J.YEAR_DAYS), m = Math.floor((days - y * J.YEAR_DAYS) / 30.44), d = Math.floor(days - y * J.YEAR_DAYS - m * 30.44);
+    if (y) return tt(`${y} व ${m} मा`, `${y}y ${m}m`);
+    if (m) return tt(`${m} मा ${d} दि`, `${m}m ${d}d`);
+    return tt(`${Math.max(0, d)} दिन`, `${Math.max(0, d)} days`);
+  }
+  function dialsCard(r, cur, nowJd, DR) {
+    const tz = r.input.tzOffsetMin, b = r.chart.jd;
+    const D = [];
+    const per = (lab, x) => {
+      const pct = (nowJd - x.start) / (x.end - x.start);
+      return dial({ pct, color: PCOL[x.lord], title: `${lab}<br><b style="color:${PCOL[x.lord]}">${G[x.lord]}</b>`, big: remainShort(x.end - nowJd), small: tt("शेष", "left"), foot: `${Math.round(pct * 100)}% ${tt("बीता", "done")} · ${tt("समाप्ति", "ends")} ${fmtDate(x.end, tz)}` });
+    };
+    if (cur) {
+      D.push(per(tt("महादशा", "Mahadasha"), cur.md));
+      D.push(per(tt("अन्तर्दशा", "Antardasha"), cur.ad));
+      if (cur.pd) D.push(per(tt("प्रत्यन्तर", "Pratyantar"), cur.pd));
+    }
+    // साढ़ेसाती / ढैय्या
+    const GC = window.Gochar;
+    if (GC) {
+      const ss = GC.sadeSati(r, b, b + 100 * J.YEAR_DAYS);
+      const c = ss.cycles.find((x) => nowJd >= x.start && nowJd < x.end);
+      const dh = ss.dhaiya.find((x) => nowJd >= x.start && nowJd < x.end);
+      const next = ss.cycles.find((x) => x.start > nowJd);
+      if (c) {
+        const L = c.end - c.start, f = (jd) => (jd - c.start) / L;
+        const p1e = c.p1 && c.p1.end ? f(c.p1.end) : 1 / 3, p2e = c.p2 && c.p2.end ? f(c.p2.end) : 2 / 3;
+        const pct = f(nowJd), phase = pct < p1e ? tt("प्रथम चरण (उदय)", "1st phase (rising)") : pct < p2e ? tt("द्वितीय चरण (शिखर)", "2nd phase (peak)") : tt("तृतीय चरण (अस्त)", "3rd phase (setting)");
+        D.push(dial({ pct, color: "#3d4fc4", segs: [[0, p1e, "#3d4fc4"], [p1e, p2e, "#b3261e"], [p2e, 1, "#2e9447"]], title: `${tt("साढ़ेसाती", "Sade Sati")}<br><b style="color:#3d4fc4">${phase}</b>`, big: remainShort(c.end - nowJd), small: tt("शेष", "left"), foot: `${fmtDate(c.start, tz)} – ${fmtDate(c.end, tz)}` }));
+      } else if (dh) {
+        const pct = (nowJd - dh.start) / (dh.end - dh.start);
+        D.push(dial({ pct, color: "#6a4fc4", title: `${tt("शनि ढैय्या", "Saturn Dhaiya")}<br><b style="color:#6a4fc4">${dh.kind}</b>`, big: remainShort(dh.end - nowJd), small: tt("शेष", "left"), foot: `${fmtDate(dh.start, tz)} – ${fmtDate(dh.end, tz)}` }));
+      } else {
+        D.push(dial({ pct: 0, color: "#2e9447", hand: false, title: `${tt("साढ़ेसाती", "Sade Sati")}<br><b style="color:#2e9447">${tt("अभी नहीं", "not now")}</b>`, big: next ? remainShort(next.start - nowJd) : "—", small: next ? tt("बाद आरम्भ", "until start") : "", foot: next ? tt(`अगली: ${fmtDate(next.start, tz)} से`, `next: from ${fmtDate(next.start, tz)}`) : "" }));
+      }
+    }
+    // दोष-मीटर
+    const DOS = DR.filter((d) => d.result.status === "present" || d.result.status === "partial");
+    const doshaDials = DOS.map((d) => { const full = d.result.status === "present"; return dial({ pct: full ? 1 : 0.5, hand: false, color: full ? "#b3261e" : "#d08a12", title: d.name.replace(/\s*\(.*\)/, ""), big: full ? tt("उपस्थित", "present") : tt("आंशिक", "partial"), small: "", foot: tt("निवारण: “दोष एवं निवारण”", "remedy: see “Doshas”") }); });
+    if (!DOS.length) doshaDials.push(dial({ pct: 1, hand: false, color: "#2e9447", title: tt("दोष", "Doshas"), big: tt("कोई नहीं", "none"), small: "", foot: tt("कोई प्रमुख दोष उपस्थित नहीं", "no major dosha present") }));
+    return `<section class="card dials-card"><h2>🕰️ ${tt("समय-घड़ी — दशा, साढ़ेसाती एवं दोष", "Time dials — dasha, Sade Sati & doshas")}</h2>
+      <div class="dials">${D.join("")}</div>
+      <h3 class="dials-h">${tt("दोष-मीटर", "Dosha meter")}</h3><div class="dials dials-sm">${doshaDials.join("")}</div>
+      <p class="note">${tt(`रंगीन चाप = जितना समय बीत चुका; गोल बिन्दु = आज की स्थिति; बीच में = शेष समय (व = वर्ष, मा = माह, दि = दिन)। गणना आज (${fmtDate(nowJd, tz)}) के अनुसार।`, `Coloured arc = time elapsed; dot = today; centre = time remaining. Calculated for today (${fmtDate(nowJd, tz)}).`)}</p></section>`;
+  }
+
   function dashaTab(r, cur, nowJd) {
     const P = r.planets, tz = r.input.tzOffsetMin, b = r.chart.jd, FF = F();
     const age = (jd) => Math.max(0, Math.floor((jd - b) / J.YEAR_DAYS));
@@ -377,7 +440,7 @@
         <p><b>${G[cur.ad.lord]} ${AD}:</b> ${RATING_TEXT()[pr.r]} ${tt("विषय:", "Themes:")} ${periodThemes(r, cur.ad.lord)}${tt("।", ".")}</p>
         <p class="srcline">📜 ${tt("आधार: BPHS — विंशोत्तरी दशा एवं दशाफलाध्याय (दशानाथ की भाव-स्थिति, स्वामित्व, बल)", "Basis: BPHS — Vimshottari dasha and dasha-phala chapters (the dasha lord's house, lordship and strength)")}</p></div></section>`;
       if (cur.pd) {
-        h += `<section class="card"><h2>${tt(`प्रत्यन्तर दशाएँ — ${G[cur.md.lord]}–${G[cur.ad.lord]} अन्तर्दशा में`, `Pratyantar dashas — within ${G[cur.md.lord]}–${G[cur.ad.lord]} antardasha`)}</h2><div class="scroll"><table><thead><tr><th>${tt("प्रत्यन्तर", "Pratyantar")}</th><th>${tt("आरम्भ", "Start")}</th><th>${tt("समाप्ति", "End")}</th><th>${tt("फल", "Result")}</th></tr></thead><tbody>
+        h += `<section class="card brief-hide"><h2>${tt(`प्रत्यन्तर दशाएँ — ${G[cur.md.lord]}–${G[cur.ad.lord]} अन्तर्दशा में`, `Pratyantar dashas — within ${G[cur.md.lord]}–${G[cur.ad.lord]} antardasha`)}</h2><div class="scroll"><table><thead><tr><th>${tt("प्रत्यन्तर", "Pratyantar")}</th><th>${tt("आरम्भ", "Start")}</th><th>${tt("समाप्ति", "End")}</th><th>${tt("फल", "Result")}</th></tr></thead><tbody>
           ${cur.ad.pratyantar.map((pd) => { const pr2 = periodRating(r, cur.ad.lord, pd.lord); return `<tr class="${pd === cur.pd ? "now" : ""}"><td>${G[cur.md.lord]}–${G[cur.ad.lord]}–${G[pd.lord]}${pd === cur.pd ? NOW : ""}</td><td>${fmtDate(pd.start, tz)}</td><td>${fmtDate(pd.end, tz)}</td><td><span class="rating r${pr2.r}">${pr2.label}</span></td></tr>`; }).join("")}
           </tbody></table></div></section>`;
       }
@@ -389,7 +452,7 @@
       <div class="scroll"><table><thead><tr><th>${MD}</th><th>${tt("वर्ष", "Years")}</th><th>${tt("आरम्भ", "Start")}</th><th>${tt("समाप्ति", "End")}</th><th>${tt("आयु", "Age")}</th><th>${tt("सामान्य फल", "General result")}</th></tr></thead><tbody>
       ${mds.map((md) => { const q = lordQuality(r, md.lord); const k = q >= 2 ? 4 : q >= 0.5 ? 3 : q >= -1 ? 2 : 1; const n = cur && cur.md === md; return `<tr class="${n ? "now" : ""}"><td><b>${G[md.lord]}</b>${n ? NOW : ""}</td><td>${J.DASHA_YEARS[md.lord]}</td><td>${fmtDate(Math.max(md.start, b), tz)}</td><td>${fmtDate(md.end, tz)}</td><td>${age(md.start)}–${age(md.end)}</td><td><span class="rating r${k}">${RL[k]}</span></td></tr>`; }).join("")}
       </tbody></table></div></section>`;
-    h += `<section class="card"><h2>📆 ${tt("अन्तर्दशाएँ (प्रत्येक महादशा में)", "Antardashas (in each Mahadasha)")}</h2><p class="note">${tt("किसी भी महादशा पर क्लिक करके उसकी सभी अन्तर्दशाएँ देखें। वर्तमान महादशा खुली है।", "Click any Mahadasha to see all its Antardashas. The current Mahadasha is open.")}</p>
+    h += `<section class="card brief-hide"><h2>📆 ${tt("अन्तर्दशाएँ (प्रत्येक महादशा में)", "Antardashas (in each Mahadasha)")}</h2><p class="note">${tt("किसी भी महादशा पर क्लिक करके उसकी सभी अन्तर्दशाएँ देखें। वर्तमान महादशा खुली है।", "Click any Mahadasha to see all its Antardashas. The current Mahadasha is open.")}</p>
       ${mds.map((md) => { const isNow = cur && cur.md === md; return `<details class="${isNow ? "now" : ""}" ${isNow ? "open" : ""}><summary><span>${G[md.lord]} ${MD} (${J.DASHA_YEARS[md.lord]} ${tt("वर्ष", "years")})</span><span class="note">${fmtDate(Math.max(md.start, b), tz)} – ${fmtDate(md.end, tz)} · ${tt("आयु", "age")} ${age(md.start)}–${age(md.end)}</span></summary>
         <div class="scroll"><table><thead><tr><th>${AD}</th><th>${tt("आरम्भ", "Start")}</th><th>${tt("समाप्ति", "End")}</th><th>${tt("फल", "Result")}</th><th class="hide-sm">${tt("प्रमुख विषय", "Main themes")}</th></tr></thead><tbody>${md.antar.filter((ad) => ad.end > b).map((ad) => { const pr3 = periodRating(r, md.lord, ad.lord); const n = cur && cur.ad === ad; return `<tr class="${n ? "now" : ""}"><td>${G[md.lord]}–${G[ad.lord]}${n ? " ◀" : ""}</td><td>${fmtDate(Math.max(ad.start, b), tz)}</td><td>${fmtDate(ad.end, tz)}</td><td><span class="rating r${pr3.r}">${pr3.label}</span></td><td class="hide-sm note">${periodThemes(r, ad.lord)}</td></tr>`; }).join("")}</tbody></table></div></details>`; }).join("")}
       <p class="note">${tt("फल-निर्धारण: महादशा व अन्तर्दशा स्वामी का बल, भाव-स्थिति (केन्द्र/त्रिकोण शुभ, 6/8/12 अशुभ), योगकारकत्व तथा दोनों की परस्पर स्थिति (षडाष्टक आदि)।", "Rating basis: strength of the Mahadasha and Antardasha lords, house placement (kendra/trikona good, 6/8/12 adverse), yogakaraka status and their mutual placement (6/8 etc.).")}</p></section>`;
@@ -461,7 +524,7 @@
     html += `<section class="card person-card"><div class="toolbar"><div class="person"><div class="pk">${tt("जन्म कुंडली", "Janma Kundli")}</div><h2>${esc(input.name)}</h2>
       <p>${input.gender === "F" ? tt("स्त्री", "Female") : tt("पुरुष", "Male")} · ${tt("जन्म", "Born")}: ${birthStr} (UTC ${tz >= 0 ? "+" : "−"}${fmtOffset(Math.abs(tz))}) · ${esc(input.place || "")}</p>
       <p>${tt("अक्षांश", "Lat")} ${input.lat.toFixed(4)}°, ${tt("देशान्तर", "Lon")} ${input.lon.toFixed(4)}° · ${tt("लाहिरी अयनांश", "Lahiri ayanamsa")} ${J.dms(r.chart.ayanamsa)} · ${tt("वर्तमान आयु", "Current age")} ~${ageNow > 0 ? Math.floor(ageNow) : 0} ${tt("वर्ष", "years")}</p></div>
-      <div class="no-print tb-btns"><button class="ghost jump" id="jumpNiv">⚠️ ${tt("दोष एवं निवारण", "Doshas & Remedies")}</button> <button class="ghost" onclick="window.print()">📖 ${tt("पुस्तक PDF / प्रिंट", "Book PDF / Print")}</button> <button class="ghost" id="editBtn">✏️ ${tt("बदलें", "Edit")}</button></div></div></section>`;
+      <div class="no-print tb-btns"><button class="ghost jump" id="jumpNiv">⚠️ ${tt("दोष एवं निवारण", "Doshas & Remedies")}</button> <button class="ghost" id="printBtn">📄 ${tt("PDF / प्रिंट", "PDF / Print")}</button> <button class="ghost" id="editBtn">✏️ ${tt("बदलें", "Edit")}</button></div></div></section>`;
 
     const sunriseNote = r.sun && (input.hour * 60 + input.minute) < r.sun.rise.h * 60 + r.sun.rise.m;
     const prevDay = tt(["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"], ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"])[(new Date(Date.UTC(input.year, input.month - 1, input.day)).getUTCDay() + 6) % 7];
@@ -494,7 +557,9 @@
       <h3>${tt("राशि फल", "Moon sign")}</h3><p>${FF.RASHI[r.moonSign]}</p>
       <h3>${tt("जन्म नक्षत्र फल", "Birth nakshatra")}</h3><p>${FF.NAK[r.moonNk.idx]} ${tt(`नक्षत्र स्वामी ${G[r.moonNk.lord]} होने से जीवन की प्रथम दशा ${G[r.dasha.balance.lord]} की रही।`, `As the nakshatra lord is ${G[r.moonNk.lord]}, the first dasha of life was that of ${G[r.dasha.balance.lord]}.`)}</p></section>`;
 
-    TB.sum += summaryCard(r, cur, window.YogDosh.doshaReport(r));
+    const DRall = window.YogDosh.doshaReport(r);
+    TB.sum += summaryCard(r, cur, DRall);
+    TB.sum += dialsCard(r, cur, nowJd, DRall);
     TB.sum += `<section class="card"><h2>${tt("जीवन के प्रमुख क्षेत्र — सार", "Main areas of life — summary")}</h2><div class="areas">
       ${areas.map((a) => { const t = tier(a.s); return `<div class="area"><h4>${a.t}<span class="score" style="background:${t.color}">${t.label}</span></h4><p>${a.txt.replace(/\s+/g, " ")}</p></div>`; }).join("")}
       </div><p class="note">${tt("यह सार भावेश की स्थिति, भाव में स्थित ग्रह, गुरु-शनि-मंगल की दृष्टि और कारक ग्रह के बल के पाराशरी सिद्धान्तों पर आधारित है।", "This summary is based on Parashari principles: the house lord's placement, occupants, aspects of Jupiter/Saturn/Mars and the strength of the karaka.")}</p></section>`;
@@ -562,7 +627,7 @@
         <div class="bc-brand-en">NIYATI JYOTISH KARYALAYA</div>
         <div class="bc-date">${tt("दिनांक", "Date")}: ${new Date().toLocaleDateString(tt("hi-IN", "en-IN"), { day: "numeric", month: "long", year: "numeric" })}</div>
       </div></section>
-      <section class="print-only book-toc"><h2>${tt("अनुक्रमणिका", "Contents")}</h2><ol>${CH.map(([, l], i) => `<li><span class="tn">${tt("अध्याय", "Chapter")} ${num(i + 1)}</span><span class="tl">${l.replace(/^\S+\s/, "")}</span></li>`).join("")}</ol>
+      <section class="print-only book-toc"><h2>${tt("अनुक्रमणिका", "Contents")}</h2><ol>${CH.map(([k, l], i) => `<li class="${["yoga", "gochar", "granth"].includes(k) ? "full-only" : ""}"><span class="tn">${tt("अध्याय", "Chapter")} ${num(i + 1)}</span><span class="tl">${l.replace(/^\S+\s/, "")}</span></li>`).join("")}</ol>
       <p class="note">${tt("यह फलादेश बृहत् पाराशर होरा शास्त्र, बृहज्जातक, फलदीपिका, सारावली, जातक पारिजात एवं भृगु सूत्र के सिद्धान्तों पर आधारित है।", "These predictions are based on the principles of Brihat Parashara Hora Shastra, Brihat Jataka, Phaladeepika, Saravali, Jataka Parijata and Bhrigu Sutra.")}</p></section>`;
     html += `<nav class="rtabs no-print" role="tablist">${TABS.map(([k, l]) => `<button type="button" role="tab" data-rt="${k}" class="${k === lastTab ? "on" : ""}">${l}</button>`).join("")}</nav>`;
     html += CH.map(([k, l], i) => `<div class="rpanel" data-panel="${k}" ${k === lastTab || lastTab === "all" ? "" : "hidden"}><h2 class="ptitle chapter-h"><span class="ch-no">${tt("अध्याय", "Chapter")} ${num(i + 1)}</span><span class="ch-t">${l.replace(/^\S+\s/, "")}</span></h2>${TB[k]}</div>`).join("");
@@ -583,11 +648,36 @@
     for (const b of rep.querySelectorAll("[data-rt]")) b.addEventListener("click", () => goTab(b.dataset.rt));
     for (const b of rep.querySelectorAll("[data-goto]")) b.addEventListener("click", () => goTab(b.dataset.goto));
     $("jumpNiv").onclick = () => goTab("dosha");
+    $("printBtn").onclick = () => printMenu();
     rep.classList.toggle("all-mode", lastTab === "all");
     if (window.Anim) window.Anim.afterRender(lastTab === "all" ? rep : rep.querySelector(`.rpanel[data-panel="${lastTab}"]`));
     setPageHeader(tt(`नियति ज्योतिष कार्यालय  ·  ${input.name} — जन्म कुंडली`, `Niyati Jyotish Karyalaya  ·  ${input.name} — Janma Kundli`));
     return rep;
   }
+  // PDF विकल्प: संक्षिप्त (मुख्य बातें) या सम्पूर्ण पुस्तक
+  function printMenu() {
+    let m = document.getElementById("printMenu");
+    if (m) m.remove();
+    m = document.createElement("div");
+    m.id = "printMenu"; m.className = "pmenu no-print"; m.setAttribute("role", "dialog");
+    m.innerHTML = `<div class="pm-box"><h3>📄 ${tt("कौन-सी PDF चाहिए?", "Which PDF would you like?")}</h3>
+      <button type="button" class="pm-opt" data-k="brief"><b>📋 ${tt("संक्षिप्त PDF", "Short PDF")}</b><small>${tt("मुखपृष्ठ, सारांश, समय-घड़ी, कुंडली चक्र, ग्रह स्पष्ट, उपस्थित दोष व निवारण, वर्तमान दशा, ग्रह फल — लगभग 10–12 पृष्ठ", "Cover, summary, time dials, charts, planet table, doshas present with remedies, current dasha, planet results — about 10–12 pages")}</small></button>
+      <button type="button" class="pm-opt" data-k="full"><b>📖 ${tt("सम्पूर्ण पुस्तक PDF", "Complete book PDF")}</b><small>${tt("सभी अध्याय — योग, सभी दोष, पूरी दशा, वर्ष-वार गोचर, ग्रंथ अनुसार फलादेश", "All chapters — yogas, all doshas, full dasha, year-wise transits, predictions by the granthas")}</small></button>
+      <p class="note">${tt("प्रिंट विंडो में “Save as PDF / PDF के रूप में सहेजें” चुनें। iPhone पर: प्रिंट विकल्प में दो उँगलियों से पूर्वावलोकन बड़ा करें, फिर साझा करें → फ़ाइल में सहेजें।", "In the print window choose “Save as PDF”. On iPhone: pinch out on the print preview, then Share → Save to Files.")}</p>
+      <button type="button" class="ghost pm-x">${tt("रद्द करें", "Cancel")}</button></div>`;
+    document.body.appendChild(m);
+    const close = () => m.remove();
+    m.querySelector(".pm-x").onclick = close;
+    m.addEventListener("click", (e) => { if (e.target === m) close(); });
+    for (const b of m.querySelectorAll(".pm-opt")) b.onclick = () => {
+      close();
+      document.body.classList.toggle("print-brief", b.dataset.k === "brief");
+      const done = () => { document.body.classList.remove("print-brief"); window.removeEventListener("afterprint", done); };
+      window.addEventListener("afterprint", done);
+      setTimeout(() => window.print(), 60);
+    };
+  }
+
   // प्रिंट पृष्ठ का शीर्ष-लेख (हर पृष्ठ पर) — @page margin box
   function setPageHeader(text) {
     let st = document.getElementById("pageHeadStyle");
