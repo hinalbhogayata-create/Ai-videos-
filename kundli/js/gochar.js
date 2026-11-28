@@ -65,8 +65,9 @@
       };
       return { start: c.start, end: c.end, p1: phase(s12), p2: phase(s1), p3: phase(s2) };
     });
-    const dh4 = runs(per, [(m + 3) % 12], 400).map((x) => ({ ...x, kind: "चतुर्थ (कण्टक) ढैय्या" }));
-    const dh8 = runs(per, [(m + 7) % 12], 400).map((x) => ({ ...x, kind: "अष्टम ढैय्या" }));
+    const en = root.I18N && root.I18N.lang === "en";
+    const dh4 = runs(per, [(m + 3) % 12], 400).map((x) => ({ ...x, kind: en ? "4th (Kantaka) Dhaiya" : "चतुर्थ (कण्टक) ढैय्या" }));
+    const dh8 = runs(per, [(m + 7) % 12], 400).map((x) => ({ ...x, kind: en ? "8th Dhaiya" : "अष्टम ढैय्या" }));
     return { cycles, dhaiya: dh4.concat(dh8).sort((a, b) => a.start - b.start) };
   }
 
@@ -78,7 +79,13 @@
   const JUP_FX = ["स्थान-परिवर्तन, व्यय, मन अशान्त", "धन-लाभ, परिवार-सुख, वाणी प्रभावी", "कार्य में बाधा, पद/स्थान की हानि", "चिन्ता, स्वजनों से कष्ट", "संतान-सुख, बुद्धि, शुभ समाचार", "शत्रु व रोग से कष्ट", "विवाह/साझेदारी, यात्रा, सुख", "कष्ट, रोग, धन-हानि का भय", "भाग्योदय, धर्म-कार्य, उन्नति", "पद/कार्य में परिवर्तन, मध्यम फल", "लाभ, पद-प्राप्ति, इच्छापूर्ति", "व्यय, दूर यात्रा, दुःख"];
   const SAT_FX = ["साढ़ेसाती शिखर — स्वास्थ्य, चिन्ता, अधिक परिश्रम", "साढ़ेसाती अन्तिम चरण — धन/परिवार की परीक्षा", "लाभ, साहस, शत्रु-विजय", "कण्टक शनि (ढैय्या) — गृह-सुख, माता, मन पर प्रभाव", "संतान/बुद्धि सम्बन्धी चिन्ता", "शत्रु पर विजय, रोग-मुक्ति, लाभ", "यात्रा, दाम्पत्य/साझेदारी में तनाव", "अष्टम शनि (ढैय्या) — कष्ट, रोग, अचानक बाधा", "भाग्य व धर्म-कार्य में रुकावट", "कार्य में कठिनाई/परिवर्तन", "लाभ, उन्नति, धन-वृद्धि", "साढ़ेसाती आरम्भ — व्यय, भागदौड़, नींद में कमी"];
   const RAHU_FX = ["मानसिक भ्रम, स्वास्थ्य", "धन-हानि, वाणी-दोष", "साहस, लाभ, सफलता", "गृह-अशान्ति", "संतान-चिन्ता, भ्रम", "शत्रु-विजय, लाभ", "दाम्पत्य/साझेदारी में भ्रम", "अचानक कष्ट", "धर्म में संशय, पिता से मतभेद", "कार्य में उथल-पुथल", "अचानक लाभ, इच्छापूर्ति", "व्यय, विदेश, अनिद्रा"];
-  const FX = { Jupiter: JUP_FX, Saturn: SAT_FX, Rahu: RAHU_FX };
+  const FX_HI = { Jupiter: JUP_FX, Saturn: SAT_FX, Rahu: RAHU_FX };
+  const FX_EN = {
+    Jupiter: ["change of place, expenses, restless mind", "gain of wealth, family happiness, effective speech", "obstacles in work, loss of position/place", "worry, trouble from relatives", "happiness from children, intellect, good news", "trouble from enemies and disease", "marriage/partnership, travel, happiness", "hardship, illness, fear of financial loss", "rise of fortune, religious work, progress", "change in position/work, moderate results", "gains, attainment of position, wishes fulfilled", "expenses, distant travel, sorrow"],
+    Saturn: ["Sade Sati peak — health, worry, extra effort", "Sade Sati last phase — tests of wealth/family", "gains, courage, victory over enemies", "Kantaka Shani (Dhaiya) — effect on home, mother, mind", "worry about children/intellect", "victory over enemies, recovery, gains", "travel, strain in marriage/partnership", "8th Saturn (Dhaiya) — hardship, illness, sudden obstacles", "obstacles in fortune and religious work", "difficulty/changes at work", "gains, progress, growth of wealth", "Sade Sati begins — expenses, running around, less sleep"],
+    Rahu: ["mental confusion, health", "loss of wealth, faults of speech", "courage, gains, success", "unrest at home", "worry about children, confusion", "victory over enemies, gains", "confusion in marriage/partnership", "sudden trouble", "doubts in dharma, differences with father", "upheaval at work", "sudden gains, wishes fulfilled", "expenses, foreign lands, insomnia"],
+  };
+  const FX = Object.assign({}, FX_HI);
 
   function today(r, nowJd) {
     const pos = A.siderealPositionsAt(nowJd), next = A.siderealPositionsAt(nowJd + 1);
@@ -105,6 +112,6 @@
     return rows;
   }
 
-  root.Gochar = { signPeriods, sadeSati, today, yearTable, GOOD, FX };
+  root.Gochar = { signPeriods, sadeSati, today, yearTable, GOOD, FX, setLang(l) { Object.assign(FX, l === "en" ? FX_EN : FX_HI); } };
   if (typeof module !== "undefined") module.exports = root.Gochar;
 })(typeof window !== "undefined" ? window : globalThis);

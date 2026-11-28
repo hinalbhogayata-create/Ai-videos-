@@ -260,6 +260,9 @@
     debil: "नीच का है — फल में बाधा; उपाय करना हितकर।",
   };
 
-  root.Phala = { LAGNA, RASHI, NAK, BHAVA, GB, LORD_IN, DASHA, REMEDY, DIGNITY_TEXT };
+  const HI = { LAGNA, RASHI, NAK, BHAVA, GB, LORD_IN, DASHA, REMEDY, DIGNITY_TEXT };
+  root.Phala = Object.assign({}, HI, {
+    setLang(l) { Object.assign(root.Phala, l === "en" && root.PHALA_EN ? root.PHALA_EN : HI); },
+  });
   if (typeof module !== "undefined") module.exports = root.Phala;
 })(typeof window !== "undefined" ? window : globalThis);

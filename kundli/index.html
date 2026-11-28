@@ -4,68 +4,84 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>नियति ज्योतिष कार्यालय | Niyati Jyotish Karyalaya — जन्म कुंडली एवं फलादेश</title>
+<meta name="description" content="नियति ज्योतिष कार्यालय — आचार्य श्री हिनलभाई भोगायता। जन्म कुंडली, फलादेश, दशा, गोचर, साढ़ेसाती, गुण मिलान और प्रश्न कुंडली — हिन्दी व English में।">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Cinzel:wght@600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Mukta:wght@400;500;600;700&family=Cinzel:wght@600;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
+<script>window.__titles = { hi: "नियति ज्योतिष कार्यालय | Niyati Jyotish Karyalaya — जन्म कुंडली एवं फलादेश", en: "Niyati Jyotish Karyalaya — Janma Kundli, Phaladesh, Gun Milan & Prashna" };</script>
 </head>
 <body>
 <header class="top">
+  <div class="topbar">
+    <span class="invocation" data-en="॥ Shri Ganeshaya Namah ॥">॥ श्री गणेशाय नमः ॥</span>
+    <div class="lang" role="group" aria-label="Language / भाषा">
+      <button type="button" data-setlang="hi" class="on">हिन्दी</button>
+      <button type="button" data-setlang="en">English</button>
+    </div>
+  </div>
   <div class="brand">
-    <img class="acharya" src="img/acharya.webp" alt="आचार्य श्री हिनलभाई भोगायता" width="150" height="150">
+    <div class="photo-ring"><img class="acharya" src="img/acharya.webp" alt="Acharya Shri Hinalbhai Bhogayata" width="150" height="150"></div>
     <div class="brand-text">
       <div class="om">ॐ</div>
       <h1 class="brand-hi">नियति ज्योतिष कार्यालय</h1>
       <div class="brand-en">NIYATI JYOTISH KARYALAYA</div>
-      <div class="acharya-name">आचार्य श्री हिनलभाई भोगायता</div>
-      <div class="acharya-en">Acharya Shri Hinalbhai Bhogayata</div>
-      <div class="degree">M.A., B.Ed. — संस्कृत · धर्मशास्त्र · संस्कृत साहित्य · इतिहास</div>
+      <div class="acharya-name" data-en="Acharya Shri Hinalbhai Bhogayata">आचार्य श्री हिनलभाई भोगायता</div>
+      <div class="acharya-en" data-en="आचार्य श्री हिनलभाई भोगायता">Acharya Shri Hinalbhai Bhogayata</div>
+      <div class="degree" data-en="M.A., B.Ed. — Sanskrit · Dharmashastra · Sanskrit Literature · History">M.A., B.Ed. — संस्कृत · धर्मशास्त्र · संस्कृत साहित्य · इतिहास</div>
     </div>
   </div>
-  <p class="sub">जन्म कुंडली एवं फलादेश · Janma Kundli &amp; Phaladesh<br>बृहत् पाराशर होरा शास्त्र · बृहज्जातक · फलदीपिका · सारावली · जातक पारिजात के अनुसार</p>
+  <div class="orn" aria-hidden="true"></div>
+  <p class="sub" data-en="Vedic astrology according to Brihat Parashara Hora Shastra · Brihat Jataka · Phaladeepika · Saravali · Jataka Parijata">बृहत् पाराशर होरा शास्त्र · बृहज्जातक · फलदीपिका · सारावली · जातक पारिजात के अनुसार वैदिक ज्योतिष</p>
 </header>
 
-<nav class="tabs no-print">
-  <button type="button" class="tab active" data-view="kundliView">🪐 जन्म कुंडली</button>
-  <button type="button" class="tab" data-view="milanView">💍 गुण मिलान</button>
-  <button type="button" class="tab" data-view="prashnaView">❓ प्रश्न कुंडली</button>
+<nav class="tabs services no-print" aria-label="Services">
+  <button type="button" class="tab svc active" data-view="kundliView">
+    <span class="svc-ic">🪐</span><span class="svc-t" data-en="Janma Kundli">जन्म कुंडली</span><span class="svc-s" data-en="Chart · Phaladesh · Dasha · Transits">कुंडली · फलादेश · दशा · गोचर</span>
+  </button>
+  <button type="button" class="tab svc" data-view="milanView">
+    <span class="svc-ic">💍</span><span class="svc-t" data-en="Gun Milan">गुण मिलान</span><span class="svc-s" data-en="Ashtakoot 36 gunas · Manglik">अष्टकूट 36 गुण · मांगलिक</span>
+  </button>
+  <button type="button" class="tab svc" data-view="prashnaView">
+    <span class="svc-ic">🔮</span><span class="svc-t" data-en="Prashna Kundli">प्रश्न कुंडली</span><span class="svc-s" data-en="Will the work succeed?">कार्य होगा या नहीं?</span>
+  </button>
 </nav>
 
 <main>
  <div id="kundliView">
-  <section class="card" id="formCard">
-    <h2>जन्म विवरण भरें</h2>
+  <section class="card form-card" id="formCard">
+    <h2 data-en="🪔 Enter birth details">🪔 जन्म विवरण भरें</h2>
     <form id="birthForm" autocomplete="off">
       <div class="grid">
-        <label>नाम
-          <input id="name" required placeholder="जैसे: राम शर्मा">
+        <label><span data-en="Name">नाम</span>
+          <input id="name" required placeholder="जैसे: राम शर्मा" data-en-ph="e.g. Ram Sharma">
         </label>
-        <label>लिंग
-          <select id="gender"><option value="M">पुरुष</option><option value="F">स्त्री</option></select>
+        <label><span data-en="Gender">लिंग</span>
+          <select id="gender"><option value="M" data-en="Male">पुरुष</option><option value="F" data-en="Female">स्त्री</option></select>
         </label>
-        <label>जन्म तिथि
+        <label><span data-en="Date of birth">जन्म तिथि</span>
           <input id="dob" type="date" required>
         </label>
-        <label>जन्म समय
+        <label><span data-en="Time of birth">जन्म समय</span>
           <input id="tob" type="time" step="60" required>
         </label>
-        <label class="wide">जन्म स्थान
-            <input id="place" required placeholder="गाँव/शहर का नाम लिखें — हिन्दी, ગુજરાતી या English">
-            <div id="placeInfo" class="place-ok" hidden></div>
-          </label>
-          <details class="adv wide"><summary>📐 अक्षांश · देशान्तर · समय-क्षेत्र <span class="note">(स्वतः भरे जाते हैं — आवश्यकता हो तो बदलें)</span></summary>
-            <div class="grid">
-              <label>अक्षांश (Latitude)<input id="lat" type="number" step="0.0001"></label>
-              <label>देशान्तर (Longitude)<input id="lon" type="number" step="0.0001"></label>
-              <label>UTC अन्तर (घण्टे)<input id="tz" type="number" step="0.25" value="5.5"></label>
-            </div>
-          </details>
-          <input type="hidden" id="tzName" value="Asia/Kolkata">
+        <label class="wide"><span data-en="Place of birth">जन्म स्थान</span>
+          <input id="place" required placeholder="गाँव/शहर का नाम लिखें — हिन्दी, ગુજરાતી या English" data-en-ph="Type your village/town — in English, हिन्दी or ગુજરાતી">
+          <div id="placeInfo" class="place-ok" hidden></div>
+        </label>
+        <details class="adv wide"><summary><span data-en="📐 Latitude · Longitude · Time zone">📐 अक्षांश · देशान्तर · समय-क्षेत्र</span> <span class="note" data-en="(filled automatically — edit if needed)">(स्वतः भरे जाते हैं — आवश्यकता हो तो बदलें)</span></summary>
+          <div class="grid">
+            <label><span data-en="Latitude">अक्षांश (Latitude)</span><input id="lat" type="number" step="0.0001"></label>
+            <label><span data-en="Longitude">देशान्तर (Longitude)</span><input id="lon" type="number" step="0.0001"></label>
+            <label><span data-en="UTC offset (hours)">UTC अन्तर (घण्टे)</span><input id="tz" type="number" step="0.25" value="5.5"></label>
+          </div>
+        </details>
+        <input type="hidden" id="tzName" value="Asia/Kolkata">
       </div>
-      <p class="hint">भारत के 8,000+ गाँव-शहर पहले से उपलब्ध हैं — नाम लिखें और सूची से चुनें, अक्षांश-देशान्तर अपने आप भर जाएँगे।</p>
+      <p class="hint" data-en="8,000+ Indian villages and towns are built in — type the name and pick from the list; latitude and longitude fill in automatically.">भारत के 8,000+ गाँव-शहर पहले से उपलब्ध हैं — नाम लिखें और सूची से चुनें, अक्षांश-देशान्तर अपने आप भर जाएँगे।</p>
       <div class="actions">
-        <button type="submit" class="primary">कुंडली बनाएँ ✨</button>
-        <button type="button" id="demoBtn" class="ghost">उदाहरण देखें</button>
+        <button type="submit" class="primary" data-en="Cast the Kundli ✨">कुंडली बनाएँ ✨</button>
+        <button type="button" id="demoBtn" class="ghost" data-en="See an example">उदाहरण देखें</button>
       </div>
     </form>
     <div id="saved" class="saved"></div>
@@ -75,46 +91,46 @@
  </div>
 
  <div id="milanView" hidden>
-  <section class="card" id="milanForm">
-    <h2>अष्टकूट गुण मिलान (36 गुण)</h2>
-    <p class="hint">वर और कन्या का जन्म विवरण भरें। वर्ण, वश्य, तारा, योनि, ग्रह मैत्री, गण, भकूट और नाड़ी — आठों कूटों का मिलान, दोष-परिहार और मांगलिक विचार।</p>
+  <section class="card form-card" id="milanForm">
+    <h2 data-en="💍 Ashtakoot Gun Milan (36 gunas)">💍 अष्टकूट गुण मिलान (36 गुण)</h2>
+    <p class="hint" data-en="Enter the birth details of the groom and bride. All eight kootas — Varna, Vashya, Tara, Yoni, Graha Maitri, Gana, Bhakoot and Nadi — with dosha-pariharas and the Manglik check.">वर और कन्या का जन्म विवरण भरें। वर्ण, वश्य, तारा, योनि, ग्रह मैत्री, गण, भकूट और नाड़ी — आठों कूटों का मिलान, दोष-परिहार और मांगलिक विचार।</p>
     <form id="mForm" autocomplete="off">
       <div class="pair">
       <fieldset class="person-f">
-        <legend>👨 वर (लड़का)</legend>
+        <legend data-en="👨 Groom">👨 वर (लड़का)</legend>
         <div class="grid">
-          <label>नाम<input id="b_name" required></label>
-          <label>जन्म तिथि<input id="b_dob" type="date" required></label>
-          <label>जन्म समय<input id="b_tob" type="time" required></label>
-          <label class="wide">जन्म स्थान
-            <input id="b_place" required placeholder="गाँव/शहर का नाम लिखें">
+          <label><span data-en="Name">नाम</span><input id="b_name" required></label>
+          <label><span data-en="Date of birth">जन्म तिथि</span><input id="b_dob" type="date" required></label>
+          <label><span data-en="Time of birth">जन्म समय</span><input id="b_tob" type="time" required></label>
+          <label class="wide"><span data-en="Place of birth">जन्म स्थान</span>
+            <input id="b_place" required placeholder="गाँव/शहर का नाम लिखें" data-en-ph="Type the village/town">
             <div id="b_placeInfo" class="place-ok" hidden></div>
           </label>
-          <details class="adv wide"><summary>📐 अक्षांश · देशान्तर · समय-क्षेत्र <span class="note">(स्वतः भरे जाते हैं — आवश्यकता हो तो बदलें)</span></summary>
+          <details class="adv wide"><summary><span data-en="📐 Latitude · Longitude · Time zone">📐 अक्षांश · देशान्तर · समय-क्षेत्र</span> <span class="note" data-en="(automatic)">(स्वतः)</span></summary>
             <div class="grid">
-              <label>अक्षांश (Latitude)<input id="b_lat" type="number" step="0.0001"></label>
-              <label>देशान्तर (Longitude)<input id="b_lon" type="number" step="0.0001"></label>
-              <label>UTC अन्तर (घण्टे)<input id="b_tz" type="number" step="0.25" value="5.5"></label>
+              <label><span data-en="Latitude">अक्षांश</span><input id="b_lat" type="number" step="0.0001"></label>
+              <label><span data-en="Longitude">देशान्तर</span><input id="b_lon" type="number" step="0.0001"></label>
+              <label><span data-en="UTC offset (hours)">UTC अन्तर (घण्टे)</span><input id="b_tz" type="number" step="0.25" value="5.5"></label>
             </div>
           </details>
           <input type="hidden" id="b_tzName" value="Asia/Kolkata">
         </div>
       </fieldset>
       <fieldset class="person-f">
-        <legend>👩 कन्या (लड़की)</legend>
+        <legend data-en="👩 Bride">👩 कन्या (लड़की)</legend>
         <div class="grid">
-          <label>नाम<input id="g_name" required></label>
-          <label>जन्म तिथि<input id="g_dob" type="date" required></label>
-          <label>जन्म समय<input id="g_tob" type="time" required></label>
-          <label class="wide">जन्म स्थान
-            <input id="g_place" required placeholder="गाँव/शहर का नाम लिखें">
+          <label><span data-en="Name">नाम</span><input id="g_name" required></label>
+          <label><span data-en="Date of birth">जन्म तिथि</span><input id="g_dob" type="date" required></label>
+          <label><span data-en="Time of birth">जन्म समय</span><input id="g_tob" type="time" required></label>
+          <label class="wide"><span data-en="Place of birth">जन्म स्थान</span>
+            <input id="g_place" required placeholder="गाँव/शहर का नाम लिखें" data-en-ph="Type the village/town">
             <div id="g_placeInfo" class="place-ok" hidden></div>
           </label>
-          <details class="adv wide"><summary>📐 अक्षांश · देशान्तर · समय-क्षेत्र <span class="note">(स्वतः भरे जाते हैं — आवश्यकता हो तो बदलें)</span></summary>
+          <details class="adv wide"><summary><span data-en="📐 Latitude · Longitude · Time zone">📐 अक्षांश · देशान्तर · समय-क्षेत्र</span> <span class="note" data-en="(automatic)">(स्वतः)</span></summary>
             <div class="grid">
-              <label>अक्षांश (Latitude)<input id="g_lat" type="number" step="0.0001"></label>
-              <label>देशान्तर (Longitude)<input id="g_lon" type="number" step="0.0001"></label>
-              <label>UTC अन्तर (घण्टे)<input id="g_tz" type="number" step="0.25" value="5.5"></label>
+              <label><span data-en="Latitude">अक्षांश</span><input id="g_lat" type="number" step="0.0001"></label>
+              <label><span data-en="Longitude">देशान्तर</span><input id="g_lon" type="number" step="0.0001"></label>
+              <label><span data-en="UTC offset (hours)">UTC अन्तर (घण्टे)</span><input id="g_tz" type="number" step="0.25" value="5.5"></label>
             </div>
           </details>
           <input type="hidden" id="g_tzName" value="Asia/Kolkata">
@@ -122,8 +138,8 @@
       </fieldset>
       </div>
       <div class="actions">
-        <button type="submit" class="primary">गुण मिलान करें 💍</button>
-        <button type="button" id="mDemo" class="ghost">उदाहरण देखें</button>
+        <button type="submit" class="primary" data-en="Match the charts 💍">गुण मिलान करें 💍</button>
+        <button type="button" id="mDemo" class="ghost" data-en="See an example">उदाहरण देखें</button>
       </div>
     </form>
   </section>
@@ -131,33 +147,33 @@
  </div>
 
  <div id="prashnaView" hidden>
-  <section class="card" id="prashnaForm">
-    <h2>❓ प्रश्न कुंडली — कार्य होगा या नहीं?</h2>
-    <p class="hint">जिस क्षण मन में प्रश्न उठे, उसी समय की कुंडली से उत्तर — जन्म-विवरण की आवश्यकता नहीं। आधार: षट्पञ्चाशिका, ताजिक नीलकण्ठी (प्रश्नतन्त्र), प्रश्नमार्ग।</p>
+  <section class="card form-card" id="prashnaForm">
+    <h2 data-en="🔮 Prashna Kundli — will the work succeed?">🔮 प्रश्न कुंडली — कार्य होगा या नहीं?</h2>
+    <p class="hint" data-en="An answer from the chart of the very moment the question arises — no birth details needed. Basis: Shatpanchashika, Tajika Neelakanthi (Prashna Tantra), Prashna Marga.">जिस क्षण मन में प्रश्न उठे, उसी समय की कुंडली से उत्तर — जन्म-विवरण की आवश्यकता नहीं। आधार: षट्पञ्चाशिका, ताजिक नीलकण्ठी (प्रश्नतन्त्र), प्रश्नमार्ग।</p>
     <form id="qForm" autocomplete="off">
-      <div class="qtopics" id="qTopics" role="radiogroup" aria-label="प्रश्न का विषय"></div>
+      <div class="qtopics" id="qTopics" role="radiogroup" aria-label="Topic"></div>
       <div class="grid">
-        <label class="wide">आपका प्रश्न (वैकल्पिक)<input id="q_text" placeholder="जैसे: क्या इस वर्ष मेरी नौकरी लगेगी?"></label>
-        <label>प्रश्नकर्ता का नाम (वैकल्पिक)<input id="q_name"></label>
-        <label>प्रश्न की तिथि<input id="q_dob" type="date" required></label>
-        <label>प्रश्न का समय<input id="q_tob" type="time" required></label>
-        <label class="wide">प्रश्न का स्थान (जहाँ प्रश्न पूछा गया)
-            <input id="q_place" placeholder="गाँव/शहर का नाम लिखें">
-            <div id="q_placeInfo" class="place-ok" hidden></div>
+        <label class="wide"><span data-en="Your question (optional)">आपका प्रश्न (वैकल्पिक)</span><input id="q_text" placeholder="जैसे: क्या इस वर्ष मेरी नौकरी लगेगी?" data-en-ph="e.g. Will I get a job this year?"></label>
+        <label><span data-en="Name of the querent (optional)">प्रश्नकर्ता का नाम (वैकल्पिक)</span><input id="q_name"></label>
+        <label><span data-en="Date of the question">प्रश्न की तिथि</span><input id="q_dob" type="date" required></label>
+        <label><span data-en="Time of the question">प्रश्न का समय</span><input id="q_tob" type="time" required></label>
+        <label class="wide"><span data-en="Place of the question">प्रश्न का स्थान (जहाँ प्रश्न पूछा गया)</span>
+          <input id="q_place" placeholder="गाँव/शहर का नाम लिखें" data-en-ph="Type the village/town">
+          <div id="q_placeInfo" class="place-ok" hidden></div>
         </label>
-        <details class="adv wide"><summary>📐 अक्षांश · देशान्तर · समय-क्षेत्र <span class="note">(स्वतः भरे जाते हैं)</span></summary>
+        <details class="adv wide"><summary><span data-en="📐 Latitude · Longitude · Time zone">📐 अक्षांश · देशान्तर · समय-क्षेत्र</span> <span class="note" data-en="(automatic)">(स्वतः)</span></summary>
           <div class="grid">
-            <label>अक्षांश<input id="q_lat" type="number" step="0.0001"></label>
-            <label>देशान्तर<input id="q_lon" type="number" step="0.0001"></label>
-            <label>UTC अन्तर (घण्टे)<input id="q_tz" type="number" step="0.25" value="5.5"></label>
+            <label><span data-en="Latitude">अक्षांश</span><input id="q_lat" type="number" step="0.0001"></label>
+            <label><span data-en="Longitude">देशान्तर</span><input id="q_lon" type="number" step="0.0001"></label>
+            <label><span data-en="UTC offset (hours)">UTC अन्तर (घण्टे)</span><input id="q_tz" type="number" step="0.25" value="5.5"></label>
           </div>
         </details>
         <input type="hidden" id="q_tzName" value="Asia/Kolkata">
       </div>
       <p class="hint" id="qNow"></p>
       <div class="actions">
-        <button type="submit" class="primary">उत्तर देखें 🔮</button>
-        <button type="button" id="qNowBtn" class="ghost">🕐 समय: अभी</button>
+        <button type="submit" class="primary" data-en="See the answer 🔮">उत्तर देखें 🔮</button>
+        <button type="button" id="qNowBtn" class="ghost" data-en="🕐 Time: now">🕐 समय: अभी</button>
       </div>
     </form>
   </section>
@@ -165,16 +181,20 @@
  </div>
 </main>
 
-<footer>
-  <p class="foot-brand"><b>नियति ज्योतिष कार्यालय</b> · Niyati Jyotish Karyalaya<br>आचार्य श्री हिनलभाई भोगायता (M.A., B.Ed.)</p>
-  <p>⚠️ यह ज्योतिष-परम्परा पर आधारित सामान्य फलादेश है, कोई वैज्ञानिक गारण्टी नहीं। स्वास्थ्य, धन या विवाह जैसे महत्वपूर्ण निर्णयों में योग्य विशेषज्ञ से परामर्श अवश्य लें।</p>
+<footer class="foot">
+  <div class="orn" aria-hidden="true"></div>
+  <p class="foot-brand"><b>नियति ज्योतिष कार्यालय</b> · Niyati Jyotish Karyalaya<br><span data-en="Acharya Shri Hinalbhai Bhogayata (M.A., B.Ed.)">आचार्य श्री हिनलभाई भोगायता (M.A., B.Ed.)</span></p>
+  <p class="disclaimer" data-en="⚠️ These are general predictions based on the tradition of Jyotisha, not a scientific guarantee. For important decisions about health, money or marriage, always consult a qualified expert.">⚠️ यह ज्योतिष-परम्परा पर आधारित सामान्य फलादेश है, कोई वैज्ञानिक गारण्टी नहीं। स्वास्थ्य, धन या विवाह जैसे महत्वपूर्ण निर्णयों में योग्य विशेषज्ञ से परामर्श अवश्य लें।</p>
 </footer>
 
+<script src="js/i18n.js"></script>
 <script src="js/anim.js"></script>
 <script src="js/astro.js"></script>
 <script src="js/jyotish.js"></script>
 <script src="js/phala.js"></script>
+<script src="js/phala-en.js"></script>
 <script src="js/granth.js"></script>
+<script src="js/granth-en.js"></script>
 <script src="js/nivaran.js"></script>
 <script src="js/yogdosh.js"></script>
 <script src="js/gochar.js"></script>
@@ -183,8 +203,16 @@
 <script src="js/cities.js"></script>
 <script src="js/places-in.js"></script>
 <script src="js/place-search.js"></script>
+<script>
+  // भाषा स्क्रिप्ट-लोड के समय ही लागू करें, ताकि आगे के मॉड्यूल सही भाषा में बनें
+  window.I18N.apply();
+</script>
 <script src="js/app.js"></script>
 <script src="js/milan-ui.js"></script>
 <script src="js/prashna-ui.js"></script>
+<script>
+  for (const b of document.querySelectorAll("[data-setlang]")) b.addEventListener("click", () => window.I18N.setLang(b.dataset.setlang));
+  window.I18N.applyStatic();
+</script>
 </body>
 </html>
