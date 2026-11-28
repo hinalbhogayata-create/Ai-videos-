@@ -527,6 +527,7 @@
     TB.yoga += yogaTab(r, nowJd);
 
     const GR = window.Granth.analyze(r);
+    if (window.Bhrigu) GR.splice(1, 0, window.Bhrigu.analyze(r));
     TB.granth += `<section class="card granth"><h2>📜 ${tt("ग्रंथ अनुसार फलादेश", "Predictions by the classical texts")}</h2>
       <p class="note">${tt("प्रत्येक फल के साथ उसका ग्रंथ लिखा है। पाठ मूल संस्कृत वचनों का सरल हिन्दी भावार्थ है, शब्दशः अनुवाद नहीं।", "Each result names its text. The wording is a simple rendering of the meaning of the Sanskrit originals, not a word-for-word translation.")}</p>
       ${GR.map((g) => `<details open><summary><span>📜 ${g.granth}</span><span class="note">${g.author}</span></summary><div class="gbody">
