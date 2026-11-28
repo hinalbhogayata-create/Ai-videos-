@@ -327,6 +327,14 @@
     return hits.length ? `विवाह के सम्भावित काल (दशा-अन्तर्दशा): ${hits.slice(0, 3).join(", ")}।` : "";
   }
 
+  function avTable(av) {
+    const hd = Array.from({ length: 12 }, (_, i) => `<th>${i + 1}</th>`).join("");
+    const row = (name, arr, b) => `<tr${b ? ' class="now"' : ""}><td>${name}</td>${arr.map((v) => `<td style="text-align:center;${b ? (v >= 28 ? "color:#2f7d4a" : v < 25 ? "color:#b3261e" : "") : ""}">${v}</td>`).join("")}</tr>`;
+    return `<div style="overflow-x:auto;margin-top:8px"><table class="av"><thead><tr><th>भाव →</th>${hd}</tr></thead><tbody>
+      ${["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"].map((p) => row(G[p], av.bavHouse[p])).join("")}
+      ${row("<b>सर्वाष्टक</b>", av.savHouse, true)}</tbody></table></div>`;
+  }
+
   // ---------------- रिपोर्ट ----------------
   function render(input) {
     const r = J.analyze(input);
@@ -408,13 +416,22 @@
     // योग
     html += `<section class="card"><h2>योग एवं दोष</h2>${r.yogas.length ? r.yogas.map((y) => `<div class="yoga ${y.cancelled ? "cancel" : y.good ? "good" : "bad"}"><h4>${y.good ? "✅" : y.cancelled ? "⚠️" : "❗"} ${y.name}${y.cancelled ? " (परिहार/भंग)" : ""}</h4><div>${y.text}</div></div>`).join("") : "<p>कोई प्रमुख योग नहीं मिला।</p>"}</section>`;
 
+    // ग्रंथ अनुसार फलादेश
+    const GR = window.Granth.analyze(r);
+    html += `<section class="card granth"><h2>ग्रंथ अनुसार फलादेश</h2>
+      <p class="note">प्रत्येक फल के साथ उसका ग्रंथ लिखा है। पाठ मूल संस्कृत वचनों का सरल हिन्दी भावार्थ है, शब्दशः अनुवाद नहीं।</p>
+      ${GR.map((g) => `<details open><summary><span>📜 ${g.granth}</span><span class="note">${g.author}</span></summary><div class="gbody">
+        ${g.note ? `<p class="note">${g.note}</p>` : ""}
+        ${g.items.map((it) => `<div class="yoga ${it.good ? "good" : "bad"}"><h4>${it.title}</h4><div>${it.text}</div>${it.table ? avTable(g.av) : ""}</div>`).join("")}
+      </div></details>`).join("")}</section>`;
+
     // ग्रह फल
-    html += `<section class="card phala"><h2>ग्रह फल (भाव अनुसार)</h2>
+    html += `<section class="card phala"><h2>ग्रह फल (भाव अनुसार) <span class="src">फलदीपिका भावफलाध्याय एवं BPHS</span></h2>
       ${A.PLANETS.map((p) => { const x = P[p]; return `<div class="planet-phala"><b>${G[p]}</b> — ${J.RASHI[x.sign]} ${Math.floor(x.deg)}°, ${ORD(x.house)} भाव, ${x.nak.name} नक्षत्र<br>${F.GB[p][x.house - 1]} ${p !== "Rahu" && p !== "Ketu" ? `${G[p]} ${F.DIGNITY_TEXT[x.dignity.key]}` : ""} ${x.combust ? `${G[p]} सूर्य के निकट होने से अस्त है — इसके फल में कमी आएगी।` : ""} ${x.retro && p !== "Rahu" && p !== "Ketu" ? `वक्री ${G[p]} अपने कारकत्व में असामान्य, विलम्बित पर गहन फल देता है।` : ""} ${x.vargottama ? "वर्गोत्तम होने से यह ग्रह विशेष बलवान है।" : ""}${ownedHouses(r, p).length ? ` <span class="note">(${ownedHouses(r, p).map(ORD).join(", ")} भाव का स्वामी)</span>` : ""}</div>`; }).join("")}</section>`;
 
     // भाव फल
-    html += `<section class="card phala"><h2>द्वादश भाव फल</h2><div style="overflow-x:auto"><table><thead><tr><th>भाव</th><th>राशि</th><th>विषय</th><th>स्थित ग्रह</th><th>भावेश फल</th><th>स्थिति</th></tr></thead><tbody>
-      ${r.houses.map((hs) => { const t = tier(houseScore(r, hs.h)); return `<tr><td><b>${hs.h}</b> ${F.BHAVA[hs.h - 1].name}</td><td>${J.RASHI[hs.sign]}</td><td class="note">${F.BHAVA[hs.h - 1].k}</td><td>${hs.occupants.map((p) => G[p]).join(", ") || "—"}</td><td>भावेश ${G[hs.lord]} ${F.LORD_IN[P[hs.lord].house - 1]}</td><td><span class="rating" style="background:${t.color}">${t.label}</span></td></tr>`; }).join("")}
+    html += `<section class="card phala"><h2>द्वादश भाव फल <span class="src">बृहत् पाराशर होरा शास्त्र — भावेश फलाध्याय</span></h2><div style="overflow-x:auto"><table><thead><tr><th>भाव</th><th>राशि</th><th>विषय</th><th>स्थित ग्रह</th><th>भावेश फल</th><th>स्थिति</th></tr></thead><tbody>
+      ${r.houses.map((hs) => { const t = tier(houseScore(r, hs.h)); return `<tr><td><b>${hs.h}</b> ${F.BHAVA[hs.h - 1].name}</td><td>${J.RASHI[hs.sign]}</td><td class="note">${F.BHAVA[hs.h - 1].k}</td><td>${hs.occupants.map((p) => G[p]).join(", ") || "—"}</td><td><b>भावेश ${G[hs.lord]} ${ORD(P[hs.lord].house)} भाव में</b> — ${window.Granth.BHAVESH[hs.h - 1][P[hs.lord].house - 1]} <span class="note">(पराशर)</span></td><td><span class="rating" style="background:${t.color}">${t.label}</span></td></tr>`; }).join("")}
       </tbody></table></div></section>`;
 
     // विंशोत्तरी
@@ -432,7 +449,7 @@
       <h3>शुभ रत्न (लग्न अनुसार)</h3><p>${[r.houses[0].lord, r.houses[4].lord, r.houses[8].lord].filter((v, i, a) => a.indexOf(v) === i).map((p) => `${G[p]}: ${F.REMEDY[p].ratna}`).join("<br>")}</p>
       <p class="note">नीच/अस्त ग्रह का रत्न बिना विशेषज्ञ सलाह के न पहनें। मंत्र-जप, दान और सदाचार सबसे सुरक्षित उपाय हैं।</p></section>`;
 
-    html += `<section class="card"><p class="note">गणना-विधि: ग्रहों के सायन भोगांश खगोलीय कक्षीय सूत्रों से (सटीकता ~1-3 कला), लाहिरी (चित्रपक्ष) अयनांश, सम्पूर्ण-राशि भाव पद्धति (पाराशरी), मध्यम राहु। फलादेश BPHS, फलदीपिका, सारावली के सिद्धान्तों का सरल सार है; अन्तिम निर्णय में सम्पूर्ण कुंडली का समग्र विचार आवश्यक है।</p></section>`;
+    html += `<section class="card"><p class="note">ग्रंथ-आधार: बृहत् पाराशर होरा शास्त्र (पराशर), बृहज्जातक (वराहमिहिर), फलदीपिका (मंत्रेश्वर), सारावली (कल्याणवर्मा), जातक पारिजात (वैद्यनाथ दीक्षित)। गणना-विधि: ग्रहों के सायन भोगांश खगोलीय कक्षीय सूत्रों से (सटीकता ~1-3 कला), लाहिरी (चित्रपक्ष) अयनांश, सम्पूर्ण-राशि भाव पद्धति (पाराशरी), मध्यम राहु। फलादेश इन ग्रंथों के सिद्धान्तों का सरल सार है; अन्तिम निर्णय में सम्पूर्ण कुंडली का समग्र विचार आवश्यक है।</p></section>`;
 
     const rep = $("report");
     rep.innerHTML = html;

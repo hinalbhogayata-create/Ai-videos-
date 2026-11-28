@@ -128,3 +128,9 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding: 10px
   details:not([open]) > *:not(summary) { display: block; }
   body { background: #fff; font-size: 13px; }
 }
+
+h2 .src { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 8px; }
+.granth details summary { font-size: 17px; color: #7a1f0c; }
+.gbody { padding: 4px 12px 10px; }
+table.av { font-size: 13px; }
+table.av th, table.av td { padding: 4px 5px; }
