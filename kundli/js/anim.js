@@ -41,7 +41,9 @@
       overlay.innerHTML = `<div class="orbit">${ORBIT.map(([c, t], i) => `<span class="pl" style="--i:${i};--c:${c}"><b>${t}</b></span>`).join("")}<div class="sun">ॐ</div></div><p class="ltext"></p>`;
       document.body.appendChild(overlay);
     }
-    overlay.querySelector(".ltext").textContent = text || "गणना हो रही है…";
+    overlay.querySelector(".ltext").textContent = text || (window.I18N && window.I18N.lang === "en" ? "Calculating…" : "गणना हो रही है…");
+    const SH = window.Jyotish && window.Jyotish.GRAHA_SHORT;
+    if (SH) overlay.querySelectorAll(".pl b").forEach((b, i) => { b.textContent = SH[["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"][i]]; });
     overlay.classList.add("show");
     setTimeout(() => {
       try { cb(); } finally { overlay.classList.remove("show"); }

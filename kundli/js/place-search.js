@@ -95,20 +95,26 @@
   const plain = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
   // ---------- सूचकांक ----------
+  const T = (hi, en) => (root.I18N && root.I18N.lang === "en" ? en : hi);
+  const COUNTRY_EN = { "नेपाल": "Nepal", "बांग्लादेश": "Bangladesh", "पाकिस्तान": "Pakistan", "श्रीलंका": "Sri Lanka", "सिंगापुर": "Singapore", "कनाडा": "Canada", "ऑस्ट्रेलिया": "Australia", "न्यूज़ीलैण्ड": "New Zealand", "केन्या": "Kenya", "दक्षिण अफ्रीका": "South Africa", "पंजाब/हरियाणा": "Punjab/Haryana", "अण्डमान": "Andaman" };
   let INDEX = null;
   function build() {
     INDEX = [];
     const S = root.IN_STATES || [], D = root.IN_DISTS || [];
+    const hiToEn = {};
+    for (const [en, hi] of S) hiToEn[hi] = en;
     for (const c of root.CITIES || []) {
       const m = c.name.match(/^(.*?)\s*\((.*)\)$/);
       const hi = m ? m[1] : c.name, en = m ? m[2] : c.name;
-      INDEX.push({ label: hi, en, region: c.region, lat: c.lat, lon: c.lon, tz: c.tz, major: true, lp: plain(en), sk: latSkel(en), hk: devSkel(hi) });
+      INDEX.push({ label: hi, en, region: c.region, regionEn: hiToEn[c.region] || COUNTRY_EN[c.region] || c.region, lat: c.lat, lon: c.lon, tz: c.tz, major: true, lp: plain(en), sk: latSkel(en), hk: devSkel(hi) });
     }
     for (const [name, lat, lon, si, di] of root.IN_PLACES || []) {
       const st = S[si] || ["", ""];
-      INDEX.push({ label: name, en: name, region: [D[di], st[1]].filter(Boolean).join(", "), lat, lon, tz: "Asia/Kolkata", major: false, lp: plain(name), sk: latSkel(name), hk: "" });
+      INDEX.push({ label: name, en: name, region: [D[di], st[1]].filter(Boolean).join(", "), regionEn: [D[di], st[0]].filter(Boolean).join(", "), lat, lon, tz: "Asia/Kolkata", major: false, lp: plain(name), sk: latSkel(name), hk: "" });
     }
   }
+  const showName = (e) => (T(false, true) ? e.en : e.label);
+  const showRegion = (e) => (T(false, true) ? e.regionEn || e.region : e.region);
 
   function search(q, limit = 8) {
     if (!INDEX) build();
@@ -171,14 +177,14 @@
 
     function close() { list.hidden = true; input.setAttribute("aria-expanded", "false"); active = -1; }
     function draw(note) {
-      list.innerHTML = items.map((e, i) => `<li role="option" data-i="${i}" class="${i === active ? "on" : ""}" style="animation-delay:${i * 30}ms"><span class="ps-pin">📍</span><span><b>${esc(e.label)}</b>${e.label !== e.en ? ` <i>${esc(e.en)}</i>` : ""}<small>${esc(e.region || "")}</small></span></li>`).join("")
+      list.innerHTML = items.map((e, i) => `<li role="option" data-i="${i}" class="${i === active ? "on" : ""}" style="animation-delay:${i * 30}ms"><span class="ps-pin">📍</span><span><b>${esc(showName(e))}</b>${e.label !== e.en ? ` <i>${esc(T(e.en, e.label))}</i>` : ""}<small>${esc(showRegion(e) || "")}</small></span></li>`).join("")
         + (note ? `<li class="ps-note">${note}</li>` : "");
       list.hidden = !items.length && !note;
       input.setAttribute("aria-expanded", String(!list.hidden));
     }
     function pick(e) {
       picked = e;
-      input.value = e.label === e.en ? `${e.en}${e.region ? ", " + e.region : ""}` : `${e.label} (${e.en})`;
+      input.value = e.label === e.en ? `${e.en}${showRegion(e) ? ", " + showRegion(e) : ""}` : T(`${e.label} (${e.en})`, `${e.en} (${e.label})`);
       close();
       onPick(e);
     }
@@ -188,9 +194,9 @@
         const d = await r.json();
         if (input.value.trim() !== q || !d.results) return;
         items = d.results.map((x) => ({ label: x.name, en: x.name, region: [x.admin1, x.country].filter(Boolean).join(", "), lat: x.latitude, lon: x.longitude, tz: x.timezone }));
-        active = 0; draw(items.length ? "🌐 इंटरनेट से" : "");
+        active = 0; draw(items.length ? T("🌐 इंटरनेट से", "🌐 from the internet") : "");
       } catch (err) {
-        if (input.value.trim() === q) { items = []; draw("कोई स्थान नहीं मिला। पास के बड़े शहर का नाम लिखें, या नीचे अक्षांश-देशान्तर स्वयं भरें।"); }
+        if (input.value.trim() === q) { items = []; draw(T("कोई स्थान नहीं मिला। पास के बड़े शहर का नाम लिखें, या नीचे अक्षांश-देशान्तर स्वयं भरें।", "No place found. Type a nearby larger town, or fill in latitude/longitude below.")); }
       }
     }
     input.addEventListener("input", () => {
@@ -200,7 +206,7 @@
       timer = setTimeout(() => {
         items = search(q);
         active = items.length ? 0 : -1;
-        if (!items.length && q.length >= 3) { draw("खोज रहे हैं…"); online(q); }
+        if (!items.length && q.length >= 3) { draw(T("खोज रहे हैं…", "Searching…")); online(q); }
         else draw("");
       }, 120);
     });
@@ -269,7 +275,7 @@
         if (ctl.ensure()) return true;
         return hasCoords;
       },
-      setCity(name) { const r = search(name, 1); if (r.length) { $("place").value = r[0].label === r[0].en ? r[0].en : `${r[0].label} (${r[0].en})`; ctl.setPicked(r[0]); set(r[0]); } },
+      setCity(name) { const r = search(name, 1); if (r.length) { $("place").value = r[0].label === r[0].en ? r[0].en : T(`${r[0].label} (${r[0].en})`, `${r[0].en} (${r[0].label})`); ctl.setPicked(r[0]); set(r[0]); } },
       load(d) { $("place").value = d.place || ""; $("lat").value = d.lat; $("lon").value = d.lon; $("tz").value = d.tzOffsetMin / 60; $("tzName").value = d.tzName || ""; manualTz = true; ctl.setPicked({}); info(); },
     };
   }

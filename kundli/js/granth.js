@@ -275,6 +275,10 @@
   };
 
   // ---------------- विश्लेषण ----------------
+  const T = (hi, en) => (root.I18N && root.I18N.lang === "en" ? en : hi);
+  const HI_DATA = { BHAVESH, KARMAJIVA, DVI, SUN_SIGN, SANKHYA };
+  const D = () => (root.I18N && root.I18N.lang === "en" && root.GRANTH_EN ? root.GRANTH_EN : HI_DATA);
+
   function analyze(r) {
     const P = r.planets, H = r.houses;
     const hf = J.houseFrom, G = J.GRAHA, ORD = J.ORD;
@@ -282,6 +286,8 @@
     const L = (h) => H[h - 1].lord;
     const strong = (p) => r.strength[p] >= 50 || ["exalt", "own", "moola"].includes(P[p].dignity.key);
     const mutualKendra = (a, b) => KEN.includes(hf(P[a].sign, P[b].sign));
+    const names = (arr) => arr.map((p) => G[p]).join(", ");
+    const d = D();
     const out = [];
 
     // ===== बृहत् पाराशर होरा शास्त्र =====
@@ -290,49 +296,46 @@
     const s = av.savHouse;
     const strongH = s.map((v, i) => [i + 1, v]).filter(([, v]) => v >= 28).map(([h]) => h);
     const weakH = s.map((v, i) => [i + 1, v]).filter(([, v]) => v < 25).map(([h]) => h);
-    bp.push({ title: "सर्वाष्टकवर्ग (भाव अनुसार बिन्दु)", table: s, text: `कुल ${s.reduce((a, b) => a + b, 0)} बिन्दु (मानक 337)। पराशर के अनुसार 28 या अधिक बिन्दु वाले भाव शुभ फल देते हैं, 25 से कम वाले भाव कमज़ोर रहते हैं। बलवान भाव: <b>${strongH.map(ORD).join(", ") || "—"}</b>। निर्बल भाव: <b>${weakH.map(ORD).join(", ") || "—"}</b>।`, good: true });
+    const tot = s.reduce((a, b) => a + b, 0);
+    bp.push({ title: T("सर्वाष्टकवर्ग (भाव अनुसार बिन्दु)", "Sarvashtakavarga (points per house)"), table: s, text: T(`कुल ${tot} बिन्दु (मानक 337)। पराशर के अनुसार 28 या अधिक बिन्दु वाले भाव शुभ फल देते हैं, 25 से कम वाले भाव कमज़ोर रहते हैं। बलवान भाव: <b>${strongH.map(ORD).join(", ") || "—"}</b>। निर्बल भाव: <b>${weakH.map(ORD).join(", ") || "—"}</b>।`, `Total ${tot} points (standard 337). According to Parashara, houses with 28 or more points give good results and those below 25 remain weak. Strong houses: <b>${strongH.map(ORD).join(", ") || "—"}</b>. Weak houses: <b>${weakH.map(ORD).join(", ") || "—"}</b>.`), good: true });
     const rule = s[10] > s[9] && s[9] > s[11] && s[0] > s[11];
-    bp.push({ title: "अष्टकवर्ग — आय-व्यय नियम", text: rule ? `एकादश (${s[10]}) > दशम (${s[9]}) > द्वादश (${s[11]}) तथा लग्न (${s[0]}) > द्वादश — शास्त्र के अनुसार ऐसा जातक जीवन में समृद्ध, सुखी और आय से अधिक व्यय न करने वाला होता है।` : `एकादश ${s[10]}, दशम ${s[9]}, द्वादश ${s[11]}, लग्न ${s[0]}। ${s[11] > s[10] ? "द्वादश भाव में लाभ भाव से अधिक बिन्दु — व्यय आय पर भारी पड़ सकता है; बचत में अनुशासन रखें।" : "आय-व्यय सन्तुलित रहेगा; परिश्रम से वृद्धि।"}`, good: rule || s[11] <= s[10] });
+    bp.push({ title: T("अष्टकवर्ग — आय-व्यय नियम", "Ashtakavarga — income/expense rule"), text: rule ? T(`एकादश (${s[10]}) > दशम (${s[9]}) > द्वादश (${s[11]}) तथा लग्न (${s[0]}) > द्वादश — शास्त्र के अनुसार ऐसा जातक जीवन में समृद्ध, सुखी और आय से अधिक व्यय न करने वाला होता है।`, `11th (${s[10]}) > 10th (${s[9]}) > 12th (${s[11]}) and Lagna (${s[0]}) > 12th — per the texts such a native is prosperous, happy and does not spend beyond income.`) : T(`एकादश ${s[10]}, दशम ${s[9]}, द्वादश ${s[11]}, लग्न ${s[0]}। ${s[11] > s[10] ? "द्वादश भाव में लाभ भाव से अधिक बिन्दु — व्यय आय पर भारी पड़ सकता है; बचत में अनुशासन रखें।" : "आय-व्यय सन्तुलित रहेगा; परिश्रम से वृद्धि।"}`, `11th ${s[10]}, 10th ${s[9]}, 12th ${s[11]}, Lagna ${s[0]}. ${s[11] > s[10] ? "The 12th has more points than the 11th — expenses may outweigh income; keep discipline in saving." : "Income and expenses will stay balanced; growth through effort."}`), good: rule || s[11] <= s[10] });
     const tr = r.transit;
     const satB = av.bav.Saturn[tr.satSign], jupB = av.bav.Jupiter[tr.jupSign];
-    bp.push({ title: "अष्टकवर्ग से वर्तमान गोचर", text: `गोचर शनि ${J.RASHI[tr.satSign]} में — शनि के भिन्नाष्टक में वहाँ ${satB} बिन्दु (${satB >= 4 ? "शुभ — साढ़ेसाती/ढैय्या का कष्ट भी कम होगा" : "अशुभ — शनि का गोचर कष्टकारी, उपाय करें"})। गोचर गुरु ${J.RASHI[tr.jupSign]} में — गुरु के भिन्नाष्टक में ${jupB} बिन्दु (${jupB >= 4 ? "शुभ फल" : "फल में कमी"})। नियम: 4 या अधिक बिन्दु वाली राशि में गोचर शुभ।`, good: satB >= 4 && jupB >= 4 });
-    out.push({ granth: "बृहत् पाराशर होरा शास्त्र", author: "महर्षि पराशर", note: "भावेश फल के 144 योग नीचे “द्वादश भाव फल” तालिका में दिए गए हैं।", items: bp, av });
+    bp.push({ title: T("अष्टकवर्ग से वर्तमान गोचर", "Current transit by Ashtakavarga"), text: T(`गोचर शनि ${J.RASHI[tr.satSign]} में — शनि के भिन्नाष्टक में वहाँ ${satB} बिन्दु (${satB >= 4 ? "शुभ — साढ़ेसाती/ढैय्या का कष्ट भी कम होगा" : "अशुभ — शनि का गोचर कष्टकारी, उपाय करें"})। गोचर गुरु ${J.RASHI[tr.jupSign]} में — गुरु के भिन्नाष्टक में ${jupB} बिन्दु (${jupB >= 4 ? "शुभ फल" : "फल में कमी"})। नियम: 4 या अधिक बिन्दु वाली राशि में गोचर शुभ।`, `Transit Saturn in ${J.RASHI[tr.satSign]} — ${satB} points there in Saturn's Bhinnashtakavarga (${satB >= 4 ? "favourable — even Sade Sati/Dhaiya will trouble less" : "unfavourable — Saturn's transit is troublesome, do remedies"}). Transit Jupiter in ${J.RASHI[tr.jupSign]} — ${jupB} points in Jupiter's BAV (${jupB >= 4 ? "good results" : "reduced results"}). Rule: transit through a sign with 4+ points is favourable.`), good: satB >= 4 && jupB >= 4 });
+    out.push({ granth: T("बृहत् पाराशर होरा शास्त्र", "Brihat Parashara Hora Shastra"), author: T("महर्षि पराशर", "Maharshi Parashara"), note: T("भावेश फल के 144 योग “फलादेश” टैब की “द्वादश भाव फल” तालिका में दिए गए हैं।", "The 144 bhavesh-phala results are in the “Twelve Houses” table of the Phaladesh tab."), items: bp, av });
 
     // ===== बृहज्जातक =====
     const bj = [];
-    // कर्माजीव
-    const refs = [["लग्न", r.lagnaSign, r.strength[L(1)]], ["चन्द्र", P.Moon.sign, r.strength.Moon], ["सूर्य", P.Sun.sign, r.strength.Sun]].sort((a, b) => b[2] - a[2]);
+    const refs = [[T("लग्न", "Lagna"), r.lagnaSign, r.strength[L(1)]], [T("चन्द्र", "Moon"), P.Moon.sign, r.strength.Moon], [T("सूर्य", "Sun"), P.Sun.sign, r.strength.Sun]].sort((a, b) => b[2] - a[2]);
     const [refName, refSign] = refs[0];
     const tenthSign = (refSign + 9) % 12, tenthLord = J.RASHI_LORD[tenthSign];
     const navLord = J.RASHI_LORD[P[tenthLord].navamsa];
     const in10 = SEVEN.filter((p) => P[p].sign === tenthSign);
-    bj.push({ title: "कर्माजीव (आजीविका का स्रोत)", text: `लग्न, चन्द्र और सूर्य में सबसे बलवान <b>${refName}</b> है। उससे दशम राशि ${J.RASHI[tenthSign]}, जिसका स्वामी ${G[tenthLord]} नवांश में ${J.RASHI[P[tenthLord].navamsa]} में है, और उस नवांश का स्वामी <b>${G[navLord]}</b> है। वराहमिहिर के अनुसार आजीविका: <b>${KARMAJIVA[navLord]}</b>।${in10.length ? ` ${refName} से दशम में स्थित ${in10.map((p) => G[p]).join(", ")} भी धन देंगे: ${in10.map((p) => KARMAJIVA[p].split(";")[1] || KARMAJIVA[p]).join("; ")}।` : ""}`, good: true });
-    // सूर्य राशि
-    bj.push({ title: "सूर्य राशि फल", text: SUN_SIGN[P.Sun.sign], good: ["exalt", "own", "friend"].includes(P.Sun.dignity.key) });
-    // नाभस — आश्रय
+    const kj = (p) => d.KARMAJIVA[p].split(";")[1] || d.KARMAJIVA[p];
+    bj.push({ title: T("कर्माजीव (आजीविका का स्रोत)", "Karmajiva (source of livelihood)"), text: T(`लग्न, चन्द्र और सूर्य में सबसे बलवान <b>${refName}</b> है। उससे दशम राशि ${J.RASHI[tenthSign]}, जिसका स्वामी ${G[tenthLord]} नवांश में ${J.RASHI[P[tenthLord].navamsa]} में है, और उस नवांश का स्वामी <b>${G[navLord]}</b> है। वराहमिहिर के अनुसार आजीविका: <b>${d.KARMAJIVA[navLord]}</b>।${in10.length ? ` ${refName} से दशम में स्थित ${names(in10)} भी धन देंगे: ${in10.map(kj).join("; ")}।` : ""}`, `Of the Lagna, Moon and Sun the strongest is the <b>${refName}</b>. The 10th sign from it is ${J.RASHI[tenthSign]}; its lord ${G[tenthLord]} is in ${J.RASHI[P[tenthLord].navamsa]} navamsa, whose lord is <b>${G[navLord]}</b>. Per Varahamihira, livelihood comes: <b>${d.KARMAJIVA[navLord]}</b>.${in10.length ? ` ${names(in10)} in the 10th from the ${refName} will also bring wealth: ${in10.map(kj).join("; ")}.` : ""}`), good: true });
+    bj.push({ title: T("सूर्य राशि फल", "Result of the Sun's sign"), text: d.SUN_SIGN[P.Sun.sign], good: ["exalt", "own", "friend"].includes(P.Sun.dignity.key) });
     const signs = SEVEN.map((p) => P[p].sign);
     const mov = signs.every((x) => x % 3 === 0), fix = signs.every((x) => x % 3 === 1), dual = signs.every((x) => x % 3 === 2);
     let nabhasa = null;
-    if (mov) nabhasa = ["रज्जु योग", "सभी ग्रह चर राशियों में: यात्रा-प्रिय, विदेश में सुख, सुन्दर; ईर्ष्या से बचें।", true];
-    if (fix) nabhasa = ["मुसल योग", "सभी ग्रह स्थिर राशियों में: मानी, ज्ञानी, धनी, राज-प्रिय, स्थिर कार्य करने वाला।", true];
-    if (dual) nabhasa = ["नल योग", "सभी ग्रह द्विस्वभाव राशियों में: चतुर, धन-संग्रह में कुशल, परन्तु शरीर में कोई दुर्बलता सम्भव।", true];
-    // दल योग
+    if (mov) nabhasa = [T("रज्जु योग", "Rajju Yoga"), T("सभी ग्रह चर राशियों में: यात्रा-प्रिय, विदेश में सुख, सुन्दर; ईर्ष्या से बचें।", "All planets in movable signs: fond of travel, happiness abroad, handsome; avoid jealousy."), true];
+    if (fix) nabhasa = [T("मुसल योग", "Musala Yoga"), T("सभी ग्रह स्थिर राशियों में: मानी, ज्ञानी, धनी, राज-प्रिय, स्थिर कार्य करने वाला।", "All planets in fixed signs: honourable, wise, wealthy, favoured by authority, steady in work."), true];
+    if (dual) nabhasa = [T("नल योग", "Nala Yoga"), T("सभी ग्रह द्विस्वभाव राशियों में: चतुर, धन-संग्रह में कुशल, परन्तु शरीर में कोई दुर्बलता सम्भव।", "All planets in dual signs: clever, skilled at accumulating wealth, though some bodily weakness is possible."), true];
     const benK = ["Jupiter", "Venus", "Mercury"].filter((p) => KEN.includes(P[p].house));
     const malK = ["Sun", "Mars", "Saturn"].filter((p) => KEN.includes(P[p].house));
-    if (!nabhasa && new Set(benK.map((p) => P[p].house)).size >= 3 && !malK.length) nabhasa = ["माला योग", "शुभ ग्रह तीन केन्द्रों में: सदा सुखी, वाहन-वस्त्र-भोग युक्त, अनेक स्त्री/मित्रों से सुख।", true];
-    if (!nabhasa && new Set(malK.map((p) => P[p].house)).size >= 3 && !benK.length) nabhasa = ["सर्प योग", "पाप ग्रह तीन केन्द्रों में: कुटिलता, दुःख और दूसरों पर निर्भरता; उपासना से शमन।", false];
+    if (!nabhasa && new Set(benK.map((p) => P[p].house)).size >= 3 && !malK.length) nabhasa = [T("माला योग", "Mala Yoga"), T("शुभ ग्रह तीन केन्द्रों में: सदा सुखी, वाहन-वस्त्र-भोग युक्त, अनेक स्त्री/मित्रों से सुख।", "Benefics in three kendras: ever happy, blessed with vehicles, clothes and comforts, happiness from many companions."), true];
+    if (!nabhasa && new Set(malK.map((p) => P[p].house)).size >= 3 && !benK.length) nabhasa = [T("सर्प योग", "Sarpa Yoga"), T("पाप ग्रह तीन केन्द्रों में: कुटिलता, दुःख और दूसरों पर निर्भरता; उपासना से शमन।", "Malefics in three kendras: crookedness, sorrow and dependence on others; mitigated by worship."), false];
     const n = new Set(signs).size;
-    if (!nabhasa) nabhasa = [SANKHYA[n][0] + " (संख्या योग)", `सात ग्रह ${n} राशियों में: ${SANKHYA[n][1]}`, SANKHYA[n][2]];
-    bj.push({ title: `नाभस योग — ${nabhasa[0]}`, text: nabhasa[1], good: nabhasa[2] });
-    // प्रव्रज्या
+    if (!nabhasa) nabhasa = [d.SANKHYA[n][0] + T(" (संख्या योग)", " (Sankhya yoga)"), T(`सात ग्रह ${n} राशियों में: ${d.SANKHYA[n][1]}`, `Seven planets in ${n} signs: ${d.SANKHYA[n][1]}`), d.SANKHYA[n][2]];
+    bj.push({ title: T(`नाभस योग — ${nabhasa[0]}`, `Nabhasa Yoga — ${nabhasa[0]}`), text: nabhasa[1], good: nabhasa[2] });
     const count = {};
     for (const p of SEVEN) (count[P[p].sign] = count[P[p].sign] || []).push(p);
     const grp = Object.values(count).find((g) => g.length >= 4);
     if (grp) {
       const strongest = grp.filter((p) => !P[p].combust).sort((a, b) => r.strength[b] - r.strength[a])[0];
-      bj.push({ title: "प्रव्रज्या योग", text: `चार या अधिक ग्रह (${grp.map((p) => G[p]).join(", ")}) एक राशि में। वराहमिहिर के अनुसार इससे वैराग्य/आध्यात्मिक जीवन की प्रवृत्ति बनती है। ${strongest ? `सबसे बलवान ${G[strongest]} के स्वभाव की साधना-पद्धति की ओर झुकाव।` : "सभी ग्रह अस्त होने से योग भंग — गृहस्थ में रहते हुए धार्मिकता।"}`, good: true });
+      bj.push({ title: T("प्रव्रज्या योग", "Pravrajya Yoga"), text: T(`चार या अधिक ग्रह (${names(grp)}) एक राशि में। वराहमिहिर के अनुसार इससे वैराग्य/आध्यात्मिक जीवन की प्रवृत्ति बनती है। ${strongest ? `सबसे बलवान ${G[strongest]} के स्वभाव की साधना-पद्धति की ओर झुकाव।` : "सभी ग्रह अस्त होने से योग भंग — गृहस्थ में रहते हुए धार्मिकता।"}`, `Four or more planets (${names(grp)}) in one sign. Per Varahamihira this creates a leaning towards renunciation/spiritual life. ${strongest ? `Inclination towards the spiritual path suited to the strongest planet, ${G[strongest]}.` : "All are combust, so the yoga is cancelled — religiousness while remaining a householder."}`), good: true });
     }
-    out.push({ granth: "बृहज्जातक", author: "आचार्य वराहमिहिर", items: bj });
+    out.push({ granth: T("बृहज्जातक", "Brihat Jataka"), author: T("आचार्य वराहमिहिर", "Acharya Varahamihira"), items: bj });
 
     // ===== फलदीपिका =====
     const pd = [];
@@ -340,26 +343,25 @@
     const BEN = ["Jupiter", "Venus", "Mercury"];
     const upa = [3, 6, 10, 11];
     if (BEN.every((p) => upa.includes(fromMoon(p))) || BEN.every((p) => upa.includes(P[p].house)))
-      pd.push({ title: "वसुमती योग", text: "गुरु, शुक्र और बुध उपचय भावों (3, 6, 10, 11) में। मंत्रेश्वर के अनुसार ऐसा जातक सदा धनवान होता है और घर में धन-धान्य बना रहता है।", good: true });
+      pd.push({ title: T("वसुमती योग", "Vasumati Yoga"), text: T("गुरु, शुक्र और बुध उपचय भावों (3, 6, 10, 11) में। मंत्रेश्वर के अनुसार ऐसा जातक सदा धनवान होता है और घर में धन-धान्य बना रहता है।", "Jupiter, Venus and Mercury in upachaya houses (3, 6, 10, 11). Per Mantreshwara such a native is always wealthy and the home stays full of grain and riches."), good: true });
     const adhi = BEN.filter((p) => [6, 7, 8].includes(fromMoon(p)));
-    if (adhi.length >= 2) pd.push({ title: adhi.length === 3 ? "अधि योग (पूर्ण)" : "अधि योग (आंशिक)", text: `चन्द्रमा से 6, 7, 8 भावों में शुभ ग्रह (${adhi.map((p) => G[p]).join(", ")})। फल: ${adhi.length === 3 ? "राजा, मंत्री या सेनापति-तुल्य पद" : "मंत्री/उच्च अधिकारी-तुल्य पद"}, सुखी, विनम्र, दीर्घायु और शत्रुओं पर विजयी।`, good: true });
+    if (adhi.length >= 2) pd.push({ title: adhi.length === 3 ? T("अधि योग (पूर्ण)", "Adhi Yoga (full)") : T("अधि योग (आंशिक)", "Adhi Yoga (partial)"), text: T(`चन्द्रमा से 6, 7, 8 भावों में शुभ ग्रह (${names(adhi)})। फल: ${adhi.length === 3 ? "राजा, मंत्री या सेनापति-तुल्य पद" : "मंत्री/उच्च अधिकारी-तुल्य पद"}, सुखी, विनम्र, दीर्घायु और शत्रुओं पर विजयी।`, `Benefics in the 6th, 7th, 8th from the Moon (${names(adhi)}). Result: ${adhi.length === 3 ? "a position like a king, minister or commander" : "a position like a minister/high official"}, happy, humble, long-lived and victorious over enemies.`), good: true });
     const sunNbr = SEVEN.filter((p) => p !== "Moon" && p !== "Sun");
     const v2 = sunNbr.filter((p) => hf(P.Sun.sign, P[p].sign) === 2), v12 = sunNbr.filter((p) => hf(P.Sun.sign, P[p].sign) === 12);
-    if (v2.length && v12.length) pd.push({ title: "उभयचरी योग", text: `सूर्य के दोनों ओर ग्रह (${v2.concat(v12).map((p) => G[p]).join(", ")})। राजा-तुल्य, सुन्दर, वाक्पटु, सबका प्रिय और धनवान।`, good: true });
-    else if (v2.length) pd.push({ title: "वेशि योग", text: `सूर्य से द्वितीय में ${v2.map((p) => G[p]).join(", ")}। ${v2.some((p) => BEN.includes(p)) ? "सत्यवादी, सम्पन्न, परिश्रमी और समदर्शी।" : "पाप ग्रह से वेशि: स्वभाव में कुछ कठोरता, परन्तु परिश्रम से उन्नति।"}`, good: v2.some((p) => BEN.includes(p)) });
-    else if (v12.length) pd.push({ title: "वाशि योग", text: `सूर्य से द्वादश में ${v12.map((p) => G[p]).join(", ")}। ${v12.some((p) => BEN.includes(p)) ? "दानी, बुद्धिमान, बलवान, यशस्वी और सुखी।" : "पाप ग्रह से वाशि: परदेश/दूसरों के अधीन कार्य; धैर्य से उन्नति।"}`, good: v12.some((p) => BEN.includes(p)) });
+    if (v2.length && v12.length) pd.push({ title: T("उभयचरी योग", "Ubhayachari Yoga"), text: T(`सूर्य के दोनों ओर ग्रह (${names(v2.concat(v12))})। राजा-तुल्य, सुन्दर, वाक्पटु, सबका प्रिय और धनवान।`, `Planets on both sides of the Sun (${names(v2.concat(v12))}). King-like, handsome, eloquent, liked by all and wealthy.`), good: true });
+    else if (v2.length) pd.push({ title: T("वेशि योग", "Veshi Yoga"), text: T(`सूर्य से द्वितीय में ${names(v2)}। ${v2.some((p) => BEN.includes(p)) ? "सत्यवादी, सम्पन्न, परिश्रमी और समदर्शी।" : "पाप ग्रह से वेशि: स्वभाव में कुछ कठोरता, परन्तु परिश्रम से उन्नति।"}`, `${names(v2)} in the 2nd from the Sun. ${v2.some((p) => BEN.includes(p)) ? "Truthful, prosperous, hard-working and impartial." : "Veshi by a malefic: some harshness of nature, but progress through effort."}`), good: v2.some((p) => BEN.includes(p)) });
+    else if (v12.length) pd.push({ title: T("वाशि योग", "Vashi Yoga"), text: T(`सूर्य से द्वादश में ${names(v12)}। ${v12.some((p) => BEN.includes(p)) ? "दानी, बुद्धिमान, बलवान, यशस्वी और सुखी।" : "पाप ग्रह से वाशि: परदेश/दूसरों के अधीन कार्य; धैर्य से उन्नति।"}`, `${names(v12)} in the 12th from the Sun. ${v12.some((p) => BEN.includes(p)) ? "Charitable, intelligent, strong, famous and happy." : "Vashi by a malefic: work abroad or under others; progress through patience."}`), good: v12.some((p) => BEN.includes(p)) });
     const benInKendra = BEN.some((p) => KEN.includes(P[p].house));
     const sixEight = [6, 8].every((h) => H[h - 1].occupants.filter((p) => SEVEN.includes(p)).every((p) => BEN.includes(p)));
     if (benInKendra && sixEight && !["Sun", "Mars", "Saturn"].some((p) => KEN.includes(P[p].house)))
-      pd.push({ title: "पर्वत योग", text: "केन्द्रों में शुभ ग्रह तथा 6, 8 भाव पाप ग्रहों से रहित। भाग्यशाली, वक्ता, दानी, विद्वान, प्रसिद्ध और नगर/संस्था का प्रमुख।", good: true });
+      pd.push({ title: T("पर्वत योग", "Parvata Yoga"), text: T("केन्द्रों में शुभ ग्रह तथा 6, 8 भाव पाप ग्रहों से रहित। भाग्यशाली, वक्ता, दानी, विद्वान, प्रसिद्ध और नगर/संस्था का प्रमुख।", "Benefics in kendras and the 6th and 8th free of malefics. Fortunate, a speaker, charitable, learned, famous and head of a town/institution."), good: true });
     if (L(5) !== L(6) && mutualKendra(L(5), L(6)) && strong(L(1)))
-      pd.push({ title: "शंख योग", text: `पंचमेश ${G[L(5)]} और षष्ठेश ${G[L(6)]} परस्पर केन्द्र में तथा लग्नेश बलवान। भोगी, दयालु, धर्मात्मा, जीवनसाथी-संतान-भूमि से युक्त और दीर्घायु।`, good: true });
+      pd.push({ title: T("शंख योग", "Shankha Yoga"), text: T(`पंचमेश ${G[L(5)]} और षष्ठेश ${G[L(6)]} परस्पर केन्द्र में तथा लग्नेश बलवान। भोगी, दयालु, धर्मात्मा, जीवनसाथी-संतान-भूमि से युक्त और दीर्घायु।`, `5th lord ${G[L(5)]} and 6th lord ${G[L(6)]} in mutual kendras with a strong Lagna lord. Enjoys life, kind, righteous, blessed with spouse, children and land, long-lived.`), good: true });
     if (mutualKendra("Venus", "Jupiter") && KEN.includes(P.Jupiter.house) && strong(L(1)) && strong(L(9)))
-      pd.push({ title: "भेरी योग", text: "शुक्र-गुरु परस्पर केन्द्र में, लग्नेश व भाग्येश बलवान। दीर्घायु, धनवान, राज-सम्मानित, कुल-दीपक और सुखी परिवार।", good: true });
+      pd.push({ title: T("भेरी योग", "Bheri Yoga"), text: T("शुक्र-गुरु परस्पर केन्द्र में, लग्नेश व भाग्येश बलवान। दीर्घायु, धनवान, राज-सम्मानित, कुल-दीपक और सुखी परिवार।", "Venus and Jupiter in mutual kendras with strong Lagna and 9th lords. Long-lived, wealthy, honoured by the state, the light of the family, a happy household."), good: true });
     const jupAspL1 = [1, 5, 7, 9].includes(hf(P.Jupiter.sign, P[L(1)].sign));
     if (P[L(1)].dignity.key === "exalt" && KEN.includes(P[L(1)].house) && jupAspL1)
-      pd.push({ title: "चामर योग", text: "लग्नेश उच्च का होकर केन्द्र में और गुरु से दृष्ट। राज-पूज्य, विद्वान, वक्ता, दीर्घायु और यशस्वी।", good: true });
-    // महाभाग्य
+      pd.push({ title: T("चामर योग", "Chamara Yoga"), text: T("लग्नेश उच्च का होकर केन्द्र में और गुरु से दृष्ट। राज-पूज्य, विद्वान, वक्ता, दीर्घायु और यशस्वी।", "The exalted Lagna lord in a kendra aspected by Jupiter. Honoured by kings, learned, a speaker, long-lived and famous."), good: true });
     if (r.sun) {
       const tm = r.input.hour * 60 + r.input.minute;
       const day = tm >= r.sun.rise.h * 60 + r.sun.rise.m && tm < r.sun.set.h * 60 + r.sun.set.m;
@@ -367,51 +369,54 @@
       const trio = [r.lagnaSign, P.Sun.sign, P.Moon.sign];
       const male = r.input.gender !== "F";
       if ((male && day && trio.every(odd)) || (!male && !day && trio.every((x) => !odd(x))))
-        pd.push({ title: "महाभाग्य योग", text: `${male ? "दिन में जन्म तथा लग्न, सूर्य, चन्द्र तीनों विषम राशियों में" : "रात्रि में जन्म तथा लग्न, सूर्य, चन्द्र तीनों सम राशियों में"}। मंत्रेश्वर के अनुसार अत्यन्त भाग्यशाली, दानी, प्रसिद्ध, दीर्घायु और ${male ? "राज-तुल्य" : "सौभाग्यवती, सदाचारी"}।`, good: true });
+        pd.push({ title: T("महाभाग्य योग", "Mahabhagya Yoga"), text: T(`${male ? "दिन में जन्म तथा लग्न, सूर्य, चन्द्र तीनों विषम राशियों में" : "रात्रि में जन्म तथा लग्न, सूर्य, चन्द्र तीनों सम राशियों में"}। मंत्रेश्वर के अनुसार अत्यन्त भाग्यशाली, दानी, प्रसिद्ध, दीर्घायु और ${male ? "राज-तुल्य" : "सौभाग्यवती, सदाचारी"}।`, `${male ? "Day birth with Lagna, Sun and Moon all in odd signs" : "Night birth with Lagna, Sun and Moon all in even signs"}. Per Mantreshwara: extremely fortunate, charitable, famous, long-lived and ${male ? "king-like" : "blessed and virtuous"}.`), good: true });
     }
-    if (!pd.length) pd.push({ title: "विशेष योग", text: "फलदीपिका के प्रमुख विशेष योग (वसुमती, अधि, पर्वत, शंख, भेरी, चामर, महाभाग्य) इस कुंडली में पूर्ण रूप से नहीं बनते। सामान्य फल ग्रह-भाव स्थिति के अनुसार मिलेंगे।", good: true });
-    out.push({ granth: "फलदीपिका", author: "मंत्रेश्वर", note: "ग्रहों का भावफल (ऊपर “ग्रह फल”) भी फलदीपिका के भावफलाध्याय पर आधारित है।", items: pd });
+    if (!pd.length) pd.push({ title: T("विशेष योग", "Special yogas"), text: T("फलदीपिका के प्रमुख विशेष योग (वसुमती, अधि, पर्वत, शंख, भेरी, चामर, महाभाग्य) इस कुंडली में पूर्ण रूप से नहीं बनते। सामान्य फल ग्रह-भाव स्थिति के अनुसार मिलेंगे।", "The main special yogas of Phaladeepika (Vasumati, Adhi, Parvata, Shankha, Bheri, Chamara, Mahabhagya) are not fully formed in this chart. General results follow the planets' house positions."), good: true });
+    out.push({ granth: T("फलदीपिका", "Phaladeepika"), author: T("मंत्रेश्वर", "Mantreshwara"), note: T("ग्रहों का भावफल (“फलादेश” टैब) भी फलदीपिका के भावफलाध्याय पर आधारित है।", "The planets-in-houses results (Phaladesh tab) are also based on Phaladeepika's chapter on bhava results."), items: pd });
 
     // ===== सारावली =====
     const sv = [];
     const conj = Object.values(count).filter((g) => g.length >= 2);
+    const bhavaK = (h) => (root.Phala ? root.Phala.BHAVA[h - 1].k : "");
     if (conj.length) for (const g of conj) {
       const lines = [];
       for (let i = 0; i < g.length; i++) for (let j = i + 1; j < g.length; j++) {
         const a = SEVEN.indexOf(g[i]) < SEVEN.indexOf(g[j]) ? g[i] : g[j], b = a === g[i] ? g[j] : g[i];
-        lines.push(`${G[a]}-${G[b]}: ${DVI[a + "-" + b]}`);
+        lines.push(`${G[a]}-${G[b]}: ${d.DVI[a + "-" + b]}`);
       }
-      sv.push({ title: `${J.RASHI[P[g[0]].sign]} राशि में युति — ${g.map((p) => G[p]).join(" + ")} (${ORD(P[g[0]].house)} भाव)`, text: lines.join("<br>") + `<br><span class="note">यह फल विशेष रूप से ${ORD(P[g[0]].house)} भाव (${(root.Phala ? root.Phala.BHAVA[P[g[0]].house - 1].k : "")}) के विषयों में प्रकट होगा।</span>`, good: true });
+      const h = P[g[0]].house;
+      sv.push({ title: T(`${J.RASHI[P[g[0]].sign]} राशि में युति — ${g.map((p) => G[p]).join(" + ")} (${ORD(h)} भाव)`, `Conjunction in ${J.RASHI[P[g[0]].sign]} — ${g.map((p) => G[p]).join(" + ")} (${ORD(h)} house)`), text: lines.join("<br>") + T(`<br><span class="note">यह फल विशेष रूप से ${ORD(h)} भाव (${bhavaK(h)}) के विषयों में प्रकट होगा।</span>`, `<br><span class="note">These results will show especially in matters of the ${ORD(h)} house (${bhavaK(h)}).</span>`), good: true });
     }
-    else sv.push({ title: "ग्रह-युति", text: "कोई दो ग्रह एक राशि में नहीं हैं, अतः सारावली का युति-फल लागू नहीं; प्रत्येक ग्रह अपना स्वतन्त्र फल देगा।", good: true });
+    else sv.push({ title: T("ग्रह-युति", "Conjunctions"), text: T("कोई दो ग्रह एक राशि में नहीं हैं, अतः सारावली का युति-फल लागू नहीं; प्रत्येक ग्रह अपना स्वतन्त्र फल देगा।", "No two planets share a sign, so Saravali's conjunction results do not apply; each planet gives its own results."), good: true });
     for (const nd of ["Rahu", "Ketu"]) {
       const w = SEVEN.filter((p) => P[p].sign === P[nd].sign);
-      if (w.length) sv.push({ title: `${G[nd]} के साथ ${w.map((p) => G[p]).join(", ")}`, text: `छाया ग्रह ${G[nd]} जिस ग्रह के साथ होता है, उसका फल ${nd === "Rahu" ? "बढ़ा-चढ़ाकर, अचानक और अपरम्परागत रूप" : "आध्यात्मिक, अलगाव-युक्त या अप्रत्याशित रूप"} में देता है। ${w.map((p) => G[p]).join(", ")} के कारकत्वों में इसका प्रभाव रहेगा।`, good: false });
+      if (w.length) sv.push({ title: T(`${G[nd]} के साथ ${names(w)}`, `${names(w)} with ${G[nd]}`), text: T(`छाया ग्रह ${G[nd]} जिस ग्रह के साथ होता है, उसका फल ${nd === "Rahu" ? "बढ़ा-चढ़ाकर, अचानक और अपरम्परागत रूप" : "आध्यात्मिक, अलगाव-युक्त या अप्रत्याशित रूप"} में देता है। ${names(w)} के कारकत्वों में इसका प्रभाव रहेगा।`, `The shadow planet ${G[nd]} gives the results of the planet it joins in ${nd === "Rahu" ? "an exaggerated, sudden and unconventional" : "a spiritual, detached or unexpected"} way. Its influence will be felt in the significations of ${names(w)}.`), good: false });
     }
-    out.push({ granth: "सारावली", author: "कल्याणवर्मा", note: "द्विग्रह (दो ग्रहों की युति) फल — सारावली एवं बृहज्जातक के द्विग्रह योगाध्याय के अनुसार।", items: sv });
+    out.push({ granth: T("सारावली", "Saravali"), author: T("कल्याणवर्मा", "Kalyanavarma"), note: T("द्विग्रह (दो ग्रहों की युति) फल — सारावली एवं बृहज्जातक के द्विग्रह योगाध्याय के अनुसार।", "Two-planet conjunction results — per Saravali and the dvigraha-yoga chapter of Brihat Jataka."), items: sv });
 
     // ===== जातक पारिजात =====
     const jp = [];
     const lad = BEN.filter((p) => [6, 7, 8].includes(P[p].house));
     if (lad.length >= 2 && !["Sun", "Mars", "Saturn", "Rahu", "Ketu"].some((p) => [6, 7, 8].includes(P[p].house)))
-      jp.push({ title: "लग्नाधि योग", text: `लग्न से 6, 7, 8 भावों में शुभ ग्रह (${lad.map((p) => G[p]).join(", ")}) और वहाँ पाप ग्रह नहीं। महात्मा, विद्वान, सुखी, धनवान और यशस्वी।`, good: true });
+      jp.push({ title: T("लग्नाधि योग", "Lagnadhi Yoga"), text: T(`लग्न से 6, 7, 8 भावों में शुभ ग्रह (${names(lad)}) और वहाँ पाप ग्रह नहीं। महात्मा, विद्वान, सुखी, धनवान और यशस्वी।`, `Benefics in the 6th, 7th, 8th from the Lagna (${names(lad)}) with no malefics there. Noble, learned, happy, wealthy and famous.`), good: true });
     const occ = (h) => H[h - 1].occupants;
     const isBen = (p) => BEN.includes(p) || p === "Moon";
     const isMal = (p) => ["Sun", "Mars", "Saturn", "Rahu", "Ketu"].includes(p);
     if (occ(2).length && occ(12).length && occ(2).every(isBen) && occ(12).every(isBen))
-      jp.push({ title: "शुभ कर्तरी योग (लग्न)", text: "लग्न के दोनों ओर (2 और 12 भाव में) शुभ ग्रह। जातक तेजस्वी, दीर्घायु, धनवान और सब ओर से सुरक्षित; सुख-सम्मान मिलता है।", good: true });
+      jp.push({ title: T("शुभ कर्तरी योग (लग्न)", "Shubha Kartari Yoga (Lagna)"), text: T("लग्न के दोनों ओर (2 और 12 भाव में) शुभ ग्रह। जातक तेजस्वी, दीर्घायु, धनवान और सब ओर से सुरक्षित; सुख-सम्मान मिलता है।", "Benefics on both sides of the Lagna (2nd and 12th). The native is radiant, long-lived, wealthy and protected on all sides; gains happiness and honour."), good: true });
     if (occ(2).length && occ(12).length && occ(2).every(isMal) && occ(12).every(isMal))
-      jp.push({ title: "पाप कर्तरी योग (लग्न)", text: "लग्न के दोनों ओर पाप ग्रह — लग्न दबाव में। स्वास्थ्य, आत्मविश्वास और अवसरों में बाधा; लग्नेश की उपासना करें।", good: false });
+      jp.push({ title: T("पाप कर्तरी योग (लग्न)", "Papa Kartari Yoga (Lagna)"), text: T("लग्न के दोनों ओर पाप ग्रह — लग्न दबाव में। स्वास्थ्य, आत्मविश्वास और अवसरों में बाधा; लग्नेश की उपासना करें।", "Malefics on both sides of the Lagna — the Lagna is hemmed in. Obstacles to health, confidence and opportunities; propitiate the Lagna lord."), good: false });
     if (L(4) !== L(9) && mutualKendra(L(4), L(9)) && strong(L(1)))
-      jp.push({ title: "कहल योग", text: `चतुर्थेश ${G[L(4)]} और भाग्येश ${G[L(9)]} परस्पर केन्द्र में, लग्नेश बलवान। साहसी, हठी, सेना/संस्था का नायक, ग्राम/क्षेत्र का अधिपति।`, good: true });
-    // लग्नेश का बल — जातक पारिजात का मूल सिद्धान्त
+      jp.push({ title: T("कहल योग", "Kahala Yoga"), text: T(`चतुर्थेश ${G[L(4)]} और भाग्येश ${G[L(9)]} परस्पर केन्द्र में, लग्नेश बलवान। साहसी, हठी, सेना/संस्था का नायक, ग्राम/क्षेत्र का अधिपति।`, `4th lord ${G[L(4)]} and 9th lord ${G[L(9)]} in mutual kendras with a strong Lagna lord. Bold, determined, leader of an army/institution, head of a region.`), good: true });
     const l1 = L(1);
-    jp.push({ title: "लग्नेश विचार", text: `लग्नेश ${G[l1]} ${ORD(P[l1].house)} भाव में ${P[l1].dignity.label}${P[l1].combust ? ", अस्त" : ""} है (बल ${r.strength[l1]}/100)। वैद्यनाथ के अनुसार लग्नेश बलवान हो तो अन्य दोष भी क्षीण होते हैं और सभी राजयोग फलित होते हैं; निर्बल हो तो शुभ योगों का फल भी अधूरा मिलता है। ${strong(l1) ? "आपका लग्नेश बलवान है — कुंडली के शुभ योग पूर्ण फल देंगे।" : "आपका लग्नेश अपेक्षाकृत निर्बल है — लग्नेश के मंत्र-जप और उपाय से कुंडली का समग्र फल सुधरेगा।"}`, good: strong(l1) });
-    out.push({ granth: "जातक पारिजात", author: "वैद्यनाथ दीक्षित", items: jp });
-
+    jp.push({ title: T("लग्नेश विचार", "Lagna lord assessment"), text: T(`लग्नेश ${G[l1]} ${ORD(P[l1].house)} भाव में ${P[l1].dignity.label}${P[l1].combust ? ", अस्त" : ""} है (बल ${r.strength[l1]}/100)। वैद्यनाथ के अनुसार लग्नेश बलवान हो तो अन्य दोष भी क्षीण होते हैं और सभी राजयोग फलित होते हैं; निर्बल हो तो शुभ योगों का फल भी अधूरा मिलता है। ${strong(l1) ? "आपका लग्नेश बलवान है — कुंडली के शुभ योग पूर्ण फल देंगे।" : "आपका लग्नेश अपेक्षाकृत निर्बल है — लग्नेश के मंत्र-जप और उपाय से कुंडली का समग्र फल सुधरेगा।"}`, `The Lagna lord ${G[l1]} is in the ${ORD(P[l1].house)} house, ${P[l1].dignity.label.toLowerCase()}${P[l1].combust ? ", combust" : ""} (strength ${r.strength[l1]}/100). Per Vaidyanatha, a strong Lagna lord weakens other doshas and lets all Raja yogas fructify; a weak one leaves even good yogas incomplete. ${strong(l1) ? "Your Lagna lord is strong — the chart's good yogas will give full results." : "Your Lagna lord is relatively weak — its mantra and remedies will improve the chart's overall results."}`), good: strong(l1) });
+    out.push({ granth: T("जातक पारिजात", "Jataka Parijata"), author: T("वैद्यनाथ दीक्षित", "Vaidyanatha Dikshita"), items: jp });
     return out;
   }
 
-  root.Granth = { BHAVESH, AV, ashtakavarga, analyze, DVI, KARMAJIVA };
+  root.Granth = {
+    BHAVESH, AV, ashtakavarga, analyze, DVI, KARMAJIVA,
+    setLang(l) { root.Granth.BHAVESH = l === "en" && root.GRANTH_EN ? root.GRANTH_EN.BHAVESH : BHAVESH; },
+  };
   if (typeof module !== "undefined") module.exports = root.Granth;
 })(typeof window !== "undefined" ? window : globalThis);
