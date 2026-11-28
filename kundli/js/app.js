@@ -557,7 +557,7 @@
         <div class="bc-birth">${tt("जन्म", "Born")}: ${birthStr} · ${esc(input.place || "")}</div>
         <div class="bc-birth">${tt("लग्न", "Lagna")}: ${av.lagna} · ${tt("राशि", "Rashi")}: ${av.rashi} · ${tt("नक्षत्र", "Nakshatra")}: ${av.nakshatra}</div>
         <div class="bc-orn"></div>
-        <div class="bc-photos"><figure><img class="bc-photo" src="img/acharya.webp" alt=""><figcaption>${tt("आचार्य श्री हिनलभाई भोगायता", "Acharya Shri Hinalbhai Bhogayata")}<br><small>M.A., B.Ed.</small></figcaption></figure><figure><img class="bc-photo" src="img/ravibhai.webp" alt=""><figcaption>${tt("शास्त्री रविभाई राजगुरु", "Shastri Ravibhai Rajguru")}</figcaption></figure></div>
+        <div class="bc-photos"><figure><img class="bc-photo" src="img/acharya.webp" alt=""><figcaption>${tt("आचार्य श्री हिनलभाई भोगायता", "Acharya Shri Hinalbhai Bhogayata")}<br><small>M.A., B.Ed.</small></figcaption></figure><figure><img class="bc-photo" src="img/ravibhai.webp" alt=""><figcaption>${tt("शास्त्री रविभाई राजगुरु", "Shastri Ravibhai Rajguru")}<br><small>${tt("ज्योतिषाचार्य · वास्तुशास्त्र निष्णात", "Jyotishacharya · Vastu Shastra Nishnat")}</small></figcaption></figure></div>
         <div class="bc-brand">नियति ज्योतिष कार्यालय</div>
         <div class="bc-brand-en">NIYATI JYOTISH KARYALAYA</div>
         <div class="bc-date">${tt("दिनांक", "Date")}: ${new Date().toLocaleDateString(tt("hi-IN", "en-IN"), { day: "numeric", month: "long", year: "numeric" })}</div>
