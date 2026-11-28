@@ -10,14 +10,20 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Mukta:wght@400;500;600;700&family=Cinzel:wght@600;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
 <script>window.__titles = { hi: "नियति ज्योतिष कार्यालय | Niyati Jyotish Karyalaya — जन्म कुंडली एवं फलादेश", en: "Niyati Jyotish Karyalaya — Janma Kundli, Phaladesh, Gun Milan & Prashna" };</script>
+<script>try { if (localStorage.getItem("niyati-acharya") === "1850dffd443a1865b99fa7553f3dbb7fbf94fab05628bac4f718e550515654cf") document.documentElement.classList.add("acharya"); } catch (e) { /* */ }</script>
 </head>
 <body>
 <header class="top">
   <div class="topbar">
     <span class="invocation" data-en="॥ Shri Ganeshaya Namah ॥">॥ श्री गणेशाय नमः ॥</span>
+    <div class="top-actions">
+    <button type="button" class="tbtn" id="homeBtn" data-en="🏠 Home">🏠 होम</button>
+    <button type="button" class="tbtn only-public" id="loginBtn" data-en="🔐 Acharya login">🔐 आचार्य लॉगिन</button>
+    <button type="button" class="tbtn only-acharya" id="logoutBtn" data-en="🔓 Log out">🔓 लॉगआउट</button>
     <div class="lang" role="group" aria-label="Language / भाषा">
       <button type="button" data-setlang="hi" class="on">हिन्दी</button>
       <button type="button" data-setlang="en">English</button>
+    </div>
     </div>
   </div>
   <div class="brand">
@@ -32,10 +38,10 @@
     </div>
   </div>
   <div class="orn" aria-hidden="true"></div>
-  <p class="sub" data-en="Vedic astrology according to Brihat Parashara Hora Shastra · Brihat Jataka · Phaladeepika · Saravali · Jataka Parijata">बृहत् पाराशर होरा शास्त्र · बृहज्जातक · फलदीपिका · सारावली · जातक पारिजात के अनुसार वैदिक ज्योतिष</p>
+  <p class="sub" data-en="Vedic astrology according to Brihat Parashara Hora Shastra · Brihat Jataka · Phaladeepika · Saravali · Jataka Parijata · Bhrigu Sutra">बृहत् पाराशर होरा शास्त्र · बृहज्जातक · फलदीपिका · सारावली · जातक पारिजात · भृगु सूत्र के अनुसार वैदिक ज्योतिष</p>
 </header>
 
-<nav class="tabs services no-print" aria-label="Services">
+<nav class="tabs services no-print only-acharya" aria-label="Services">
   <button type="button" class="tab svc active" data-view="kundliView">
     <span class="svc-ic">🪐</span><span class="svc-t" data-en="Janma Kundli">जन्म कुंडली</span><span class="svc-s" data-en="Chart · Phaladesh · Dasha · Transits">कुंडली · फलादेश · दशा · गोचर</span>
   </button>
@@ -46,8 +52,56 @@
     <span class="svc-ic">🔮</span><span class="svc-t" data-en="Prashna Kundli">प्रश्न कुंडली</span><span class="svc-s" data-en="Will the work succeed?">कार्य होगा या नहीं?</span>
   </button>
 </nav>
+<section id="requestView" class="only-public">
+  <div class="card form-card req-card">
+    <h2 data-en="🙏 Request your Kundli from Acharya Shri">🙏 आचार्य श्री से अपनी कुंडली बनवाएँ</h2>
+    <p class="hint" data-en="Kundli, Phaladesh, Gun Milan and Prashna are prepared personally by <b>Acharya Shri Hinalbhai Bhogayata</b>. Fill in the details below and send the request — Acharya Shri will prepare your kundli and contact you.">जन्म कुंडली, फलादेश, गुण मिलान और प्रश्न कुंडली <b>आचार्य श्री हिनलभाई भोगायता</b> स्वयं तैयार करते हैं। नीचे विवरण भरकर अनुरोध भेजें — आचार्य श्री आपकी कुंडली बनाकर आपसे संपर्क करेंगे।</p>
+    <div class="contact-box">
+      <div><span data-en="📧 Email">📧 ईमेल</span>: <a href="mailto:hinalbhogayata@gmail.com">hinalbhogayata@gmail.com</a></div>
+      <div class="note" data-en="Acharya Shri Hinalbhai Bhogayata · Niyati Jyotish Karyalaya">आचार्य श्री हिनलभाई भोगायता · नियति ज्योतिष कार्यालय</div>
+    </div>
+    <form id="reqForm" autocomplete="on">
+      <div class="req-svc" role="radiogroup" aria-label="Service">
+        <label><input type="radio" name="rsvc" value="kundli" checked><span data-en="🪐 Janma Kundli &amp; Phaladesh">🪐 जन्म कुंडली व फलादेश</span></label>
+        <label><input type="radio" name="rsvc" value="milan"><span data-en="💍 Gun Milan (marriage)">💍 गुण मिलान (विवाह)</span></label>
+        <label><input type="radio" name="rsvc" value="prashna"><span data-en="🔮 Prashna (a question)">🔮 प्रश्न कुंडली</span></label>
+      </div>
+      <fieldset class="person-f req-birth">
+        <legend class="r-l1" data-en="Birth details">जन्म विवरण</legend>
+        <div class="grid">
+          <label><span data-en="Name">नाम</span><input id="r_name" required autocomplete="name"></label>
+          <label><span data-en="Gender">लिंग</span><select id="r_gender"><option value="M" data-en="Male">पुरुष</option><option value="F" data-en="Female">स्त्री</option></select></label>
+          <label><span data-en="Date of birth">जन्म तिथि</span><input id="r_dob" type="date" required></label>
+          <label><span data-en="Time of birth">जन्म समय</span><input id="r_tob" type="time"></label>
+          <label class="wide"><span data-en="Place of birth (village/town, district, state)">जन्म स्थान (गाँव/शहर, ज़िला, राज्य)</span><input id="r_place" required></label>
+        </div>
+      </fieldset>
+      <fieldset class="person-f req-partner" hidden>
+        <legend data-en="Partner's birth details">दूसरे पक्ष (वर/कन्या) का जन्म विवरण</legend>
+        <div class="grid">
+          <label><span data-en="Name">नाम</span><input id="r2_name"></label>
+          <label><span data-en="Date of birth">जन्म तिथि</span><input id="r2_dob" type="date"></label>
+          <label><span data-en="Time of birth">जन्म समय</span><input id="r2_tob" type="time"></label>
+          <label class="wide"><span data-en="Place of birth">जन्म स्थान</span><input id="r2_place"></label>
+        </div>
+      </fieldset>
+      <fieldset class="person-f">
+        <legend data-en="Your contact">आपका संपर्क</legend>
+        <div class="grid">
+          <label><span data-en="Mobile / WhatsApp">मोबाइल / WhatsApp</span><input id="r_phone" type="tel" required autocomplete="tel" placeholder="+91 ..."></label>
+          <label><span data-en="Email (optional)">ईमेल (वैकल्पिक)</span><input id="r_email" type="email" autocomplete="email"></label>
+          <label class="wide"><span class="r-qlabel" data-en="Your question / message (optional)">आपका प्रश्न / संदेश (वैकल्पिक)</span><textarea id="r_msg" rows="3"></textarea></label>
+        </div>
+      </fieldset>
+      <div class="actions">
+        <button type="submit" class="primary" data-en="Send request 📧">अनुरोध भेजें 📧</button>
+      </div>
+      <div id="reqDone" class="req-done" hidden></div>
+    </form>
+  </div>
+</section>
 
-<main>
+<main class="only-acharya">
  <div id="kundliView">
   <section class="card form-card" id="formCard">
     <h2 data-en="🪔 Enter birth details">🪔 जन्म विवरण भरें</h2>
@@ -184,8 +238,10 @@
 <footer class="foot">
   <div class="orn" aria-hidden="true"></div>
   <p class="foot-brand"><b>नियति ज्योतिष कार्यालय</b> · Niyati Jyotish Karyalaya<br><span data-en="Acharya Shri Hinalbhai Bhogayata (M.A., B.Ed.)">आचार्य श्री हिनलभाई भोगायता (M.A., B.Ed.)</span></p>
+  <p class="foot-contact"><span data-en="Contact">संपर्क</span>: <a href="mailto:hinalbhogayata@gmail.com">hinalbhogayata@gmail.com</a></p>
   <p class="disclaimer" data-en="⚠️ These are general predictions based on the tradition of Jyotisha, not a scientific guarantee. For important decisions about health, money or marriage, always consult a qualified expert.">⚠️ यह ज्योतिष-परम्परा पर आधारित सामान्य फलादेश है, कोई वैज्ञानिक गारण्टी नहीं। स्वास्थ्य, धन या विवाह जैसे महत्वपूर्ण निर्णयों में योग्य विशेषज्ञ से परामर्श अवश्य लें।</p>
 </footer>
+<button type="button" id="homeFab" class="home-fab no-print" title="Home" aria-label="Home">🏠</button>
 
 <script src="js/i18n.js"></script>
 <script src="js/anim.js"></script>
@@ -211,6 +267,7 @@
 <script src="js/app.js"></script>
 <script src="js/milan-ui.js"></script>
 <script src="js/prashna-ui.js"></script>
+<script src="js/access.js"></script>
 <script>
   for (const b of document.querySelectorAll("[data-setlang]")) b.addEventListener("click", () => window.I18N.setLang(b.dataset.setlang));
   window.I18N.applyStatic();
