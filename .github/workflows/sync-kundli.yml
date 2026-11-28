@@ -1,0 +1,41 @@
+# kundli/ फ़ोल्डर को gh-pages branch के kundli/ में कॉपी करता है।
+# मुख्य वेबसाइट (www.niyatiweddings.co.uk) की अन्य किसी फ़ाइल को नहीं छूता।
+name: Sync Kundli app to website (/kundli/)
+
+on:
+  push:
+    branches: [main]
+    paths: ["kundli/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-kundli
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          path: src
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+      - name: Copy kundli/ only
+        run: |
+          rm -rf site/kundli
+          cp -r src/kundli site/kundli
+          cd site
+          git add -A kundli
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync Kundli app from main (${GITHUB_SHA::7})"
+          git push origin gh-pages
