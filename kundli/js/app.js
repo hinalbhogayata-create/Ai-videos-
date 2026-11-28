@@ -461,7 +461,7 @@
     html += `<section class="card person-card"><div class="toolbar"><div class="person"><div class="pk">${tt("जन्म कुंडली", "Janma Kundli")}</div><h2>${esc(input.name)}</h2>
       <p>${input.gender === "F" ? tt("स्त्री", "Female") : tt("पुरुष", "Male")} · ${tt("जन्म", "Born")}: ${birthStr} (UTC ${tz >= 0 ? "+" : "−"}${fmtOffset(Math.abs(tz))}) · ${esc(input.place || "")}</p>
       <p>${tt("अक्षांश", "Lat")} ${input.lat.toFixed(4)}°, ${tt("देशान्तर", "Lon")} ${input.lon.toFixed(4)}° · ${tt("लाहिरी अयनांश", "Lahiri ayanamsa")} ${J.dms(r.chart.ayanamsa)} · ${tt("वर्तमान आयु", "Current age")} ~${ageNow > 0 ? Math.floor(ageNow) : 0} ${tt("वर्ष", "years")}</p></div>
-      <div class="no-print tb-btns"><button class="ghost jump" id="jumpNiv">⚠️ ${tt("दोष एवं निवारण", "Doshas & Remedies")}</button> <button class="ghost" onclick="window.print()">🖨️ ${tt("प्रिंट / PDF", "Print / PDF")}</button> <button class="ghost" id="editBtn">✏️ ${tt("बदलें", "Edit")}</button></div></div></section>`;
+      <div class="no-print tb-btns"><button class="ghost jump" id="jumpNiv">⚠️ ${tt("दोष एवं निवारण", "Doshas & Remedies")}</button> <button class="ghost" onclick="window.print()">📖 ${tt("पुस्तक PDF / प्रिंट", "Book PDF / Print")}</button> <button class="ghost" id="editBtn">✏️ ${tt("बदलें", "Edit")}</button></div></div></section>`;
 
     const sunriseNote = r.sun && (input.hour * 60 + input.minute) < r.sun.rise.h * 60 + r.sun.rise.m;
     const prevDay = tt(["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"], ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"])[(new Date(Date.UTC(input.year, input.month - 1, input.day)).getUTCDay() + 6) % 7];
@@ -542,10 +542,31 @@
       ${r.houses.map((hs) => { const t = tier(houseScore(r, hs.h)); return `<tr><td><b>${hs.h}</b> ${FF.BHAVA[hs.h - 1].name}</td><td>${J.RASHI[hs.sign]}</td><td class="note">${FF.BHAVA[hs.h - 1].k}</td><td>${hs.occupants.map((p) => G[p]).join(", ") || "—"}</td><td><b>${tt(`भावेश ${G[hs.lord]} ${ORD(P[hs.lord].house)} भाव में`, `Lord ${G[hs.lord]} in the ${ORD(P[hs.lord].house)}`)}</b> — ${window.Granth.BHAVESH[hs.h - 1][P[hs.lord].house - 1]} <span class="note">(${tt("पराशर", "Parashara")})</span></td><td><span class="rating" style="background:${t.color}">${t.label}</span></td></tr>`; }).join("")}
       </tbody></table></div></section>`;
 
-    const TABS = [["sum", `📋 ${tt("सारांश", "Summary")}`], ["chart", `🪐 ${tt("कुंडली", "Charts")}`], ["yoga", `🌟 ${tt("योग", "Yogas")}`], ["dosha", `⚠️ ${tt("दोष एवं निवारण", "Doshas & Remedies")}`], ["phala", `📖 ${tt("फलादेश", "Phaladesh")}`], ["dasha", `⏳ ${tt("दशा", "Dasha")}`], ["gochar", `🪐 ${tt("गोचर / साढ़ेसाती", "Transits / Sade Sati")}`], ["granth", `📜 ${tt("ग्रंथ अनुसार", "By the Granthas")}`]];
+    const TABS = [["all", `📚 ${tt("सम्पूर्ण फलादेश", "Complete report")}`], ["sum", `📋 ${tt("सारांश", "Summary")}`], ["chart", `🪐 ${tt("कुंडली", "Charts")}`], ["yoga", `🌟 ${tt("योग", "Yogas")}`], ["dosha", `⚠️ ${tt("दोष एवं निवारण", "Doshas & Remedies")}`], ["phala", `📖 ${tt("फलादेश", "Phaladesh")}`], ["dasha", `⏳ ${tt("दशा", "Dasha")}`], ["gochar", `🪐 ${tt("गोचर / साढ़ेसाती", "Transits / Sade Sati")}`], ["granth", `📜 ${tt("ग्रंथ अनुसार", "By the Granthas")}`]];
+    TB.all = "";
     if (!TABS.some(([k]) => k === lastTab)) lastTab = "sum";
+    const CH = TABS.filter(([k]) => k !== "all");
+    const num = (i) => tt(String(i).replace(/\d/g, (d) => "०१२३४५६७८९"[d]), String(i));
+    // पुस्तक-शैली (प्रिंट/PDF): मुखपृष्ठ + अनुक्रमणिका
+    html += `<section class="print-only book-cover">
+      <div class="bc-frame">
+        <div class="bc-inv">${tt("॥ श्री गणेशाय नमः ॥", "॥ Shri Ganeshaya Namah ॥")}</div>
+        <img class="bc-ganesha" src="img/ganesha.png" alt="">
+        <div class="bc-title">${tt("जन्म कुंडली एवं फलादेश", "Janma Kundli & Phaladesh")}</div>
+        <div class="bc-name">${esc(input.name)}</div>
+        <div class="bc-birth">${tt("जन्म", "Born")}: ${birthStr} · ${esc(input.place || "")}</div>
+        <div class="bc-birth">${tt("लग्न", "Lagna")}: ${av.lagna} · ${tt("राशि", "Rashi")}: ${av.rashi} · ${tt("नक्षत्र", "Nakshatra")}: ${av.nakshatra}</div>
+        <div class="bc-orn"></div>
+        <img class="bc-photo" src="img/acharya.webp" alt="">
+        <div class="bc-brand">नियति ज्योतिष कार्यालय</div>
+        <div class="bc-brand-en">NIYATI JYOTISH KARYALAYA</div>
+        <div class="bc-ach">${tt("आचार्य श्री हिनलभाई भोगायता", "Acharya Shri Hinalbhai Bhogayata")} · M.A., B.Ed.</div>
+        <div class="bc-date">${tt("दिनांक", "Date")}: ${new Date().toLocaleDateString(tt("hi-IN", "en-IN"), { day: "numeric", month: "long", year: "numeric" })}</div>
+      </div></section>
+      <section class="print-only book-toc"><h2>${tt("अनुक्रमणिका", "Contents")}</h2><ol>${CH.map(([, l], i) => `<li><span class="tn">${tt("अध्याय", "Chapter")} ${num(i + 1)}</span><span class="tl">${l.replace(/^\S+\s/, "")}</span></li>`).join("")}</ol>
+      <p class="note">${tt("यह फलादेश बृहत् पाराशर होरा शास्त्र, बृहज्जातक, फलदीपिका, सारावली, जातक पारिजात एवं भृगु सूत्र के सिद्धान्तों पर आधारित है।", "These predictions are based on the principles of Brihat Parashara Hora Shastra, Brihat Jataka, Phaladeepika, Saravali, Jataka Parijata and Bhrigu Sutra.")}</p></section>`;
     html += `<nav class="rtabs no-print" role="tablist">${TABS.map(([k, l]) => `<button type="button" role="tab" data-rt="${k}" class="${k === lastTab ? "on" : ""}">${l}</button>`).join("")}</nav>`;
-    html += TABS.map(([k, l]) => `<div class="rpanel" data-panel="${k}" ${k === lastTab ? "" : "hidden"}><h2 class="print-only ptitle">${l}</h2>${TB[k]}</div>`).join("");
+    html += CH.map(([k, l], i) => `<div class="rpanel" data-panel="${k}" ${k === lastTab || lastTab === "all" ? "" : "hidden"}><h2 class="ptitle chapter-h"><span class="ch-no">${tt("अध्याय", "Chapter")} ${num(i + 1)}</span><span class="ch-t">${l.replace(/^\S+\s/, "")}</span></h2>${TB[k]}</div>`).join("");
     html += `<section class="card basis"><p class="note">${tt("ग्रंथ-आधार: बृहत् पाराशर होरा शास्त्र (पराशर), बृहज्जातक (वराहमिहिर), फलदीपिका (मंत्रेश्वर), सारावली (कल्याणवर्मा), जातक पारिजात (वैद्यनाथ दीक्षित)। गणना-विधि: ग्रहों के सायन भोगांश खगोलीय कक्षीय सूत्रों से (सटीकता ~1-3 कला), लाहिरी (चित्रपक्ष) अयनांश, सम्पूर्ण-राशि भाव पद्धति (पाराशरी), मध्यम राहु। फलादेश इन ग्रंथों के सिद्धान्तों का सरल सार है; अन्तिम निर्णय में सम्पूर्ण कुंडली का समग्र विचार आवश्यक है।", "Textual basis: Brihat Parashara Hora Shastra (Parashara), Brihat Jataka (Varahamihira), Phaladeepika (Mantreshwara), Saravali (Kalyanavarma), Jataka Parijata (Vaidyanatha Dikshita). Method: tropical longitudes from orbital formulae (accuracy ~1–3′), Lahiri (Chitrapaksha) ayanamsa, whole-sign houses (Parashari), mean Rahu. The predictions summarise these texts' principles; a final judgement needs a holistic view of the whole chart.")}</p></section>`;
 
     const rep = $("report");
@@ -556,15 +577,26 @@
     const showTab = (k) => {
       lastTab = k;
       for (const b of rep.querySelectorAll("[data-rt]")) b.classList.toggle("on", b.dataset.rt === k);
-      for (const pn of rep.querySelectorAll(".rpanel")) { const on = pn.dataset.panel === k; pn.hidden = !on; if (on) { pn.classList.remove("fade"); void pn.offsetWidth; pn.classList.add("fade"); if (window.Anim) window.Anim.afterRender(pn); } }
+      rep.classList.toggle("all-mode", k === "all");
+      for (const pn of rep.querySelectorAll(".rpanel")) { const on = k === "all" || pn.dataset.panel === k; pn.hidden = !on; if (on) { pn.classList.remove("fade"); void pn.offsetWidth; pn.classList.add("fade"); if (window.Anim) window.Anim.afterRender(pn); } }
     };
     const goTab = (k) => { showTab(k); rep.querySelector(".rtabs").scrollIntoView({ behavior: "smooth", block: "start" }); };
     for (const b of rep.querySelectorAll("[data-rt]")) b.addEventListener("click", () => goTab(b.dataset.rt));
     for (const b of rep.querySelectorAll("[data-goto]")) b.addEventListener("click", () => goTab(b.dataset.goto));
     $("jumpNiv").onclick = () => goTab("dosha");
-    if (window.Anim) window.Anim.afterRender(rep.querySelector(`.rpanel[data-panel="${lastTab}"]`));
+    rep.classList.toggle("all-mode", lastTab === "all");
+    if (window.Anim) window.Anim.afterRender(lastTab === "all" ? rep : rep.querySelector(`.rpanel[data-panel="${lastTab}"]`));
+    setPageHeader(tt(`नियति ज्योतिष कार्यालय  ·  ${input.name} — जन्म कुंडली`, `Niyati Jyotish Karyalaya  ·  ${input.name} — Janma Kundli`));
     return rep;
   }
+  // प्रिंट पृष्ठ का शीर्ष-लेख (हर पृष्ठ पर) — @page margin box
+  function setPageHeader(text) {
+    let st = document.getElementById("pageHeadStyle");
+    if (!st) { st = document.createElement("style"); st.id = "pageHeadStyle"; document.head.appendChild(st); }
+    const safe = String(text).replace(/[\\"]/g, "").replace(/[\n\r]/g, " ");
+    st.textContent = `@page { @top-center { content: "${safe}"; } } @page :first { @top-center { content: none; } }`;
+  }
+  window.__setPageHeader = setPageHeader;
   function renderAndShow(input) { const rep = render(input); rep.scrollIntoView({ behavior: "smooth" }); }
 
   // भाषा बदलने पर: खुली रिपोर्ट उसी टैब पर नई भाषा में
