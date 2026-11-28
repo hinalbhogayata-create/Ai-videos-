@@ -1,0 +1,139 @@
+/* milan-ui.js — टैब और गुण मिलान का UI */
+(function () {
+  "use strict";
+  const A = window.Astro, J = window.Jyotish, M = window.Milan;
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  // ---------- टैब ----------
+  function show(view) {
+    for (const t of document.querySelectorAll(".tab")) t.classList.toggle("active", t.dataset.view === view);
+    $("kundliView").hidden = view !== "kundliView";
+    $("milanView").hidden = view !== "milanView";
+    try { history.replaceState(null, "", view === "milanView" ? "#milan" : "#kundli"); } catch (e) { /* sandbox */ }
+  }
+  for (const t of document.querySelectorAll(".tab")) t.addEventListener("click", () => show(t.dataset.view));
+  if (location.hash === "#milan") show("milanView");
+
+  // ---------- स्थान ----------
+  const manual = {};
+  function updateTz(pre) {
+    const tzName = $(pre + "tzName").value;
+    if (!tzName || manual[pre]) return;
+    const [y, m, d] = ($(pre + "dob").value || "2000-01-01").split("-").map(Number);
+    const [hh, mm] = ($(pre + "tob").value || "12:00").split(":").map(Number);
+    try { $(pre + "tz").value = A.offsetForLocal(y, m, d, hh, mm, tzName) / 60; } catch (e) { /* */ }
+  }
+  function setPlace(pre, c) {
+    $(pre + "place").value = c.name;
+    $(pre + "lat").value = (+c.lat).toFixed(4);
+    $(pre + "lon").value = (+c.lon).toFixed(4);
+    $(pre + "tzName").value = c.tz || "";
+    manual[pre] = false;
+    updateTz(pre);
+  }
+  for (const pre of ["b_", "g_"]) {
+    const pl = $(pre + "place");
+    const find = (exact) => {
+      const v = pl.value.trim().toLowerCase();
+      if (!v) return;
+      const c = window.CITIES.find((x) => x.name.toLowerCase() === v) || (!exact && window.CITIES.find((x) => x.name.toLowerCase().includes(v)));
+      if (c) setPlace(pre, c);
+    };
+    pl.addEventListener("input", () => find(true));
+    pl.addEventListener("change", () => find(false));
+    ["dob", "tob"].forEach((f) => $(pre + f).addEventListener("change", () => updateTz(pre)));
+    $(pre + "tz").addEventListener("input", () => { manual[pre] = true; });
+  }
+  for (const btn of document.querySelectorAll("[data-search]")) {
+    btn.addEventListener("click", async () => {
+      const pre = btn.dataset.search, box = $(pre + "results");
+      const q = $(pre + "place").value.trim().replace(/\s*\(.*\)\s*/, "");
+      if (!q) { box.innerHTML = `<span class="note">पहले स्थान का नाम लिखें।</span>`; return; }
+      box.innerHTML = `<span class="note">खोज रहे हैं…</span>`;
+      try {
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=hi&format=json`);
+        const data = await res.json();
+        if (!data.results || !data.results.length) { box.innerHTML = `<span class="note">कोई परिणाम नहीं मिला।</span>`; return; }
+        box.innerHTML = "";
+        for (const r of data.results) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = `${r.name} — ${[r.admin1, r.country].filter(Boolean).join(", ")}`;
+          b.onclick = () => { setPlace(pre, { name: `${r.name}, ${r.admin1 || r.country || ""}`, lat: r.latitude, lon: r.longitude, tz: r.timezone }); box.innerHTML = ""; };
+          box.appendChild(b);
+        }
+      } catch (e) {
+        box.innerHTML = `<span class="note">ऑनलाइन खोज उपलब्ध नहीं। सूची से शहर चुनें या अक्षांश-देशान्तर भरें।</span>`;
+      }
+    });
+  }
+
+  function read(pre, gender) {
+    const [y, m, d] = $(pre + "dob").value.split("-").map(Number);
+    const [hh, mm] = $(pre + "tob").value.split(":").map(Number);
+    return {
+      name: $(pre + "name").value.trim() || (gender === "M" ? "वर" : "कन्या"), gender,
+      year: y, month: m, day: d, hour: hh, minute: mm,
+      lat: parseFloat($(pre + "lat").value), lon: parseFloat($(pre + "lon").value),
+      tzOffsetMin: Math.round(parseFloat($(pre + "tz").value) * 60),
+      place: $(pre + "place").value.trim(), tzName: $(pre + "tzName").value,
+    };
+  }
+
+  $("mDemo").addEventListener("click", () => {
+    const fill = (pre, name, dob, tob, city) => {
+      $(pre + "name").value = name; $(pre + "dob").value = dob; $(pre + "tob").value = tob;
+      setPlace(pre, window.CITIES.find((c) => c.name.startsWith(city)));
+    };
+    fill("b_", "उदाहरण वर", "1990-03-21", "14:30", "मुंबई");
+    fill("g_", "उदाहरण कन्या", "1992-07-09", "08:10", "जयपुर");
+    $("mForm").requestSubmit();
+  });
+
+  $("mForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const bi = read("b_", "M"), gi = read("g_", "F");
+    if ([bi.lat, bi.lon, gi.lat, gi.lon].some(isNaN)) { $("milanReport").hidden = false; $("milanReport").innerHTML = `<section class="card"><p>कृपया दोनों के जन्म स्थान चुनें या अक्षांश/देशान्तर भरें।</p></section>`; return; }
+    render(bi, gi);
+  });
+
+  function render(bi, gi) {
+    const rB = J.analyze(bi), rG = J.analyze(gi);
+    const m = M.match(rB, rG);
+    const pct = (m.total / 36) * 100;
+    const info = (p, r, inp, who) => `<div class="area"><h4>${who}: ${esc(inp.name)}</h4><p>
+      जन्म: ${String(inp.day).padStart(2, "0")}-${String(inp.month).padStart(2, "0")}-${inp.year}, ${String(inp.hour).padStart(2, "0")}:${String(inp.minute).padStart(2, "0")} · ${esc(inp.place)}<br>
+      लग्न: <b>${J.RASHI[r.lagnaSign]}</b> · राशि: <b>${J.RASHI[p.sign]}</b> (स्वामी ${J.GRAHA[p.lord]})<br>
+      नक्षत्र: <b>${J.NAKSHATRA[p.nak]}</b> चरण ${p.pada} · गण ${J.NAK_GANA[p.nak]} · योनि ${J.NAK_YONI[p.nak]} · नाड़ी ${["आदि", "मध्य", "अन्त्य"][[0, 1, 2, 2, 1, 0][p.nak % 6]]}<br>
+      मंगल ${J.ORD(p.marsHouse)} भाव में · ${p.manglik ? (p.manglik.cancelled ? "मांगलिक (परिहार सहित)" : '<b style="color:var(--bad)">मांगलिक</b>') : "मांगलिक नहीं"}</p>
+      <p><button type="button" class="ghost" data-open="${who === "वर" ? "b" : "g"}">पूरी कुंडली देखें →</button></p></div>`;
+
+    let html = `<section class="card"><div class="gun-head">
+      <div class="gun-ring" style="background:conic-gradient(${m.verdict.color} ${pct}%, #f1e6d6 0)"><div><b>${m.total}</b><span>36 में से</span></div></div>
+      <div><h3 style="color:${m.verdict.color}">${m.verdict.label}</h3><p style="margin:0">${m.verdict.text}</p>
+      <p class="note" style="margin:6px 0 0">${esc(bi.name)} ♥ ${esc(gi.name)}</p></div></div></section>`;
+
+    html += `<section class="card"><h2>वर-कन्या विवरण</h2><div class="couple">${info(m.B, rB, bi, "वर")}${info(m.G, rG, gi, "कन्या")}</div></section>`;
+
+    html += `<section class="card"><h2>अष्टकूट तालिका</h2><div style="overflow-x:auto"><table><thead><tr><th>कूट</th><th>वर</th><th>कन्या</th><th>प्राप्त / अधिकतम</th><th class="hide-sm">किस बात का मेल</th></tr></thead><tbody>
+      ${m.K.map((k) => { const c = k.s === k.max ? "#2f7d4a" : k.s === 0 ? "#b3261e" : "#b8860b"; return `<tr><td><b>${k.k}</b></td><td>${esc(k.b)}</td><td>${esc(k.g)}</td><td class="num" style="color:${c}">${k.s} / ${k.max}</td><td class="hide-sm note">${k.about}</td></tr>`; }).join("")}
+      <tr class="now"><td><b>कुल</b></td><td></td><td></td><td class="num">${m.total} / 36</td><td class="hide-sm"></td></tr>
+      </tbody></table></div>
+      <p class="note">मानदण्ड: 18 से कम — अनुशंसित नहीं · 18–24 मध्यम · 25–32 उत्तम · 33–36 अति उत्तम। तारा कूट में कोष्ठक में दूसरे के नक्षत्र से गिनी गई तारा है।</p></section>`;
+
+    html += `<section class="card"><h2>दोष एवं परिहार</h2>
+      ${m.doshas.length ? m.doshas.map((d) => `<div class="yoga ${d.cancelled ? "cancel" : "bad"}"><h4>${d.cancelled ? "⚠️" : "❗"} ${d.name}${d.cancelled ? " — परिहार" : ""}</h4><div>${d.text}</div></div>`).join("") : `<div class="yoga good"><h4>✅ कोई कूट-दोष नहीं</h4><div>नाड़ी, भकूट और गण — तीनों प्रमुख दोषों से मुक्त मेल।</div></div>`}
+      <div class="yoga ${m.manglik.ok ? "good" : "bad"}"><h4>${m.manglik.ok ? "✅" : "❗"} मांगलिक विचार</h4><div>${m.manglik.text}</div></div>
+      <p class="note">गुण मिलान केवल चन्द्र राशि-नक्षत्र पर आधारित है। विवाह-निर्णय में दोनों कुंडलियों का सप्तम भाव, सप्तमेश, शुक्र/गुरु, दशा और आयु का भी विचार किया जाता है; अन्तिम निर्णय अनुभवी ज्योतिषी और परिवार के विवेक से करें।</p></section>`;
+
+    const rep = $("milanReport");
+    rep.innerHTML = html;
+    rep.hidden = false;
+    for (const b of rep.querySelectorAll("[data-open]")) b.addEventListener("click", () => {
+      show("kundliView");
+      window.__renderKundli(b.dataset.open === "b" ? bi : gi);
+    });
+    rep.scrollIntoView({ behavior: "smooth" });
+  }
+})();

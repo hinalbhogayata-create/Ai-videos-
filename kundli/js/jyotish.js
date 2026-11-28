@@ -371,7 +371,7 @@
 
   const J = {
     RASHI, RASHI_SHORT, RASHI_LORD, GRAHA, GRAHA_SHORT, NAKSHATRA, DASHA_ORDER, DASHA_YEARS, YEAR_DAYS,
-    NATURAL_BENEFIC, NATURAL_MALEFIC, ORD, RASHI_NATURE, analyze, nakshatraOf, dignity, vimshottari, findCurrent, houseFrom, dms, norm,
+    NATURAL_BENEFIC, NATURAL_MALEFIC, ORD, FRIENDS, NAK_GANA, NAK_YONI, NAK_AKSHAR, RASHI_NATURE, analyze, nakshatraOf, dignity, vimshottari, findCurrent, houseFrom, dms, norm,
   };
   root.Jyotish = J;
   if (typeof module !== "undefined") module.exports = J;
