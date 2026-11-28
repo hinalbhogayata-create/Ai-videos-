@@ -259,3 +259,76 @@ details.prob[open] .pbody, .granth details[open] .gbody { animation: fadeUp .35s
 @media (max-width: 600px) { .zwheel { width: 420px; height: 420px; left: -170px; top: -150px; } .zwheel.z2 { display: none; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .reveal { opacity: 1; transform: none; } }
 @media print { .sky, .loader { display: none !important; } .reveal { opacity: 1 !important; transform: none !important; } .chartbox svg.draw * { animation: none !important; opacity: 1 !important; stroke-dashoffset: 0 !important; } details.prob .pbody { display: block; } }
+
+/* ---------- रिपोर्ट टैब ---------- */
+.rtabs { position: sticky; top: 0; z-index: 20; display: flex; gap: 6px; overflow-x: auto; padding: 10px 4px; margin: 8px 0 0; background: linear-gradient(#fbf6ee 85%, rgba(251, 246, 238, 0)); scrollbar-width: none; }
+.rtabs::-webkit-scrollbar { display: none; }
+.rtabs button { flex: none; border: 1px solid #e3c9a6; background: #fff; color: #7a1f0c; border-radius: 22px; padding: 8px 15px; font-size: 15px; transition: background .2s, color .2s, transform .15s; }
+.rtabs button:hover { transform: translateY(-1px); }
+.rtabs button.on { background: linear-gradient(135deg, #8b1a12, #b5441b); color: #fff; border-color: transparent; box-shadow: 0 4px 12px rgba(139, 26, 18, .3); }
+.rpanel.fade { animation: fadeUp .4s ease-out; }
+.print-only { display: none; }
+
+.sgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.sc { background: #fff8ef; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.sc span { display: block; font-size: 12.5px; color: var(--muted); }
+.sc b { font-size: 16px; color: #5c1a0c; }
+.sbox { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-top: 12px; }
+.sbtn { text-align: left; border-radius: 12px; padding: 12px 14px; font-size: 16px; border: 1px solid var(--line); background: #fff; color: var(--ink); transition: transform .15s, box-shadow .2s; }
+.sbtn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(90, 40, 10, .12); }
+.sbtn small { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; }
+.sbtn.good { border-left: 5px solid var(--good); } .sbtn.bad { border-left: 5px solid var(--bad); } .sbtn.ok { border-left: 5px solid var(--good); }
+
+.ycard { border: 1px solid #cfe7d5; border-left: 5px solid var(--good); background: #f7fcf8; border-radius: 12px; padding: 10px 14px; margin: 10px 0; }
+.ycard h4 { margin: 0 0 4px; font-size: 17px; color: #1f5f35; }
+.ycard p { margin: 5px 0; }
+.srcline { font-size: 13px; color: #6b4a2a; background: #fbf1e2; border-radius: 6px; padding: 3px 8px; display: inline-block; }
+.shloka { font-family: "Tiro Devanagari Hindi", serif; background: #fff7e8; border-left: 3px solid #d9a441; padding: 6px 12px; border-radius: 6px; color: #5c1a0c; }
+
+.dlegend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.dl { font-size: 13.5px; padding: 3px 10px; border-radius: 14px; }
+.dl.present, .dst.present { background: #fde7e5; color: #b3261e; }
+.dl.partial, .dst.partial { background: #fff1d6; color: #8a5a00; }
+.dl.cancelled, .dst.cancelled { background: #e8f0fb; color: #1d4f91; }
+.dl.absent, .dst.absent { background: #e6f4ea; color: #1f6b3a; }
+details.dcard { border: 1px solid var(--line); border-left-width: 6px; border-radius: 12px; margin: 9px 0; overflow: hidden; }
+details.dcard.present { border-left-color: #b3261e; } details.dcard.partial { border-left-color: #d08a12; }
+details.dcard.cancelled { border-left-color: #3f74c4; } details.dcard.absent { border-left-color: #5ba06f; }
+details.dcard summary { display: flex; align-items: center; gap: 10px; padding: 10px 14px; font-weight: 600; }
+details.dcard[open] summary { background: #fff7ec; }
+details.dcard .pi { font-size: 21px; flex: none; }
+details.dcard .pt { flex: 1; min-width: 0; }
+.dst { font-size: 12.5px; padding: 2px 10px; border-radius: 12px; flex: none; white-space: nowrap; }
+.dstate { border-radius: 8px; padding: 6px 10px; }
+.dstate.present { background: #fdf0ef; } .dstate.partial { background: #fff8e8; } .dstate.cancelled { background: #eef4fc; } .dstate.absent { background: #eef8f1; }
+p.need { background: #fffbea; border: 1px dashed #e5c76b; border-radius: 8px; padding: 6px 10px; }
+details.dcard[open] .pbody { animation: fadeUp .35s ease-out; }
+@media (max-width: 600px) { .rtabs button { font-size: 14px; padding: 7px 12px; } .dst { font-size: 11.5px; } }
+@media print {
+  .rpanel[hidden] { display: block !important; }
+  .print-only { display: block; } .ptitle { color: #7a1f0c; border-bottom: 2px solid #b5441b; margin-top: 18px; }
+  details.dcard:not([open]) .pbody { display: block; }
+  .sbtn { break-inside: avoid; }
+}
+
+/* ---------- प्रश्न कुंडली ---------- */
+.qtopics { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.qt { text-align: left; background: #fff; color: var(--ink); border: 1px solid #e3c9a6; border-radius: 12px; padding: 10px 12px; font-size: 15px; transition: transform .15s, background .2s, box-shadow .2s; }
+.qt:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(90, 40, 10, .1); }
+.qt.on { background: linear-gradient(135deg, #fff1dc, #ffe2bd); border-color: #d9a441; box-shadow: 0 0 0 2px #f1c88a; font-weight: 600; }
+.qverdict { border-top: 6px solid var(--vc); }
+.qv-top { display: flex; gap: 16px; align-items: center; }
+.qv-icon { font-size: 52px; line-height: 1; animation: popIn .6s ease-out; }
+.qverdict h3 { margin: 2px 0 0; font-size: 26px; }
+.qmeter { height: 12px; border-radius: 8px; background: linear-gradient(90deg, #f6d3cf, #fbe9c2, #dcefd9); margin: 12px 0 8px; overflow: hidden; }
+.qmeter i { display: block; height: 100%; border-radius: 8px; transform-origin: left; animation: grow 1.2s ease-out both; }
+.qcharts { align-items: start; }
+.qpos table { font-size: 14px; }
+ul.flist { list-style: none; padding: 0; margin: 4px 0 10px; }
+ul.flist li { display: flex; gap: 10px; padding: 7px 10px; border-radius: 8px; margin: 4px 0; animation: fadeUp .4s ease-out both; }
+ul.flist li.fp { background: #f1f9f3; } ul.flist li.fn { background: #fdf2f1; } ul.flist li.f0 { background: #f6f3ee; }
+.fsym { flex: none; font-weight: 700; width: 18px; text-align: center; }
+li.fp .fsym { color: var(--good); } li.fn .fsym { color: var(--bad); }
+.ftag { display: inline-block; font-size: 12px; color: #6b4a2a; background: #fbf1e2; border-radius: 6px; padding: 0 6px; margin-left: 4px; }
+h3.hp { color: var(--good); } h3.hn { color: var(--bad); }
+@media print { #prashnaForm { display: none !important; } }

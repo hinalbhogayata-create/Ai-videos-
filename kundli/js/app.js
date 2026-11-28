@@ -276,6 +276,55 @@
       ${row("<b>सर्वाष्टक</b>", av.savHouse, true)}</tbody></table></div>`;
   }
 
+  // ---------------- टैब सामग्री ----------------
+  const DRpre = (r) => window.YogDosh.doshaReport(r);
+  function summaryCard(r, cur, DR) {
+    const P = r.planets, av = r.avakhada;
+    const goodY = window.YogDosh.yogaCards(r, A.dateToJd(new Date()));
+    const present = DR.filter((d) => d.result.status === "present"), partial = DR.filter((d) => d.result.status === "partial");
+    const chip = (k, v) => `<div class="sc"><span>${k}</span><b>${v}</b></div>`;
+    return `<section class="card"><h2>📋 कुंडली सारांश</h2><div class="sgrid">
+      ${chip("लग्न", `${av.lagna} (${av.lagnaLord})`)}${chip("राशि", `${av.rashi} (${av.rashiLord})`)}${chip("नक्षत्र", av.nakshatra)}${chip("नामाक्षर", av.namAkshar)}
+      ${chip("वर्तमान दशा", cur ? `${G[cur.md.lord]}–${G[cur.ad.lord]}` : "—")}${chip("गण / नाड़ी", `${av.gana} / ${av.nadi}`)}
+      </div>
+      <div class="sbox">
+        <button type="button" class="sbtn good" data-goto="yoga">🌟 <b>${goodY.length}</b> शुभ योग<small>${goodY.slice(0, 3).map((y) => y.name.replace(/\s*\(.*\)/, "")).join(", ")}${goodY.length > 3 ? "…" : ""}</small></button>
+        <button type="button" class="sbtn ${present.length ? "bad" : "ok"}" data-goto="dosha">⚠️ <b>${present.length}</b> दोष${partial.length ? ` + ${partial.length} आंशिक` : ""}<small>${present.concat(partial).map((d) => d.name.replace(/\s*\(.*\)/, "")).slice(0, 3).join(", ") || "कोई प्रमुख दोष नहीं"}</small></button>
+        <button type="button" class="sbtn" data-goto="dasha">⏳ दशा-फल<small>${cur ? `${G[cur.ad.lord]} अन्तर्दशा ${fmtDate(cur.ad.end, r.input.tzOffsetMin)} तक` : ""}</small></button>
+      </div></section>`;
+  }
+  function yogaTab(r, nowJd) {
+    const Y = window.YogDosh.yogaCards(r, nowJd);
+    return `<section class="card"><h2>🌟 कुंडली में बनने वाले शुभ योग</h2>
+      <p class="note">प्रत्येक योग: कैसे बनता है, क्या फल देता है, शास्त्र-स्रोत, और किन ग्रहों की दशा में विशेष फलित होगा। (दोष “दोष एवं निवारण” टैब में; अन्य ग्रंथोक्त योग “ग्रंथ अनुसार” टैब में।)</p>
+      ${Y.length ? Y.map((y) => `<div class="ycard"><h4>✨ ${y.name}</h4>
+        ${y.rule ? `<p><b>कैसे बनता है:</b> ${y.rule}</p>` : ""}
+        <p><b>इस कुंडली में / फल:</b> ${y.text}</p>
+        ${y.when.length ? `<p><b>⏰ फलित होने का समय (दशा):</b> ${y.when.join("; ")}</p>` : ""}
+        <p class="srcline">📜 स्रोत: ${y.src}</p></div>`).join("") : "<p>इस कुंडली में कोई प्रमुख शास्त्रीय योग पूर्ण रूप से नहीं बनता। ग्रहों का सामान्य फल “फलादेश” टैब में देखें।</p>"}
+      <p class="note">शास्त्र-नियम: योग अपना पूर्ण फल तभी देता है जब उसके ग्रह बलवान हों (अस्त/नीच न हों) और उनकी दशा-अन्तर्दशा आए।</p></section>`;
+  }
+  function doshaTab(DR) {
+    const order = { present: 0, partial: 1, cancelled: 2, absent: 3 };
+    const list = DR.slice().sort((a, b) => order[a.result.status] - order[b.result.status]);
+    const cnt = (k) => DR.filter((d) => d.result.status === k).length;
+    return `<section class="card"><h2>⚠️ दोष परीक्षण — क्या है, कितना आवश्यक, निवारण</h2>
+      <div class="dlegend"><span class="dl present">❗ दोष है: ${cnt("present")}</span><span class="dl partial">⚠️ आंशिक: ${cnt("partial")}</span><span class="dl cancelled">🛡️ परिहार: ${cnt("cancelled")}</span><span class="dl absent">✅ नहीं: ${cnt("absent")}</span></div>
+      <p class="note">कुंडली के ${DR.length} प्रमुख दोषों की जाँच की गई। जिस दोष पर क्लिक करें — उसकी परिभाषा, नियम, इस कुंडली की स्थिति, परिहार, उपाय की आवश्यकता और निवारण दिखेगा।</p>
+      ${list.map((d, i) => `<details class="dcard ${d.st.cls}" ${i < 2 && d.result.status !== "absent" ? "open" : ""}><summary><span class="pi">${d.icon}</span><span class="pt">${d.name}</span><span class="dst ${d.st.cls}">${d.st.icon} ${d.st.label}</span></summary>
+        <div class="pbody">
+          <p><b>📖 क्या है:</b> ${d.what}</p>
+          <p><b>📐 कैसे बनता है:</b> ${d.rule}</p>
+          ${d.shloka ? `<p class="shloka">${d.shloka}</p>` : ""}
+          <p class="dstate ${d.st.cls}"><b>🔎 इस कुंडली में:</b> ${d.result.detail}${d.result.parihara && d.result.parihara.length ? `<br><b>🛡️ परिहार:</b> ${d.result.parihara.join("; ")}` : ""}</p>
+          ${d.result.status !== "absent" ? `<p><b>⚡ सम्भावित प्रभाव:</b> ${d.effect}।</p>
+          <p class="need"><b>❓ उपाय कितना आवश्यक:</b> ${d.needText}</p>
+          <div class="rem"><b>✨ निवारण</b><ul>${d.rem.map(([ic, k, t]) => `<li><span>${ic}</span><div><b>${k}:</b> ${t}</div></li>`).join("")}</ul></div>` : `<p class="need"><b>❓ उपाय:</b> ${d.needText}</p>`}
+          <p class="srcline">📜 स्रोत: ${d.src}</p>
+        </div></details>`).join("")}
+    </section>`;
+  }
+
   // ---------------- रिपोर्ट ----------------
   function render(input) {
     const r = J.analyze(input);
@@ -287,14 +336,15 @@
 
     const areas = lifeAreas(r);
     let html = "";
+    const T = { sum: "", chart: "", yoga: "", dosha: "", phala: "", granth: "", dasha: "" };
     // शीर्ष
     html += `<section class="card"><div class="toolbar"><div class="person"><h2>${esc(input.name)}</h2>
       <p>${input.gender === "F" ? "स्त्री" : "पुरुष"} · जन्म: ${birthStr} (UTC ${tz >= 0 ? "+" : "−"}${fmtOffset(Math.abs(tz))}) · ${esc(input.place || "")}</p>
       <p>अक्षांश ${input.lat.toFixed(4)}°, देशान्तर ${input.lon.toFixed(4)}° · लाहिरी अयनांश ${J.dms(r.chart.ayanamsa)} · वर्तमान आयु ~${ageNow > 0 ? Math.floor(ageNow) : 0} वर्ष</p></div>
-      <div class="no-print"><button class="ghost jump" id="jumpNiv">🩺 समस्याएँ एवं निवारण</button> <button class="ghost" onclick="window.print()">🖨️ प्रिंट / PDF</button> <button class="ghost" id="editBtn">✏️ बदलें</button></div></div></section>`;
+      <div class="no-print"><button class="ghost jump" id="jumpNiv">⚠️ दोष एवं निवारण</button> <button class="ghost" onclick="window.print()">🖨️ प्रिंट / PDF</button> <button class="ghost" id="editBtn">✏️ बदलें</button></div></div></section>`;
 
     // अवकहड़ा + पंचांग
-    html += `<section class="card"><h2>अवकहड़ा चक्र एवं पंचांग</h2><div class="kv">
+    T.chart += `<section class="card"><h2>अवकहड़ा चक्र एवं पंचांग</h2><div class="kv">
       ${[["लग्न", `${av.lagna} ${J.dms(r.chart.ascendant.deg)}`], ["लग्नेश", av.lagnaLord], ["राशि (चन्द्र)", av.rashi], ["राशि स्वामी", av.rashiLord], ["नक्षत्र", av.nakshatra], ["नक्षत्र स्वामी", av.nakLord], ["नक्षत्र देवता", av.deity], ["नामाक्षर", av.namAkshar], ["गण", av.gana], ["योनि", av.yoni], ["नाड़ी", av.nadi], ["वर्ण", av.varna], ["वश्य", av.vashya], ["तत्त्व (राशि)", av.tattva], ["सूर्य राशि", av.sunSign],
         ["वार", r.panchang.vaar], ["तिथि", r.panchang.tithi], ["योग", r.panchang.yoga], ["करण", r.panchang.karana], ["सूर्योदय / सूर्यास्त", r.sun ? `${hm(r.sun.rise)} / ${hm(r.sun.set)}` : "—"],
         ["दशा शेष (जन्म पर)", `${G[r.dasha.balance.lord]} ${Math.floor(r.dasha.balance.years)} वर्ष ${Math.floor((r.dasha.balance.years % 1) * 12)} मास`]]
@@ -302,14 +352,14 @@
       </div>${r.sun && (input.hour * 60 + input.minute) < r.sun.rise.h * 60 + r.sun.rise.m ? `<p class="note">ध्यान दें: जन्म सूर्योदय से पहले है — वैदिक परम्परा में वार पिछले दिन का (${["रविवार","सोमवार","मंगलवार","बुधवार","गुरुवार","शुक्रवार","शनिवार"][(new Date(Date.UTC(input.year, input.month - 1, input.day)).getUTCDay() + 6) % 7]}) माना जाता है।</p>` : ""}</section>`;
 
     // चार्ट
-    html += `<section class="card"><h2>कुंडली चक्र</h2><div class="charts">
+    T.chart += `<section class="card"><h2>कुंडली चक्र</h2><div class="charts">
       ${northChart("लग्न कुंडली (D1)", r.lagnaSign, (p) => P[p].house, (p) => planetLabel(r, p, true), true)}
       ${northChart("चन्द्र कुंडली", r.moonSign, (p) => J.houseFrom(r.moonSign, P[p].sign), (p) => planetLabel(r, p, false), true)}
       ${northChart("नवांश कुंडली (D9)", r.ascNav, (p) => J.houseFrom(r.ascNav, P[p].navamsa), (p) => ({ t: J.GRAHA_SHORT[p] + (P[p].vargottama ? "*" : ""), color: "#2b1d14" }), true)}
       </div><p class="note">अंक = राशि (1 मेष … 12 मीन)। (व) वक्री, (अ) अस्त, ↑ उच्च, ↓ नीच, * वर्गोत्तम। ऊपर का मध्य कोष्ठ प्रथम भाव (लग्न) है; भाव वामावर्त (anticlockwise) चलते हैं।</p></section>`;
 
     // ग्रह स्पष्ट
-    html += `<section class="card"><h2>ग्रह स्पष्ट</h2><div style="overflow-x:auto"><table><thead><tr><th>ग्रह</th><th>राशि</th><th>अंश</th><th>नक्षत्र (चरण)</th><th class="hide-sm">नक्षत्र स्वामी</th><th>भाव</th><th>स्थिति</th><th>बल</th></tr></thead><tbody>
+    T.chart += `<section class="card"><h2>ग्रह स्पष्ट</h2><div style="overflow-x:auto"><table><thead><tr><th>ग्रह</th><th>राशि</th><th>अंश</th><th>नक्षत्र (चरण)</th><th class="hide-sm">नक्षत्र स्वामी</th><th>भाव</th><th>स्थिति</th><th>बल</th></tr></thead><tbody>
       <tr><td><b>लग्न</b></td><td>${J.RASHI[r.lagnaSign]}</td><td>${J.dms(r.chart.ascendant.deg)}</td><td>${r.ascNk.name} (${r.ascNk.pada})</td><td class="hide-sm">${G[r.ascNk.lord]}</td><td>1</td><td></td><td></td></tr>
       ${A.PLANETS.map((p) => {
         const x = P[p], st = r.strength[p];
@@ -321,21 +371,25 @@
       </tbody></table></div><p class="note">बल: स्थान (उच्च/स्व/मित्र/शत्रु/नीच), केन्द्र-त्रिकोण-दुःस्थान, दिग्बल, अस्त, वक्री व वर्गोत्तम के आधार पर सरल गणना।</p></section>`;
 
     // मुख्य फलादेश
-    html += `<section class="card phala"><h2>फलादेश — स्वभाव एवं व्यक्तित्व</h2>
+    T.phala += `<section class="card phala"><h2>फलादेश — स्वभाव एवं व्यक्तित्व</h2>
       <h3>लग्न फल</h3><p>${F.LAGNA[r.lagnaSign]}</p>
       <h3>राशि फल</h3><p>${F.RASHI[r.moonSign]}</p>
       <h3>जन्म नक्षत्र फल</h3><p>${F.NAK[r.moonNk.idx]} नक्षत्र स्वामी ${G[r.moonNk.lord]} होने से जीवन की प्रथम दशा ${G[r.dasha.balance.lord]} की रही।</p></section>`;
 
+    // सारांश
+    T.sum += summaryCard(r, cur, DRpre(r));
     // जीवन क्षेत्र
-    html += `<section class="card"><h2>जीवन के प्रमुख क्षेत्र — सार</h2><div class="areas">
+    T.sum += `<section class="card"><h2>जीवन के प्रमुख क्षेत्र — सार</h2><div class="areas">
       ${areas.map((a) => { const t = tier(a.s); return `<div class="area"><h4>${a.t}<span class="score" style="background:${t.color}">${t.label}</span></h4><p>${a.txt.replace(/\s+/g, " ")}</p></div>`; }).join("")}
       </div><p class="note">यह सार भावेश की स्थिति, भाव में स्थित ग्रह, गुरु-शनि-मंगल की दृष्टि और कारक ग्रह के बल के पाराशरी सिद्धान्तों पर आधारित है।</p></section>`;
 
     // समस्याएँ एवं निवारण
-    const probs = window.Nivaran.analyze(r, { nowJd, cur, areas, periodRating, lordQuality, fmtDate });
+    const DR = window.YogDosh.doshaReport(r);
+    T.dosha += doshaTab(DR);
+    const probs = window.Nivaran.analyze(r, { nowJd, cur, areas, periodRating, lordQuality, fmtDate, skipDoshas: true });
     const SEV = { 3: ["प्रमुख", "sev3"], 2: ["मध्यम", "sev2"], 1: ["हल्का", "sev1"] };
-    html += `<section class="card nivaran" id="nivaran"><h2>🩺 समस्याएँ एवं निवारण</h2>
-      <div class="prob-sum">${probs.length ? `इस कुंडली में <b>${probs.length}</b> विषय ध्यान देने योग्य पाए गए — <b style="color:var(--bad)">${probs.filter((x) => x.sev === 3).length} प्रमुख</b>, ${probs.filter((x) => x.sev === 2).length} मध्यम, ${probs.filter((x) => x.sev === 1).length} हल्के। प्रत्येक पर क्लिक करके कारण और उपाय देखें।` : "✅ इस कुंडली में कोई प्रमुख दोष या गम्भीर समस्या नहीं मिली। नीचे दिए सामान्य उपाय जीवन को और शुभ बनाएँगे।"}</div>
+    T.dosha += `<section class="card nivaran" id="nivaran"><h2>🩺 अन्य समस्याएँ एवं निवारण <span class="src">निर्बल ग्रह · कमज़ोर भाव · कठिन दशा</span></h2>
+      <div class="prob-sum">${probs.length ? `दोषों के अतिरिक्त <b>${probs.length}</b> विषय ध्यान देने योग्य पाए गए — <b style="color:var(--bad)">${probs.filter((x) => x.sev === 3).length} प्रमुख</b>, ${probs.filter((x) => x.sev === 2).length} मध्यम, ${probs.filter((x) => x.sev === 1).length} हल्के। प्रत्येक पर क्लिक करके कारण और उपाय देखें।` : "✅ दोषों के अतिरिक्त कोई अन्य गम्भीर समस्या नहीं मिली। नीचे दिए सामान्य उपाय जीवन को और शुभ बनाएँगे।"}</div>
       ${probs.map((pb, i) => `<details class="prob ${SEV[pb.sev][1]}" ${i < 2 ? "open" : ""}><summary><span class="pi">${pb.icon}</span><span class="pt">${pb.title}</span><span class="sev">${SEV[pb.sev][0]}</span></summary>
         <div class="pbody">
           <p><b>कारण (ग्रह-योग):</b> ${pb.cause}</p>
@@ -349,7 +403,7 @@
     // वर्तमान दशा
     if (cur) {
       const pr = periodRating(r, cur.md.lord, cur.ad.lord);
-      html += `<section class="card"><h2>वर्तमान दशा एवं भविष्य</h2><div class="dasha-current">
+      T.dasha += `<section class="card"><h2>वर्तमान दशा एवं भविष्य</h2><div class="dasha-current">
         <p><b>महादशा:</b> ${G[cur.md.lord]} (${fmtDate(cur.md.start, tz)} – ${fmtDate(cur.md.end, tz)}) · <b>अन्तर्दशा:</b> ${G[cur.ad.lord]} (${fmtDate(cur.ad.start, tz)} – ${fmtDate(cur.ad.end, tz)})${cur.pd ? ` · <b>प्रत्यन्तर:</b> ${G[cur.pd.lord]} (${fmtDate(cur.pd.end, tz)} तक)` : ""} <span class="rating r${pr.r}">${pr.label}</span></p>
         <p>${F.DASHA[cur.md.lord]}</p>
         <p>इस जन्मकुंडली में ${G[cur.md.lord]} ${ORD(P[cur.md.lord].house)} भाव में ${P[cur.md.lord].dignity.label} है${ownedHouses(r, cur.md.lord).length ? ` और ${ownedHouses(r, cur.md.lord).map(ORD).join(", ")} भाव का स्वामी है` : ""}। अतः यह दशा मुख्यतः <b>${periodThemes(r, cur.md.lord)}</b> से जुड़े फल देगी। ${F.DIGNITY_TEXT[P[cur.md.lord].dignity.key]}</p>
@@ -358,24 +412,24 @@
       // आगामी अवधियाँ
       const upcoming = [];
       for (const md of r.dasha.list) for (const ad of md.antar) if (ad.end > nowJd && upcoming.length < 14) upcoming.push({ md, ad });
-      html += `<h3>आगामी समय-फल (अन्तर्दशा अनुसार)</h3><div style="overflow-x:auto"><table><thead><tr><th>अवधि</th><th>दशा</th><th>फल</th><th>प्रमुख विषय</th></tr></thead><tbody>
+      T.dasha += `<h3>आगामी समय-फल (अन्तर्दशा अनुसार)</h3><div style="overflow-x:auto"><table><thead><tr><th>अवधि</th><th>दशा</th><th>फल</th><th>प्रमुख विषय</th></tr></thead><tbody>
         ${upcoming.map(({ md, ad }) => { const pr2 = periodRating(r, md.lord, ad.lord); const isNow = nowJd >= ad.start && nowJd < ad.end; return `<tr class="${isNow ? "now" : ""}"><td style="white-space:nowrap">${fmtDate(Math.max(ad.start, r.chart.jd), tz)}<br>${fmtDate(ad.end, tz)}</td><td>${G[md.lord]}–${G[ad.lord]}</td><td><span class="rating r${pr2.r}">${pr2.label}</span></td><td>${periodThemes(r, ad.lord)}</td></tr>`; }).join("")}
         </tbody></table></div></section>`;
     }
 
     // गोचर
     const tr = r.transit;
-    html += `<section class="card"><h2>वर्तमान गोचर (आज की ग्रह-स्थिति)</h2>
+    T.dasha += `<section class="card"><h2>वर्तमान गोचर (आज की ग्रह-स्थिति)</h2>
       <p>आज शनि ${J.RASHI[tr.satSign]} में है — आपकी चन्द्र राशि से ${ORD(tr.satFromMoon)} भाव में। ${tr.sadeSati ? `<b style="color:var(--bad)">${tr.sadeSati}</b>` : tr.dhaiya ? `<b style="color:var(--warn)">${tr.dhaiya}</b>` : "अभी साढ़ेसाती या ढैय्या नहीं है।"} ${[3, 6, 11].includes(tr.satFromMoon) ? "शनि का गोचर शुभ है — परिश्रम का अच्छा फल।" : ""}</p>
       <p>गुरु ${J.RASHI[tr.jupSign]} में — चन्द्र राशि से ${ORD(tr.jupFromMoon)} भाव में। ${tr.jupGood ? "गुरु का गोचर शुभ है: धन, शुभ कार्य, विवाह/संतान और उन्नति के अवसर।" : "गुरु का गोचर सामान्य/प्रतिकूल है: बड़े निर्णयों में सावधानी, गुरु उपासना लाभकारी।"}</p>
       <p>राहु ${J.RASHI[Math.floor(tr.pos.Rahu / 30)]} में, केतु ${J.RASHI[Math.floor(tr.pos.Ketu / 30)]} में (चन्द्र से क्रमशः ${ORD(J.houseFrom(r.moonSign, Math.floor(tr.pos.Rahu / 30)))} व ${ORD(J.houseFrom(r.moonSign, Math.floor(tr.pos.Ketu / 30)))} भाव)।</p></section>`;
 
     // योग
-    html += `<section class="card"><h2>योग एवं दोष</h2>${r.yogas.length ? r.yogas.map((y) => `<div class="yoga ${y.cancelled ? "cancel" : y.good ? "good" : "bad"}"><h4>${y.good ? "✅" : y.cancelled ? "⚠️" : "❗"} ${y.name}${y.cancelled ? " (परिहार/भंग)" : ""}</h4><div>${y.text}</div></div>`).join("") : "<p>कोई प्रमुख योग नहीं मिला।</p>"}</section>`;
+    T.yoga += yogaTab(r, nowJd);
 
     // ग्रंथ अनुसार फलादेश
     const GR = window.Granth.analyze(r);
-    html += `<section class="card granth"><h2>ग्रंथ अनुसार फलादेश</h2>
+    T.granth += `<section class="card granth"><h2>ग्रंथ अनुसार फलादेश</h2>
       <p class="note">प्रत्येक फल के साथ उसका ग्रंथ लिखा है। पाठ मूल संस्कृत वचनों का सरल हिन्दी भावार्थ है, शब्दशः अनुवाद नहीं।</p>
       ${GR.map((g) => `<details open><summary><span>📜 ${g.granth}</span><span class="note">${g.author}</span></summary><div class="gbody">
         ${g.note ? `<p class="note">${g.note}</p>` : ""}
@@ -383,25 +437,28 @@
       </div></details>`).join("")}</section>`;
 
     // ग्रह फल
-    html += `<section class="card phala"><h2>ग्रह फल (भाव अनुसार) <span class="src">फलदीपिका भावफलाध्याय एवं BPHS</span></h2>
+    T.phala += `<section class="card phala"><h2>ग्रह फल (भाव अनुसार) <span class="src">फलदीपिका भावफलाध्याय एवं BPHS</span></h2>
       ${A.PLANETS.map((p) => { const x = P[p]; return `<div class="planet-phala"><b>${G[p]}</b> — ${J.RASHI[x.sign]} ${Math.floor(x.deg)}°, ${ORD(x.house)} भाव, ${x.nak.name} नक्षत्र<br>${F.GB[p][x.house - 1]} ${p !== "Rahu" && p !== "Ketu" ? `${G[p]} ${F.DIGNITY_TEXT[x.dignity.key]}` : ""} ${x.combust ? `${G[p]} सूर्य के निकट होने से अस्त है — इसके फल में कमी आएगी।` : ""} ${x.retro && p !== "Rahu" && p !== "Ketu" ? `वक्री ${G[p]} अपने कारकत्व में असामान्य, विलम्बित पर गहन फल देता है।` : ""} ${x.vargottama ? "वर्गोत्तम होने से यह ग्रह विशेष बलवान है।" : ""}${ownedHouses(r, p).length ? ` <span class="note">(${ownedHouses(r, p).map(ORD).join(", ")} भाव का स्वामी)</span>` : ""}</div>`; }).join("")}</section>`;
 
     // भाव फल
-    html += `<section class="card phala"><h2>द्वादश भाव फल <span class="src">बृहत् पाराशर होरा शास्त्र — भावेश फलाध्याय</span></h2><div style="overflow-x:auto"><table><thead><tr><th>भाव</th><th>राशि</th><th>विषय</th><th>स्थित ग्रह</th><th>भावेश फल</th><th>स्थिति</th></tr></thead><tbody>
+    T.phala += `<section class="card phala"><h2>द्वादश भाव फल <span class="src">बृहत् पाराशर होरा शास्त्र — भावेश फलाध्याय</span></h2><div style="overflow-x:auto"><table><thead><tr><th>भाव</th><th>राशि</th><th>विषय</th><th>स्थित ग्रह</th><th>भावेश फल</th><th>स्थिति</th></tr></thead><tbody>
       ${r.houses.map((hs) => { const t = tier(houseScore(r, hs.h)); return `<tr><td><b>${hs.h}</b> ${F.BHAVA[hs.h - 1].name}</td><td>${J.RASHI[hs.sign]}</td><td class="note">${F.BHAVA[hs.h - 1].k}</td><td>${hs.occupants.map((p) => G[p]).join(", ") || "—"}</td><td><b>भावेश ${G[hs.lord]} ${ORD(P[hs.lord].house)} भाव में</b> — ${window.Granth.BHAVESH[hs.h - 1][P[hs.lord].house - 1]} <span class="note">(पराशर)</span></td><td><span class="rating" style="background:${t.color}">${t.label}</span></td></tr>`; }).join("")}
       </tbody></table></div></section>`;
 
     // विंशोत्तरी
-    html += `<section class="card"><h2>विंशोत्तरी दशा (120 वर्ष)</h2><p class="note">महादशा पर क्लिक करके अन्तर्दशाएँ देखें।</p>
+    T.dasha += `<section class="card"><h2>विंशोत्तरी दशा (120 वर्ष)</h2><p class="note">महादशा पर क्लिक करके अन्तर्दशाएँ देखें।</p>
       ${r.dasha.list.filter((md) => md.end > r.chart.jd && (md.start - r.chart.jd) / J.YEAR_DAYS < 120).map((md) => { const isNow = cur && cur.md === md; return `<details class="${isNow ? "now" : ""}" ${isNow ? "open" : ""}><summary><span>${G[md.lord]} महादशा (${J.DASHA_YEARS[md.lord]} वर्ष)</span><span class="note">${fmtDate(Math.max(md.start, r.chart.jd), tz)} – ${fmtDate(md.end, tz)} · आयु ${Math.max(0, Math.floor((md.start - r.chart.jd) / J.YEAR_DAYS))}–${Math.floor((md.end - r.chart.jd) / J.YEAR_DAYS)}</span></summary>
         <table><thead><tr><th>अन्तर्दशा</th><th>आरम्भ</th><th>समाप्ति</th><th>फल</th></tr></thead><tbody>${md.antar.filter((ad) => ad.end > r.chart.jd).map((ad) => { const pr3 = periodRating(r, md.lord, ad.lord); const n = cur && cur.ad === ad; return `<tr class="${n ? "now" : ""}"><td>${G[md.lord]}–${G[ad.lord]}</td><td>${fmtDate(Math.max(ad.start, r.chart.jd), tz)}</td><td>${fmtDate(ad.end, tz)}</td><td><span class="rating r${pr3.r}">${pr3.label}</span></td></tr>`; }).join("")}</tbody></table></details>`; }).join("")}</section>`;
 
     // शुभ रत्न
-    html += `<section class="card"><h2>💎 शुभ रत्न (लग्न अनुसार)</h2>
+    T.dosha += `<section class="card"><h2>💎 शुभ रत्न (लग्न अनुसार)</h2>
       <p>लग्नेश ${G[r.houses[0].lord]}, पंचमेश ${G[r.houses[4].lord]} और नवमेश ${G[r.houses[8].lord]} आपकी कुंडली के कारक/शुभ ग्रह हैं — इनके रत्न सामान्यतः अनुकूल रहते हैं:</p>
       <p>${[r.houses[0].lord, r.houses[4].lord, r.houses[8].lord].filter((v, i, a) => a.indexOf(v) === i).map((p) => `<b>${G[p]}</b>: ${F.REMEDY[p].ratna}${P[p].dignity.key === "debil" || P[p].combust ? " <span class=\"note\">(यह ग्रह नीच/अस्त है — रत्न से पहले विशेषज्ञ सलाह आवश्यक)</span>" : ""}`).join("<br>")}</p>
       <p class="note">रत्न शुद्ध, उचित वज़न (रत्ती) में, शुभ मुहूर्त में अभिमंत्रित करके धारण करें।</p></section>`;
 
+    const TABS = [["sum", "📋 सारांश"], ["chart", "🪐 कुंडली"], ["yoga", "🌟 योग"], ["dosha", "⚠️ दोष एवं निवारण"], ["phala", "📖 फलादेश"], ["granth", "📜 ग्रंथ अनुसार"], ["dasha", "⏳ दशा-गोचर"]];
+    html += `<nav class="rtabs no-print" role="tablist">${TABS.map(([k, l], i) => `<button type="button" role="tab" data-rt="${k}" class="${i ? "" : "on"}">${l}</button>`).join("")}</nav>`;
+    html += TABS.map(([k, l], i) => `<div class="rpanel" data-panel="${k}" ${i ? "hidden" : ""}><h2 class="print-only ptitle">${l}</h2>${T[k]}</div>`).join("");
     html += `<section class="card"><p class="note">ग्रंथ-आधार: बृहत् पाराशर होरा शास्त्र (पराशर), बृहज्जातक (वराहमिहिर), फलदीपिका (मंत्रेश्वर), सारावली (कल्याणवर्मा), जातक पारिजात (वैद्यनाथ दीक्षित)। गणना-विधि: ग्रहों के सायन भोगांश खगोलीय कक्षीय सूत्रों से (सटीकता ~1-3 कला), लाहिरी (चित्रपक्ष) अयनांश, सम्पूर्ण-राशि भाव पद्धति (पाराशरी), मध्यम राहु। फलादेश इन ग्रंथों के सिद्धान्तों का सरल सार है; अन्तिम निर्णय में सम्पूर्ण कुंडली का समग्र विचार आवश्यक है।</p></section>`;
 
     const rep = $("report");
@@ -410,9 +467,16 @@
     $("formCard").hidden = true;
     $("editBtn").onclick = () => { $("formCard").hidden = false; $("formCard").scrollIntoView({ behavior: "smooth" }); };
     rep.scrollIntoView({ behavior: "smooth" });
+    const showTab = (k) => {
+      for (const b of rep.querySelectorAll("[data-rt]")) b.classList.toggle("on", b.dataset.rt === k);
+      for (const pn of rep.querySelectorAll(".rpanel")) { const on = pn.dataset.panel === k; pn.hidden = !on; if (on) { pn.classList.remove("fade"); void pn.offsetWidth; pn.classList.add("fade"); if (window.Anim) window.Anim.afterRender(pn); } }
+    };
+    for (const b of rep.querySelectorAll("[data-rt]")) b.addEventListener("click", () => { showTab(b.dataset.rt); rep.querySelector(".rtabs").scrollIntoView({ behavior: "smooth", block: "start" }); });
+    for (const b of rep.querySelectorAll("[data-goto]")) b.addEventListener("click", () => { showTab(b.dataset.goto); rep.querySelector(".rtabs").scrollIntoView({ behavior: "smooth", block: "start" }); });
     const jb = $("jumpNiv");
-    if (jb) jb.onclick = () => $("nivaran").scrollIntoView({ behavior: "smooth" });
-    if (window.Anim) window.Anim.afterRender(rep);
+    if (jb) jb.onclick = () => { showTab("dosha"); rep.querySelector(".rtabs").scrollIntoView({ behavior: "smooth" }); };
+    if (window.Anim) window.Anim.afterRender(rep.querySelector(".rpanel"));
   }
   window.__renderKundli = render;
+  window.__chart = { northChart, planetLabel, esc };
 })();

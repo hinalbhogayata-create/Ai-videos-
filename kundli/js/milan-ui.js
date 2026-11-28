@@ -8,12 +8,13 @@
   // ---------- टैब ----------
   function show(view) {
     for (const t of document.querySelectorAll(".tab")) t.classList.toggle("active", t.dataset.view === view);
-    $("kundliView").hidden = view !== "kundliView";
-    $("milanView").hidden = view !== "milanView";
-    try { history.replaceState(null, "", view === "milanView" ? "#milan" : "#kundli"); } catch (e) { /* sandbox */ }
+    for (const v of ["kundliView", "milanView", "prashnaView"]) $(v).hidden = view !== v;
+    try { history.replaceState(null, "", "#" + view.replace("View", "")); } catch (e) { /* sandbox */ }
   }
   for (const t of document.querySelectorAll(".tab")) t.addEventListener("click", () => show(t.dataset.view));
   if (location.hash === "#milan") show("milanView");
+  if (location.hash === "#prashna") show("prashnaView");
+  window.__showView = show;
 
   // ---------- स्थान ----------
   const places = { b_: window.PlaceSearch.bindPlace("b_"), g_: window.PlaceSearch.bindPlace("g_") };

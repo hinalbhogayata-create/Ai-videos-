@@ -142,7 +142,7 @@
     const add = (o) => { o.when = o.planets ? upcomingPeriods(r, o.planets, nowJd, tz) : []; list.push(o); };
 
     // 1. प्रमुख दोष
-    for (const y of r.yogas) {
+    if (!ctx.skipDoshas) for (const y of r.yogas) {
       if (y.good || y.cancelled) continue;
       const key = Object.keys(DOSHA).find((k) => y.name.startsWith(k));
       if (key) { const d = DOSHA[key]; add({ sev: key === "शकट योग" ? 1 : key === "केमद्रुम योग" ? 2 : key === "मांगलिक दोष" && !y.text.includes("प्रबल") ? 2 : 3, icon: d.icon, title: y.name, cause: y.text.split("।")[0] + "।", effect: d.effect, rem: d.rem, planets: d.planets }); continue; }
@@ -153,7 +153,7 @@
       }
     }
     // 2. विशेष युति-दोष
-    for (const c of COMBO) {
+    if (!ctx.skipDoshas) for (const c of COMBO) {
       const hit = c.b.find((b) => P[c.a].sign === P[b].sign);
       let pitru9 = false;
       if (c.name === "पितृ दोष" && !hit) pitru9 = P.Rahu.house === 9 || [r.houses[8].lord].some((l) => P[l].sign === P.Rahu.sign || P[l].sign === P.Ketu.sign);
@@ -161,7 +161,7 @@
     }
     // 3. गोचर — साढ़ेसाती / ढैय्या
     const tr = r.transit;
-    if (tr.sadeSati || tr.dhaiya) add({ sev: tr.satFromMoon === 1 ? 3 : 2, icon: "🪐", title: tr.sadeSati ? "शनि की साढ़ेसाती (वर्तमान)" : "शनि की ढैय्या (वर्तमान)", cause: (tr.sadeSati || tr.dhaiya), effect: "कार्य में बाधा, मानसिक दबाव, स्वास्थ्य/धन की परीक्षा — परन्तु परिश्रमी और ईमानदार को शनि अन्त में उत्तम फल देते हैं", planets: null,
+    if (!ctx.skipDoshas && (tr.sadeSati || tr.dhaiya)) add({ sev: tr.satFromMoon === 1 ? 3 : 2, icon: "🪐", title: tr.sadeSati ? "शनि की साढ़ेसाती (वर्तमान)" : "शनि की ढैय्या (वर्तमान)", cause: (tr.sadeSati || tr.dhaiya), effect: "कार्य में बाधा, मानसिक दबाव, स्वास्थ्य/धन की परीक्षा — परन्तु परिश्रमी और ईमानदार को शनि अन्त में उत्तम फल देते हैं", planets: null,
       rem: [["📿", "मंत्र", "“ॐ प्रां प्रीं प्रौं सः शनैश्चराय नमः” 108 बार; दशरथ-कृत शनि स्तोत्र (शनिवार)"], ["🙏", "पूजा", "शनिवार पीपल के नीचे सरसों तेल का दीपक, हनुमान चालीसा 7 बार"], ["🎁", "दान", "शनिवार छाया-दान (कटोरी के सरसों तेल में मुख देखकर दान), काले तिल, उड़द, लोहा, जूते-चप्पल"], ["🌱", "आचरण", "सत्य, ईमानदारी, श्रमिकों-सेवकों से सद्व्यवहार; मद्य-मांस से दूरी"]] });
     // 4. कठिन वर्तमान दशा
     if (ctx.cur) {
@@ -173,7 +173,7 @@
       }
     }
     // 5. निर्बल / पीड़ित ग्रह
-    const listed = new Set(list.flatMap((x) => x.planets || []));
+    const listed = new Set(list.flatMap((x) => x.planets || []).concat(ctx.listedPlanets || []));
     for (const p of ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"]) {
       const x = P[p], st = r.strength[p];
       const why = [];
@@ -207,6 +207,6 @@
     ["⚠️", "रत्न, विशेषकर नीलम/गोमेद/लहसुनिया, केवल योग्य ज्योतिषी की सलाह और परीक्षण के बाद ही धारण करें।"],
   ];
 
-  root.Nivaran = { analyze, GENERAL, planetRemedy };
+  root.Nivaran = { analyze, GENERAL, planetRemedy, DOSHA, COMBO };
   if (typeof module !== "undefined") module.exports = root.Nivaran;
 })(typeof window !== "undefined" ? window : globalThis);
