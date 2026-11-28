@@ -524,7 +524,7 @@
     html += `<section class="card person-card"><div class="toolbar"><div class="person"><div class="pk">${tt("जन्म कुंडली", "Janma Kundli")}</div><h2>${esc(input.name)}</h2>
       <p>${input.gender === "F" ? tt("स्त्री", "Female") : tt("पुरुष", "Male")} · ${tt("जन्म", "Born")}: ${birthStr} (UTC ${tz >= 0 ? "+" : "−"}${fmtOffset(Math.abs(tz))}) · ${esc(input.place || "")}</p>
       <p>${tt("अक्षांश", "Lat")} ${input.lat.toFixed(4)}°, ${tt("देशान्तर", "Lon")} ${input.lon.toFixed(4)}° · ${tt("लाहिरी अयनांश", "Lahiri ayanamsa")} ${J.dms(r.chart.ayanamsa)} · ${tt("वर्तमान आयु", "Current age")} ~${ageNow > 0 ? Math.floor(ageNow) : 0} ${tt("वर्ष", "years")}</p></div>
-      <div class="no-print tb-btns"><button class="ghost jump" id="jumpNiv">⚠️ ${tt("दोष एवं निवारण", "Doshas & Remedies")}</button> <button class="ghost" id="printBtn">📄 ${tt("PDF / प्रिंट", "PDF / Print")}</button> <button class="ghost" id="editBtn">✏️ ${tt("बदलें", "Edit")}</button></div></div></section>`;
+      <div class="no-print tb-btns"><button class="ghost jump" id="jumpNiv">⚠️ ${tt("दोष एवं निवारण", "Doshas & Remedies")}</button> <button class="ghost" id="printBtn">📖 ${tt("पुस्तक / PDF", "Book / PDF")}</button> <button class="ghost" id="editBtn">✏️ ${tt("बदलें", "Edit")}</button></div></div></section>`;
 
     const sunriseNote = r.sun && (input.hour * 60 + input.minute) < r.sun.rise.h * 60 + r.sun.rise.m;
     const prevDay = tt(["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"], ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"])[(new Date(Date.UTC(input.year, input.month - 1, input.day)).getUTCDay() + 6) % 7];
@@ -660,22 +660,16 @@
     if (m) m.remove();
     m = document.createElement("div");
     m.id = "printMenu"; m.className = "pmenu no-print"; m.setAttribute("role", "dialog");
-    m.innerHTML = `<div class="pm-box"><h3>📄 ${tt("कौन-सी PDF चाहिए?", "Which PDF would you like?")}</h3>
-      <button type="button" class="pm-opt" data-k="brief"><b>📋 ${tt("संक्षिप्त PDF", "Short PDF")}</b><small>${tt("मुखपृष्ठ, सारांश, समय-घड़ी, कुंडली चक्र, ग्रह स्पष्ट, उपस्थित दोष व निवारण, वर्तमान दशा, ग्रह फल — लगभग 10–12 पृष्ठ", "Cover, summary, time dials, charts, planet table, doshas present with remedies, current dasha, planet results — about 10–12 pages")}</small></button>
-      <button type="button" class="pm-opt" data-k="full"><b>📖 ${tt("सम्पूर्ण पुस्तक PDF", "Complete book PDF")}</b><small>${tt("सभी अध्याय — योग, सभी दोष, पूरी दशा, वर्ष-वार गोचर, ग्रंथ अनुसार फलादेश", "All chapters — yogas, all doshas, full dasha, year-wise transits, predictions by the granthas")}</small></button>
-      <p class="note">${tt("प्रिंट विंडो में “Save as PDF / PDF के रूप में सहेजें” चुनें। iPhone पर: प्रिंट विकल्प में दो उँगलियों से पूर्वावलोकन बड़ा करें, फिर साझा करें → फ़ाइल में सहेजें।", "In the print window choose “Save as PDF”. On iPhone: pinch out on the print preview, then Share → Save to Files.")}</p>
+    m.innerHTML = `<div class="pm-box"><h3>📖 ${tt("कुंडली पुस्तक / PDF", "Kundli book / PDF")}</h3>
+      <button type="button" class="pm-opt" data-k="brief"><b>📋 ${tt("संक्षिप्त पुस्तक", "Short book")}</b><small>${tt("मुखपृष्ठ, सारांश, समय-घड़ी, कुंडली चक्र, ग्रह स्पष्ट, उपस्थित दोष व निवारण, वर्तमान दशा, ग्रह फल — लगभग 12–14 पृष्ठ", "Cover, summary, time dials, charts, planet table, doshas present with remedies, current dasha, planet results — about 12–14 pages")}</small></button>
+      <button type="button" class="pm-opt" data-k="full"><b>📖 ${tt("सम्पूर्ण पुस्तक", "Complete book")}</b><small>${tt("सभी अध्याय — योग, सभी दोष, पूरी दशा, वर्ष-वार गोचर, ग्रंथ अनुसार फलादेश", "All chapters — yogas, all doshas, full dasha, year-wise transits, predictions by the granthas")}</small></button>
+      <p class="note">${tt("पुस्तक स्क्रीन पर खुलेगी — पन्ने पलटकर देखें, फिर “⬇️ PDF डाउनलोड” दबाएँ। PDF हर फ़ोन/कंप्यूटर में एक-सी दिखेगी और पुस्तक की तरह आमने-सामने पृष्ठों में खुलेगी।", "The book opens on screen — turn the pages, then press “⬇️ Download PDF”. The PDF looks the same on every phone/computer and opens as facing pages like a book.")}</p>
       <button type="button" class="ghost pm-x">${tt("रद्द करें", "Cancel")}</button></div>`;
     document.body.appendChild(m);
     const close = () => m.remove();
     m.querySelector(".pm-x").onclick = close;
     m.addEventListener("click", (e) => { if (e.target === m) close(); });
-    for (const b of m.querySelectorAll(".pm-opt")) b.onclick = () => {
-      close();
-      document.body.classList.toggle("print-brief", b.dataset.k === "brief");
-      const done = () => { document.body.classList.remove("print-brief"); window.removeEventListener("afterprint", done); };
-      window.addEventListener("afterprint", done);
-      setTimeout(() => window.print(), 60);
-    };
+    for (const b of m.querySelectorAll(".pm-opt")) b.onclick = () => { close(); if (window.KundliBook) window.KundliBook.open(b.dataset.k); };
   }
 
   // प्रिंट पृष्ठ का शीर्ष-लेख (हर पृष्ठ पर) — @page margin box

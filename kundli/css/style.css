@@ -762,3 +762,128 @@ main .card:hover { box-shadow: inset 0 0 0 5px #fffdf7, inset 0 0 0 6px #e8cf9c,
 }
 .dials-sm .dial-t { min-height: 0; }
 @media (max-width: 600px) { .dials-sm { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; } .dials-sm .dial { padding: 8px 4px; } .dials-sm .dial-f { font-size: 10.5px; } .dials-sm .dial-t { font-size: 11.5px; } }
+
+/* ======================================================================
+   कुंडली पुस्तक — निश्चित A4 पृष्ठ (794×1123) + दर्शक
+   ====================================================================== */
+.bk-stage { position: absolute; left: -30000px; top: 0; width: 794px; pointer-events: none; }
+.bk-stage.bk-render { left: -30000px; }
+.bk-page { width: 794px; height: 1123px; background: #fffdf8; position: relative; overflow: hidden; box-sizing: border-box; font-size: 13.2px; line-height: 1.55; color: #2b1d14; font-family: "Mukta", "Noto Sans Devanagari", sans-serif; }
+.bk-page * { animation: none !important; transition: none !important; }
+.bk-page .bk-frame { position: absolute; inset: 22px; border: 1.5px solid #d9b56c; outline: 1px solid #ecd9ad; outline-offset: 4px; border-radius: 4px; display: flex; flex-direction: column; }
+.bk-head { height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; font-size: 11.5px; color: #8a5a2a; border-bottom: 1px solid #ecd9ad; font-family: "Tiro Devanagari Hindi", serif; }
+.bk-body { flex: 1; padding: 16px 34px 6px; overflow: hidden; }
+.bk-foot { height: 36px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; font-size: 10.5px; color: #8a6a4a; border-top: 1px solid #ecd9ad; }
+.bk-foot .bk-no { color: #7a1f0c; font-weight: 700; font-size: 12px; }
+.bk-foot span:last-child { font-family: "Cinzel", serif; font-size: 9px; letter-spacing: 1.5px; color: #b08a50; }
+.bk-foot .bk-chap { min-width: 180px; }
+/* अध्याय शीर्षक */
+.bk-chh { text-align: center; margin: 6px 0 16px; padding-bottom: 10px; border-bottom: 2px solid #b5441b; }
+.bk-chh span { display: block; font-size: 11px; letter-spacing: 2px; color: #a06a1c; }
+.bk-chh b { font-family: "Tiro Devanagari Hindi", serif; font-weight: 400; font-size: 27px; color: #7a1f0c; }
+/* सामग्री को पुस्तक-जैसा सादा करें */
+.bk-page .card { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; margin: 0 0 12px !important; border-radius: 0 !important; }
+.bk-page .card h2 { font-size: 17px; margin: 4px 0 8px; color: #7a1f0c; }
+.bk-page .card h2::after { height: 10px; margin-top: 3px; background-size: 130px 10px; }
+.bk-page .card.bk-cont > h2:first-child { display: none; }
+.bk-page h3 { font-size: 15px; margin: 8px 0 6px; }
+.bk-page h4 { font-size: 14px; margin: 4px 0; }
+.bk-page p { margin: 4px 0 6px; }
+.bk-page .note { font-size: 11.5px; }
+.bk-page table { font-size: 11.5px; width: 100%; }
+.bk-page th, .bk-page td { padding: 4px 6px; }
+.bk-page .scroll { overflow: visible; }
+.bk-page .sgrid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.bk-page .sc { padding: 6px 10px; }
+.bk-page .sc b { font-size: 14px; }
+.bk-page .sbox { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.bk-page .sbtn, .bk-page .bk-btn { padding: 8px 12px; font-size: 13.5px; border-radius: 10px; border: 1px solid #e6cd9f; background: #fffaf0; }
+.bk-page .sbtn small { display: block; font-size: 11.5px; color: #8a6a4a; }
+.bk-page .areas { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.bk-page .area { padding: 8px 12px; }
+.bk-page .kv { grid-template-columns: repeat(2, 1fr); gap: 0 22px; }
+.bk-page .kv div { font-size: 12.5px; padding: 4px 2px; }
+.bk-page .charts { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.bk-page .chartbox svg.kchart, .bk-page .chartbox .bk-svgimg { max-width: 100%; filter: none; }
+.bk-page .chartbox h3 { font-size: 13.5px; text-align: center; }
+.bk-page .dials { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.bk-page .dials-sm { grid-template-columns: repeat(5, 1fr); }
+.bk-page .dial { padding: 6px 4px 8px; border-radius: 10px; }
+.bk-page .dial-svg { max-width: 118px; }
+.bk-page .dials-sm .dial-svg { max-width: 90px; }
+.bk-page .dial-t { font-size: 11.5px; min-height: 30px; }
+.bk-page .dial-t b { font-size: 13px; }
+.bk-page .dial-f { font-size: 10.5px; }
+.bk-page .yoga, .bk-page .ycard, .bk-page .planet-phala { padding: 8px 12px; margin: 6px 0; border-radius: 8px; }
+.bk-page .bk-det { border: 1px solid #ead3a6; border-radius: 8px; margin: 8px 0; padding: 0 0 4px; background: #fffdf8; }
+.bk-page .bk-det.bk-cont { border-top-style: dashed; }
+.bk-page .bk-sum { display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-weight: 700; color: #3d1a0c; background: #fbf0dc; border-radius: 8px 8px 0 0; }
+.bk-page .bk-det > :not(.bk-sum) { padding-left: 12px; padding-right: 12px; }
+.bk-page .bk-det .pbody, .bk-page .bk-det .gbody { display: block !important; }
+.bk-page .dcard .pi, .bk-page .prob .pi { font-size: 18px; }
+.bk-page .dprog { margin: 6px 0; }
+.bk-page .rating { font-size: 11px; }
+.bk-page .ps-list, .bk-page .tb-btns { display: none; }
+/* मुखपृष्ठ */
+.bk-cover .bc-frame { position: absolute; inset: 26px; border: 3px double #b5441b; outline: 1.5px solid #d9a441; outline-offset: -10px; border-radius: 6px; padding: 54px 46px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: radial-gradient(circle at 50% 30%, #fff8e6, #fdf0d6 60%, #f8e3bb); }
+.bk-cover .bc-inv { font-family: "Tiro Devanagari Hindi", serif; color: #8a1c12; font-size: 18px; }
+.bk-cover .bc-ganesha { width: 130px; height: auto; opacity: .9; }
+.bk-cover .bc-title { font-family: "Tiro Devanagari Hindi", serif; font-size: 34px; color: #6b1410; }
+.bk-cover .bc-name { font-family: "Tiro Devanagari Hindi", serif; font-size: 40px; color: #a32a14; border-top: 2px solid #d9a441; border-bottom: 2px solid #d9a441; padding: 10px 46px; }
+.bk-cover .bc-birth { font-size: 15.5px; color: #5c3a1c; }
+.bk-cover .bc-orn { width: 260px; height: 24px; background: var(--orn) center / contain no-repeat; }
+.bk-cover .bc-photos { display: flex; gap: 60px; justify-content: center; }
+.bk-cover .bc-photos figure { margin: 0; font-size: 14px; color: #5c3a1c; }
+.bk-cover .bc-photos small { color: #8a6a4a; font-size: 12px; }
+.bk-cover .bc-photo { width: 112px; height: 112px; border-radius: 50%; border: 3px solid #c9973c; object-fit: cover; display: block; margin: 0 auto 6px; }
+.bk-cover .bc-brand { font-family: "Tiro Devanagari Hindi", serif; font-size: 30px; color: #7a1f0c; }
+.bk-cover .bc-brand-en { font-family: "Cinzel", serif; letter-spacing: 4px; color: #a06a1c; font-size: 14px; margin-top: -10px; }
+.bk-cover .bc-date { font-size: 13px; color: #8a6a4a; }
+/* अनुक्रमणिका */
+.bk-toc { padding-top: 40px; }
+.bk-toc h2 { text-align: center; font-size: 30px; color: #7a1f0c; margin: 0; font-family: "Tiro Devanagari Hindi", serif; font-weight: 400; }
+.bk-toc h2::after { display: none; }
+.bk-orn { height: 22px; width: 240px; margin: 8px auto 30px; background: var(--orn) center / contain no-repeat; }
+.bk-tr { display: flex; align-items: baseline; gap: 12px; padding: 11px 30px; font-size: 16.5px; }
+.bk-tr .n { color: #a06a1c; min-width: 90px; font-size: 14px; }
+.bk-tr .t { color: #3d1a0c; font-weight: 600; }
+.bk-tr .dots { flex: 1; border-bottom: 2px dotted #c9a46a; transform: translateY(-4px); }
+.bk-tr .p { color: #7a1f0c; font-weight: 700; min-width: 30px; text-align: right; }
+.bk-toc .note { text-align: center; margin-top: 36px; }
+/* अन्त */
+.bk-tail { margin-top: 10px; border-top: 1px solid #ecd9ad; padding-top: 10px; }
+.bk-sign { display: flex; justify-content: space-around; margin: 26px 0 12px; text-align: center; font-family: "Tiro Devanagari Hindi", serif; font-size: 16px; color: #7a1f0c; }
+.bk-sign small { display: block; font-family: "Mukta", sans-serif; font-size: 11.5px; color: #8a6a4a; }
+.bk-sign div { border-top: 1px solid #c9a46a; padding-top: 6px; min-width: 220px; }
+.bk-contact { text-align: center; font-size: 12px; color: #8a6a4a; }
+
+/* दर्शक */
+html.bk-open, html.bk-open body { overflow: hidden; }
+.bk-viewer { position: fixed; inset: 0; z-index: 90; background: radial-gradient(circle at 50% 40%, #5a1410, #250605 75%); display: flex; flex-direction: column; animation: fadeUp .3s ease-out; }
+.bkv-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px; color: #ffe9b0; background: rgba(0, 0, 0, .25); border-bottom: 1px solid rgba(232, 199, 121, .35); }
+.bkv-bar b { font-family: "Tiro Devanagari Hindi", serif; font-weight: 400; font-size: 18px; }
+.bkv-pg { font-size: 14px; color: var(--gold-2); }
+.bkv-acts { margin-left: auto; display: flex; gap: 8px; }
+.bkv-acts button { min-height: 40px; padding: 8px 16px; }
+.bkv-acts .ghost { background: rgba(255, 255, 255, .08); color: #ffe9b0; border-color: rgba(232, 199, 121, .5); }
+.bkv-desk { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 0; perspective: 2200px; }
+.bkv-book { display: flex; box-shadow: 0 30px 60px rgba(0, 0, 0, .55); position: relative; cursor: pointer; transform-style: preserve-3d; }
+.bkv-slot { position: relative; overflow: hidden; background: #fffdf8; }
+.bkv-slot:empty { background: transparent; }
+.bkv-slot.left { box-shadow: inset -22px 0 30px -18px rgba(90, 40, 10, .35); border-radius: 6px 0 0 6px; }
+.bkv-slot.right { box-shadow: inset 22px 0 30px -18px rgba(90, 40, 10, .35); border-radius: 0 6px 6px 0; }
+.bkv-slot.single { border-radius: 4px; }
+.bkv-scale { transform-origin: 0 0; width: 794px; height: 1123px; }
+.bkv-scale .bk-page { box-shadow: none; }
+.bkv-book.turn-next { animation: turnNext .25s ease-in both; transform-origin: left center; }
+.bkv-book.turn-prev { animation: turnPrev .25s ease-in both; transform-origin: right center; }
+@keyframes turnNext { to { transform: rotateY(-28deg) translateX(-30px); opacity: .25; } }
+@keyframes turnPrev { to { transform: rotateY(28deg) translateX(30px); opacity: .25; } }
+.bkv-slot .bkv-scale { animation: pageIn .35s ease-out; }
+@keyframes pageIn { from { opacity: .3; } }
+.bkv-nav { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0, 0, 0, .35); color: #ffe9b0; font-size: 30px; line-height: 1; flex: none; }
+.bkv-thumbs { display: flex; gap: 6px; overflow-x: auto; padding: 8px 14px 12px; justify-content: center; flex-wrap: wrap; }
+.bkv-thumbs button { min-width: 34px; height: 30px; border-radius: 8px; border: 1px solid rgba(232, 199, 121, .45); background: rgba(255, 255, 255, .06); color: #ffe9b0; font-size: 13px; }
+.bkv-thumbs button.on { background: var(--gold); color: #5e0f0b; }
+.bkv-msg { position: absolute; left: 50%; bottom: 64px; transform: translateX(-50%); background: #fffdf7; color: #3d1a0c; border: 2px solid var(--gold); border-radius: 12px; padding: 10px 16px; max-width: 90vw; box-shadow: 0 10px 30px rgba(0, 0, 0, .4); font-size: 14.5px; }
+@media (max-width: 999px) { .bkv-nav { display: none; } .bkv-bar b { font-size: 15px; } .bkv-acts button { padding: 6px 12px; font-size: 14px; } }
