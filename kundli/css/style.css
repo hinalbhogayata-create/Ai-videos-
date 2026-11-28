@@ -18,13 +18,23 @@ body {
   line-height: 1.6; font-size: 16px;
 }
 .top {
-  text-align: center; padding: 28px 16px 22px;
-  background: linear-gradient(135deg, #7a1f0c, #b5441b 55%, #e08a1e);
-  color: #fff;
+  text-align: center; padding: 22px 16px 18px; color: #fff;
+  background:
+    radial-gradient(circle at 18% 30%, rgba(255, 210, 120, .22), transparent 45%),
+    linear-gradient(135deg, #5c0f0a, #8b1a12 50%, #b5441b);
+  border-bottom: 4px solid #d9a441;
 }
-.top .om { font-size: 40px; line-height: 1; opacity: .9; }
-.top h1 { margin: 6px 0 4px; font-size: 30px; letter-spacing: .5px; }
-.top .sub { margin: 0; opacity: .9; font-size: 14px; }
+.brand { display: flex; align-items: center; justify-content: center; gap: 26px; flex-wrap: wrap; max-width: 980px; margin: 0 auto; }
+.acharya { width: 150px; height: 150px; border-radius: 50%; flex: none; filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .35)); }
+.brand-text { text-align: center; min-width: 0; }
+.top .om { font-size: 28px; line-height: 1; color: #f3cf7a; }
+.brand-hi { margin: 4px 0 0; font-family: "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif; font-weight: 400; font-size: clamp(30px, 5vw, 46px); line-height: 1.15; color: #ffe7a8; text-shadow: 0 2px 6px rgba(0, 0, 0, .35); }
+.brand-en { font-family: "Cinzel", Georgia, serif; font-weight: 600; letter-spacing: 3px; font-size: clamp(13px, 2vw, 17px); color: #f3cf7a; margin-top: 2px; }
+.acharya-name { margin-top: 10px; font-size: 19px; font-weight: 700; }
+.acharya-en { font-size: 14px; opacity: .9; }
+.degree { display: inline-block; margin-top: 6px; font-size: 13.5px; padding: 3px 12px; border: 1px solid rgba(243, 207, 122, .6); border-radius: 20px; color: #ffe7a8; }
+.top .sub { margin: 14px auto 0; opacity: .92; font-size: 14px; max-width: 760px; border-top: 1px solid rgba(243, 207, 122, .35); padding-top: 10px; }
+.foot-brand { color: #7a1f0c; font-size: 14px; }
 .tabs { display: flex; justify-content: center; gap: 6px; padding: 12px 10px 0; background: #fbf6ee; flex-wrap: wrap; }
 .tab { background: #fff; color: var(--accent); border: 1px solid var(--line); border-radius: 22px; padding: 9px 20px; font-size: 16px; }
 .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
@@ -117,14 +127,18 @@ tr.now td { background: #fff1dc; font-weight: 600; }
 footer { text-align: center; color: var(--muted); font-size: 13px; padding: 10px 16px 30px; max-width: 900px; margin: 0 auto; }
 
 @media (max-width: 600px) {
-  .top h1 { font-size: 24px; }
+  .acharya { width: 120px; height: 120px; }
+  .brand { gap: 10px; }
   .card { padding: 14px; }
   table { font-size: 13px; }
   th, td { padding: 5px 4px; }
   .hide-sm { display: none; }
 }
 @media print {
-  .top { background: none; color: #7a1f0c; padding: 6px; }
+  .top { background: none !important; color: #7a1f0c; padding: 6px; border-bottom: 2px solid #b5441b; }
+  .brand-hi, .brand-en, .degree, .top .om { color: #7a1f0c !important; text-shadow: none; }
+  .acharya { width: 90px; height: 90px; filter: none; }
+  .top .sub { display: none; }
   #formCard, .no-print, footer button { display: none !important; }
   .card { box-shadow: none; break-inside: avoid-page; border-color: #ccc; }
   details { break-inside: avoid; }
