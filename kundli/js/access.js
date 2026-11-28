@@ -25,18 +25,18 @@
     try { h = await sha(SALT + pw.trim()); } catch (e) { alert(L("यह ब्राउज़र सुरक्षित लॉगिन नहीं कर सकता — https लिंक से खोलें।", "This browser cannot log in securely — open the https link.")); return; }
     if (h !== HASH) { alert(L("पासवर्ड ग़लत है।", "Wrong password.")); return; }
     try { localStorage.setItem(KEY, HASH); } catch (e) { /* */ }
-    root.classList.add("acharya");
+    root.classList.add("is-acharya");
     goHome();
   }
   function logout() {
     try { localStorage.removeItem(KEY); } catch (e) { /* */ }
-    root.classList.remove("acharya");
+    root.classList.remove("is-acharya");
     for (const id of ["report", "milanReport", "prashnaReport"]) { const el = $(id); if (el) { el.hidden = true; el.innerHTML = ""; } }
     goHome();
   }
 
   function goHome() {
-    if (root.classList.contains("acharya")) {
+    if (root.classList.contains("is-acharya")) {
       const first = document.querySelector('.tab.svc[data-view="kundliView"]');
       if (first) first.click();
       const fc = $("formCard"); if (fc) fc.hidden = false;

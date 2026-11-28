@@ -481,8 +481,8 @@ footer.foot .disclaimer { color: #e9cfa0; max-width: 820px; margin: 8px auto 0; 
 @media print { .chartbox svg.kchart { filter: none; } }
 
 /* ---------- सार्वजनिक अनुरोध / आचार्य प्रवेश / होम ---------- */
-html:not(.acharya) .only-acharya { display: none !important; }
-html.acharya .only-public { display: none !important; }
+html:not(.is-acharya) .only-acharya { display: none !important; }
+html.is-acharya .only-public { display: none !important; }
 .top-actions { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .tbtn { border: 1px solid rgba(232, 199, 121, .55); background: rgba(0, 0, 0, .25); color: var(--gold-3); padding: 6px 14px; border-radius: 999px; font-size: 14px; font-weight: 600; min-height: 34px; cursor: pointer; }
 .tbtn:hover { background: rgba(232, 199, 121, .25); color: #fff; }
@@ -504,3 +504,130 @@ html.acharya .only-public { display: none !important; }
 .req-svc input[type=radio] { width: auto; min-height: 0; margin: 0; accent-color: var(--maroon); }
 .req-svc label { flex: 0 1 auto; font-size: 15px; }
 .req-card .req-svc label { flex-direction: row; display: inline-flex; gap: 8px; padding: 8px 14px; }
+
+/* ======================================================================
+   सम्पूर्ण फलादेश (एक साथ) — स्क्रीन पर अध्याय-शीर्षक
+   ====================================================================== */
+.chapter-h { display: none; }
+#report.all-mode .chapter-h { display: flex; }
+.chapter-h { align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 34px 0 14px; padding: 12px 18px; border-radius: 14px; background: linear-gradient(135deg, #6b1410, #a32a14 60%, #c9622a); color: #ffe9b0; font-size: 24px; box-shadow: 0 0 0 2px var(--gold-2), 0 8px 20px rgba(94, 15, 11, .25); position: relative; overflow: hidden; }
+.chapter-h::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255, 240, 200, .35), transparent); animation: shine 4.5s ease-in-out infinite; }
+.chapter-h .ch-no { font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold-2); font-family: "Mukta", sans-serif; }
+#report.all-mode .rpanel { animation: fadeUp .5s ease-out both; }
+
+/* ======================================================================
+   पुस्तक-शैली प्रिंट / PDF
+   ====================================================================== */
+@page { size: A4; margin: 17mm 14mm 18mm 14mm;
+  @top-center { font-family: "Mukta", sans-serif; font-size: 9pt; color: #8a5a2a; }
+  @bottom-center { content: "— " counter(page) " —"; font-family: "Mukta", sans-serif; font-size: 9.5pt; color: #7a1f0c; }
+  @bottom-right { content: "niyati jyotish karyalaya"; font-family: "Cinzel", serif; font-size: 7pt; color: #b08a50; }
+}
+@page :first { margin: 10mm; @top-center { content: none; } @bottom-center { content: none; } @bottom-right { content: none; } }
+.book-cover, .book-toc { display: none; }
+@media print {
+  html, body { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-size: 11pt; line-height: 1.55; }
+  /* जब रिपोर्ट हो तो वेबसाइट का शीर्ष/पाद नहीं — मुखपृष्ठ ही शीर्ष है */
+  body:has(#report:not([hidden])) header.top, body:has(#report:not([hidden])) footer.foot .foot-brand, body:has(#report:not([hidden])) footer.foot .foot-contact { display: none !important; }
+  body:has(#milanReport:not([hidden])) header.top .sub, body:has(#prashnaReport:not([hidden])) header.top .sub { display: none !important; }
+  .sky, .loader, .home-fab, .rtabs, .tb-btns, #requestView, .services, .topbar { display: none !important; }
+  main { padding: 0 !important; max-width: none !important; }
+  * { animation: none !important; transition: none !important; }
+  .rise-in, .reveal, .fade { opacity: 1 !important; transform: none !important; }
+
+  /* मुखपृष्ठ */
+  .book-cover { display: block !important; height: 275mm; break-after: page; margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
+  .bc-frame { height: 100%; box-sizing: border-box; border: 3px double #b5441b; outline: 1.5px solid #d9a441; outline-offset: -9px; border-radius: 6px; padding: 16mm 14mm; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+    background: radial-gradient(circle at 50% 30%, #fff8e6, #fdf0d6 60%, #f8e3bb); }
+  .bc-inv { font-family: "Tiro Devanagari Hindi", serif; color: #8a1c12; font-size: 14pt; }
+  .bc-ganesha { width: 34mm; height: auto; opacity: .9; }
+  .bc-title { font-family: "Tiro Devanagari Hindi", serif; font-size: 26pt; color: #6b1410; }
+  .bc-name { font-family: "Tiro Devanagari Hindi", serif; font-size: 30pt; color: #a32a14; border-top: 1.5px solid #d9a441; border-bottom: 1.5px solid #d9a441; padding: 3mm 12mm; }
+  .bc-birth { font-size: 12pt; color: #5c3a1c; }
+  .bc-orn { width: 70mm; height: 7mm; background: var(--orn) center / contain no-repeat; }
+  .bc-photo { width: 34mm; height: 34mm; border-radius: 50%; border: 2.5px solid #c9973c; object-fit: cover; }
+  .bc-brand { font-family: "Tiro Devanagari Hindi", serif; font-size: 22pt; color: #7a1f0c; }
+  .bc-brand-en { font-family: "Cinzel", serif; letter-spacing: 3px; color: #a06a1c; font-size: 11pt; margin-top: -3mm; }
+  .bc-ach { font-size: 12pt; color: #5c3a1c; }
+  .bc-date { font-size: 10pt; color: #8a6a4a; }
+
+  /* अनुक्रमणिका */
+  .book-toc { display: block !important; break-after: page; padding-top: 10mm; }
+  .book-toc h2 { text-align: center; font-size: 22pt; color: #7a1f0c; margin-bottom: 8mm; }
+  .book-toc h2::after { content: ""; display: block; height: 6mm; margin: 2mm auto 0; width: 60mm; background: var(--orn) center / contain no-repeat; }
+  .book-toc ol { list-style: none; padding: 0; margin: 0 auto; max-width: 140mm; }
+  .book-toc li { display: flex; gap: 6mm; padding: 3.2mm 0; border-bottom: 1px dotted #c9a46a; font-size: 13pt; }
+  .book-toc .tn { color: #a06a1c; min-width: 26mm; }
+  .book-toc .tl { color: #3d1a0c; font-weight: 600; }
+  .book-toc .note { text-align: center; margin-top: 10mm; }
+
+  /* अध्याय — हर अध्याय नए पृष्ठ से, भीतर कोई अनावश्यक रिक्त स्थान नहीं */
+  .rpanel, .rpanel[hidden] { display: block !important; }
+  .rpanel { break-before: page; }
+  .chapter-h, #report .chapter-h { display: block !important; margin: 0 0 6mm; padding: 0 0 3mm; background: none !important; box-shadow: none !important; color: #7a1f0c !important; text-align: center; font-size: 20pt; border-bottom: 2px solid #b5441b; border-radius: 0; }
+  .chapter-h::after { display: none !important; }
+  .chapter-h .ch-no { display: block; font-size: 9.5pt; color: #a06a1c !important; letter-spacing: 2px; }
+  .card { break-inside: auto !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important; padding: 0 !important; margin: 0 0 5mm !important; background: none !important; }
+  .card h2 { font-size: 14pt; margin: 2mm 0 3mm; break-after: avoid; }
+  .card h2::after { display: none; }
+  h3, h4, summary { break-after: avoid; }
+  details { break-inside: auto !important; border: 0 !important; background: none !important; }
+  details > summary { background: none !important; padding-left: 0 !important; font-weight: 700; }
+  details:not([open]) > *:not(summary), details .pbody, details .gbody { display: block !important; }
+  .yoga, .sc, .area, .ycard, .sbtn, .planet-phala, tr, li, .chartbox, .dstate, p.need, .kv div { break-inside: avoid; }
+  table { font-size: 9.5pt; } thead { display: table-header-group; }
+  .scroll { overflow: visible !important; }
+  .charts { grid-template-columns: 1fr 1fr !important; gap: 6mm; }
+  .chartbox svg.kchart { max-width: 85mm; }
+  .person-card { display: none !important; }
+  footer.foot { background: none !important; box-shadow: none !important; padding: 4mm 0 0 !important; margin: 0 !important; }
+  footer.foot .disclaimer { color: #555 !important; font-size: 9pt; }
+}
+
+/* ======================================================================
+   नवीनता: आज का पंचांग, प्रगति रेखा, लहर, स्वर्ण-चमक, दीया
+   ====================================================================== */
+.today-strip { max-width: 1100px; margin: 22px auto 0; padding: 14px 18px; box-sizing: border-box; border-radius: 18px; background: linear-gradient(135deg, #fffaf0, #fbeed3); border: 1px solid #e1c38c; box-shadow: inset 0 0 0 4px #fffdf7, inset 0 0 0 5px #efdcb6, 0 8px 22px rgba(94, 15, 11, .07); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; width: calc(100% - 28px); }
+.ts-head { display: flex; align-items: center; gap: 10px; min-width: 190px; }
+.ts-head b { display: block; font-family: "Tiro Devanagari Hindi", serif; font-size: 19px; color: var(--maroon); font-weight: 400; }
+.ts-head small { color: var(--muted); font-size: 12.5px; }
+.ts-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; flex: 1; }
+.ts-it { display: grid; grid-template-columns: auto 1fr; column-gap: 6px; align-items: center; background: #fffdf7; border: 1px solid #ead3a6; border-radius: 12px; padding: 6px 10px; animation: fadeUp .5s ease-out both; animation-delay: calc(var(--n) * 70ms); transition: transform .2s, box-shadow .2s; }
+.ts-it:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(94, 15, 11, .1); }
+.ts-ic { grid-row: span 2; font-size: 18px; }
+.ts-k { font-size: 11.5px; color: var(--muted); }
+.ts-v { font-size: 14.5px; font-weight: 600; color: var(--maroon); line-height: 1.25; }
+/* दीया */
+.ts-diya { position: relative; width: 34px; height: 34px; flex: none; }
+.ts-diya::before { content: ""; position: absolute; left: 3px; right: 3px; bottom: 2px; height: 12px; border-radius: 0 0 18px 18px; background: linear-gradient(#d0661c, #8a1c12); box-shadow: inset 0 2px 0 #f1b25c; }
+.ts-diya i { position: absolute; left: 50%; bottom: 13px; width: 10px; height: 18px; margin-left: -5px; border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%; background: radial-gradient(circle at 50% 75%, #fff7c2, #ffc53d 45%, #ff7a1a 80%); box-shadow: 0 0 14px 5px rgba(255, 170, 60, .45); transform-origin: 50% 100%; animation: flame 1.6s ease-in-out infinite; }
+@keyframes flame { 0%, 100% { transform: scale(1) rotate(-2deg); } 30% { transform: scale(1.08, .94) rotate(3deg); } 60% { transform: scale(.95, 1.07) rotate(-3deg); } }
+@media (max-width: 600px) { .ts-items { grid-template-columns: repeat(2, minmax(0, 1fr)); } .today-strip { padding: 12px; } }
+
+/* प्रगति रेखा */
+.scroll-prog { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 60; transform-origin: left; transform: scaleX(0); background: linear-gradient(90deg, var(--gold-2), var(--saffron), var(--maroon-2)); box-shadow: 0 0 8px rgba(255, 170, 60, .6); pointer-events: none; }
+
+/* लहर */
+button, .tab.svc { position: relative; overflow: hidden; }
+.ripple { position: absolute; border-radius: 50%; background: rgba(255, 225, 160, .45); transform: scale(0); animation: ripple .65s ease-out; pointer-events: none; }
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+
+/* स्वर्ण-चमक शीर्षक */
+.brand-hi { background: linear-gradient(100deg, #ffe9b0 20%, #fff8dd 40%, #f3c86a 50%, #ffe9b0 70%); background-size: 220% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: goldsweep 6s linear infinite; }
+@keyframes goldsweep { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+
+/* कार्ड: हल्का उभार व कोने का अलंकरण */
+.card { transition: box-shadow .3s, transform .3s; }
+main .card:hover { box-shadow: inset 0 0 0 5px #fffdf7, inset 0 0 0 6px #e8cf9c, 0 14px 34px rgba(94, 15, 11, .11); }
+.yoga, .planet-phala, .area, .sc { transition: transform .2s, box-shadow .2s; }
+.yoga:hover, .area:hover, .sc:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(94, 15, 11, .09); }
+.rpanel.fade { animation: panelIn .45s cubic-bezier(.2, .8, .2, 1); }
+@keyframes panelIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+.rtabs button[data-rt="all"] { border-color: var(--gold); background: linear-gradient(135deg, #fff6dc, #f6dfa8); font-weight: 700; }
+.rtabs button[data-rt="all"].on { background: linear-gradient(135deg, #6b1410, #a32a14); }
+/* सेवा कार्ड आइकन धीमे घूमें */
+.tab.svc:hover .svc-ic { animation: pulse 1.2s ease-in-out infinite; }
+.tab.svc.active { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-2), 0 10px 24px rgba(94, 15, 11, .14); }
+@media (prefers-reduced-motion: reduce) { .brand-hi, .ts-diya i, .chapter-h::after { animation: none !important; } }
+@media print { .today-strip, .scroll-prog { display: none !important; } .brand-hi { -webkit-text-fill-color: #7a1f0c; background: none; } }
