@@ -5,7 +5,7 @@
  */
 (function () {
   "use strict";
-  const HASH = "1850dffd443a1865b99fa7553f3dbb7fbf94fab05628bac4f718e550515654cf";
+  const HASH = "726641d49087d4c9ff612dbc80a9325ad3691e6d1ea4f00e681c08435c7a8b97";
   const SALT = "niyati-jyotish-karyalaya:";
   const KEY = "niyati-acharya";
   const EMAIL = "hinalbhogayata@gmail.com";
