@@ -557,10 +557,9 @@
         <div class="bc-birth">${tt("जन्म", "Born")}: ${birthStr} · ${esc(input.place || "")}</div>
         <div class="bc-birth">${tt("लग्न", "Lagna")}: ${av.lagna} · ${tt("राशि", "Rashi")}: ${av.rashi} · ${tt("नक्षत्र", "Nakshatra")}: ${av.nakshatra}</div>
         <div class="bc-orn"></div>
-        <img class="bc-photo" src="img/acharya.webp" alt="">
+        <div class="bc-photos"><figure><img class="bc-photo" src="img/acharya.webp" alt=""><figcaption>${tt("आचार्य श्री हिनलभाई भोगायता", "Acharya Shri Hinalbhai Bhogayata")}<br><small>M.A., B.Ed.</small></figcaption></figure><figure><img class="bc-photo" src="img/ravibhai.webp" alt=""><figcaption>${tt("शास्त्री रविभाई राजगुरु", "Shastri Ravibhai Rajguru")}</figcaption></figure></div>
         <div class="bc-brand">नियति ज्योतिष कार्यालय</div>
         <div class="bc-brand-en">NIYATI JYOTISH KARYALAYA</div>
-        <div class="bc-ach">${tt("आचार्य श्री हिनलभाई भोगायता", "Acharya Shri Hinalbhai Bhogayata")} · M.A., B.Ed.</div>
         <div class="bc-date">${tt("दिनांक", "Date")}: ${new Date().toLocaleDateString(tt("hi-IN", "en-IN"), { day: "numeric", month: "long", year: "numeric" })}</div>
       </div></section>
       <section class="print-only book-toc"><h2>${tt("अनुक्रमणिका", "Contents")}</h2><ol>${CH.map(([, l], i) => `<li><span class="tn">${tt("अध्याय", "Chapter")} ${num(i + 1)}</span><span class="tl">${l.replace(/^\S+\s/, "")}</span></li>`).join("")}</ol>

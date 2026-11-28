@@ -86,9 +86,27 @@
     });
   }
 
+  // ---------- कार्यालय नाम: अक्षर-दर-अक्षर प्रकट + स्वर्ण-लहर ----------
+  function splitLetters(el, cls) {
+    if (!el || el.dataset.split) return;
+    const txt = el.textContent;
+    const seg = window.Intl && Intl.Segmenter ? [...new Intl.Segmenter("hi", { granularity: "grapheme" }).segment(txt)].map((x) => x.segment) : [...txt];
+    // संयुक्ताक्षर (हलन्त ् से जुड़े) को एक साथ रखें, ताकि "ज्यो", "र्य" आदि सही बनें
+    for (let k = seg.length - 2; k >= 0; k--) if (/\u094D$/.test(seg[k]) || /^[\u0900-\u0903\u093A-\u094F\u0962\u0963]/.test(seg[k + 1])) { seg[k] += seg[k + 1]; seg.splice(k + 1, 1); }
+    let i = 0;
+    el.innerHTML = seg.map((g) => (g === " " ? `<span class="sp"> </span>` : `<span class="ch" aria-hidden="true" style="--i:${i++}">${g}</span>`)).join("");
+    el.dataset.split = "1";
+    if (cls) el.classList.add(cls);
+  }
+  function decorateTitle() {
+    splitLetters(document.querySelector(".brand-hi"), "split");
+    splitLetters(document.querySelector(".brand-en"));
+  }
+
   if (!reduce) {
-    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", decorateHeader);
-    else decorateHeader();
+    const go = () => { decorateHeader(); decorateTitle(); };
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go);
+    else go();
   }
   window.Anim = { loading, afterRender, reduce };
 })();
